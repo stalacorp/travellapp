@@ -5,6 +5,8 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'main/home.html',
             controller: 'HomeCtrl'
         })
+        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl'})
+        .when('/logout', {controller: 'LogoutCtrl'})
         .otherwise({
             redirectTo: '/'
         });
@@ -15,11 +17,20 @@ app.config(['$routeProvider', function($routeProvider){
 
     });
 });
-app.run(['$location', '$rootScope', function($location, $rootScope) {
+app.run(['$location', '$rootScope', '$route', 'AuthService', function($location, $rootScope, $route, AuthService) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
     });
+
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        if (AuthService.isLoggedIn() === false) {
+            $location.path('/login');
+        }
+    });
 }]);
+app.run(function ($rootScope, $location, $route, AuthService) {
+
+});
 
 app.controller('NavCtrl', ['$scope', '$location',
     function($scope, $location){
@@ -27,5 +38,54 @@ app.controller('NavCtrl', ['$scope', '$location',
             return viewLocation === $location.path();
         };
     }]);
+
+app.controller('LoginCtrl',
+    ['$scope', '$location', 'AuthService',
+        function ($scope, $location, AuthService) {
+
+            console.log(AuthService.getUserStatus());
+
+            $scope.login = function () {
+
+                // initial values
+                $scope.error = false;
+                $scope.disabled = true;
+
+                // call login from service
+                AuthService.login($scope.loginForm.username, $scope.loginForm.password)
+                    // handle success
+                    .then(function () {
+                        $location.path('/');
+                        $scope.disabled = false;
+                        $scope.loginForm = {};
+                    })
+                    // handle error
+                    .catch(function () {
+                        $scope.error = true;
+                        $scope.errorMessage = "Invalid username and/or password";
+                        $scope.disabled = false;
+                        $scope.loginForm = {};
+                    });
+
+            };
+
+        }]);
+app.controller('LogoutCtrl',
+    ['$scope', '$location', 'AuthService',
+        function ($scope, $location, AuthService) {
+
+            $scope.logout = function () {
+
+                console.log(AuthService.getUserStatus());
+
+                // call logout from service
+                AuthService.logout()
+                    .then(function () {
+                        $location.path('/login');
+                    });
+
+            };
+
+        }]);
 
 
