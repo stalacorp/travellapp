@@ -3,7 +3,8 @@ personsapp.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/persons/excel', {
             templateUrl: 'persons/excel.html',
-            controller: 'ExcelCtrl'
+            controller: 'ExcelCtrl',
+            title: 'Upload excel'
         })
         .when('/persons/location', {
             templateUrl: 'persons/location.html',
@@ -11,7 +12,8 @@ personsapp.config(['$routeProvider', function($routeProvider){
         })
         .when('/persons/map', {
             templateUrl: 'persons/map.html',
-            controller: 'MapCtrl'
+            controller: 'MapCtrl',
+            title: 'Show the map'
         })
         .otherwise({
             redirectTo: '/persons/excel'

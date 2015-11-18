@@ -15,4 +15,17 @@ app.config(['$routeProvider', function($routeProvider){
 
     });
 });
+app.run(['$location', '$rootScope', function($location, $rootScope) {
+    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+        $rootScope.title = current.$$route.title;
+    });
+}]);
+
+app.controller('NavCtrl', ['$scope', '$location',
+    function($scope, $location){
+        $scope.isActive = function (viewLocation) {
+            return viewLocation === $location.path();
+        };
+    }]);
+
 
