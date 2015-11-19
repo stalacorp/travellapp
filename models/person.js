@@ -25,6 +25,8 @@ virtual.get(function () {
 
 var Person = mongoose.model('Person', personSchema);
 
+module.exports = {personSchema: personSchema};
+
 module.exports = {
     Person: Person
 };
