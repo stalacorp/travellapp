@@ -5,9 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// routes
 var routes = require('./controllers/index');
 var users = require('./controllers/users');
 var persons = require('./controllers/persons');
+var vehicles = require('./controllers/vehicles');
+
 var app = express();
 var User = require('./models/user.js');
 var hash = require('bcrypt-nodejs');
@@ -54,6 +57,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use('/', routes);
 app.use('/user', users);
 app.use('/persons', persons);
+app.use('/vehicles', vehicles);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

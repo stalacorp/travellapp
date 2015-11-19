@@ -9,7 +9,8 @@ var personSchema = Schema({
     postalcode: String,
     location: {lat: Number, lng: Number},
     canDrive: {type: Boolean, default:false},
-    vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle' }
+    vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle' },
+    isActive: {type: Boolean, default:true}
 });
 
 var virtual = personSchema.virtual('fullname');

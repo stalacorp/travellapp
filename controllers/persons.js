@@ -60,7 +60,7 @@ router.get('/location', function(req, res) {
   res.end();
 });
 
-router.get('/allPersons', function(req, res) {
+router.get('/all', function(req, res) {
     Person.find(function (err, persons) {
     if (err) return console.error(err);
     res.json(persons);

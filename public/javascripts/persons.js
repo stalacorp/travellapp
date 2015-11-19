@@ -10,11 +10,11 @@ personsapp.config(['$routeProvider', function($routeProvider){
             templateUrl: 'persons/location.html',
             controller: 'LocationCtrl'
         })
-        .when('/persons/map', {
-            templateUrl: 'persons/map.html',
-            controller: 'MapCtrl',
-            title: 'Show the map'
-        })
+        //.when('/persons/map', {
+        //    templateUrl: 'persons/map.html',
+        //    controller: 'MapCtrl',
+        //    title: 'Show the map'
+        //})
         .otherwise({
             redirectTo: '/persons/excel'
         });
@@ -23,7 +23,7 @@ personsapp.config(['$routeProvider', function($routeProvider){
 
 
 
-app.controller('MapCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi',
+personsapp.controller('MapCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi',
     function($scope, $resource, uiGmapGoogleMapApi){
         var Persons = $resource('/persons/allPersons');
         var persons = [];
@@ -68,7 +68,7 @@ app.controller('MapCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi',
         });
     }]);
 
-app.controller('ExcelCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+personsapp.controller('ExcelCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
     $scope.uploadFiles = function(file, errFiles) {
         $scope.f = file;
         $scope.errFile = errFiles && errFiles[0];
