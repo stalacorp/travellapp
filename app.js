@@ -10,6 +10,7 @@ var users = require('./controllers/users');
 var persons = require('./controllers/persons');
 var app = express();
 var User = require('./models/user.js');
+var hash = require('bcrypt-nodejs');
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local');
@@ -51,7 +52,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/user', users);
 app.use('/persons', persons);
 
 // catch 404 and forward to error handler

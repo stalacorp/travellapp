@@ -2,10 +2,9 @@ var app = angular.module("travellapp", ['ngResource', 'ngRoute','personsapp']);
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl: 'main/home.html',
-            controller: 'HomeCtrl'
+            templateUrl: 'main/home.html'
         })
-        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl'})
+        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login'})
         .when('/logout', {controller: 'LogoutCtrl'})
         .otherwise({
             redirectTo: '/'
@@ -21,19 +20,16 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function($location,
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
     });
-
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        if (AuthService.isLoggedIn() === false) {
-            $location.path('/login');
-        }
+        $rootScope.isLoggedIn = AuthService.isLoggedIn();
+        //if (AuthService.isLoggedIn() === false) {
+        //    $location.path('/login');
+        //}
     });
 }]);
-app.run(function ($rootScope, $location, $route, AuthService) {
 
-});
-
-app.controller('NavCtrl', ['$scope', '$location',
-    function($scope, $location){
+app.controller('NavCtrl', ['$scope', '$location', 'AuthService',
+    function($scope, $location, AuthService){
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
@@ -62,7 +58,7 @@ app.controller('LoginCtrl',
                     // handle error
                     .catch(function () {
                         $scope.error = true;
-                        $scope.errorMessage = "Invalid username and/or password";
+                        $scope.errorMessage = "Onjuiste gebruikersnaam en/of wachtwoord";
                         $scope.disabled = false;
                         $scope.loginForm = {};
                     });
@@ -73,10 +69,7 @@ app.controller('LoginCtrl',
 app.controller('LogoutCtrl',
     ['$scope', '$location', 'AuthService',
         function ($scope, $location, AuthService) {
-
             $scope.logout = function () {
-
-                console.log(AuthService.getUserStatus());
 
                 // call logout from service
                 AuthService.logout()

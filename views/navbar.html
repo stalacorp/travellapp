@@ -16,6 +16,10 @@
                 <li ng-class="{ active: isActive('/persons')}"><a href="#/persons">Werknemers</a></li>
                 <li ng-class="{ active: isActive('/persons/excel')}"><a href="#persons/excel">Excel</a></li>
             </ul>
+            <ul class="nav navbar-nav navbar-right" ng-controller="LogoutCtrl" ng-switch>
+                <li ng-show="!isLoggedIn"><a href="#/login">Inloggen</a></li>
+                <li ng-show="isLoggedIn"><a ng-click='logout()' href="">Uitloggen</a></li>
+            </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
