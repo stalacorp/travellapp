@@ -20,6 +20,13 @@ app.controller('NewTravelCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi',
             $scope.selectedVehicle = vehicles[0];
         });
         $scope.selectedPerson = null;
+        $scope.passengers = [];
+
+        $scope.addToVehicle = function(){
+            if ($scope.passengers.indexOf($scope.selectedPerson) === -1){
+                $scope.passengers.push($scope.selectedPerson);
+            }
+        };
 
         uiGmapGoogleMapApi.then(function(maps) {
             var Persons = $resource('/persons/all');
