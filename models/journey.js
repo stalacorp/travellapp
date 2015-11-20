@@ -1,6 +1,6 @@
 var mongoose = require("mongoose"),
     Schema = mongoose.Schema;
-var journeyVehicleSchema = require('journeyehicle').journeyVehicleSchema;
+var journeyVehicleSchema = require('journeyVehicle').journeyVehicleSchema;
 var personSchema = require('person').personSchema;
 var journeySchema = Schema({
     name: String,
