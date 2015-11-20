@@ -20,7 +20,7 @@ var gmAPI = new GoogleMapsAPI(publicConfig);
 var Person = require("../models/person").Person;
 var Vehicle = require("../models/vehicle").Vehicle;
 
-// routes
+// journeys
 
 router.get('/location', function(req, res) {
     var aantal = 0;

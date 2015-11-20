@@ -11,7 +11,7 @@ personsapp.config(['$routeProvider', function($routeProvider){
             controller: 'LocationCtrl'
         })
         //.when('/persons/map', {
-        //    templateUrl: 'persons/map.html',
+        //    templateUrl: 'persons/plan.html',
         //    controller: 'MapCtrl',
         //    title: 'Show the map'
         //})

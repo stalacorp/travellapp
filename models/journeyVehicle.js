@@ -1,18 +1,18 @@
 var mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 var personSchema = require('person').personSchema;
-var routeVehicleSchema = Schema({
+var journeyVehicleSchema = Schema({
     vehicle: {type: Schema.Types.ObjectId, ref: 'Vehicle'},
     driver: {type: Schema.Types.ObjectId, ref: 'Person'},
     passengers: [personSchema]
     });
 
-var RouteVehicle = mongoose.model('RouteVehicle', routeVehicleSchema);
+var JourneyVehicle = mongoose.model('JourneyVehicle', journeyVehicleSchema);
 
 module.exports = {
-    routeVehicleSchema: routeVehicleSchema
+    journeyVehicleSchema: journeyVehicleSchema
 };
 
 module.exports = {
-    RouteVehicle: RouteVehicle
+    JourneyVehicle: JourneyVehicle
 };
