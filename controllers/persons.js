@@ -19,6 +19,7 @@ var gmAPI = new GoogleMapsAPI(publicConfig);
 // import models
 var Person = require("../models/person").Person;
 var Vehicle = require("../models/vehicle").Vehicle;
+var Journey = require("../models/journey").Journey;
 
 // journeys
 
@@ -26,6 +27,9 @@ router.get('/location', function(req, res) {
     var aantal = 0;
     var teller = 0;
     var timeout = 200;
+
+
+
     function getPersonGeo(person){
         setTimeout(function(){
             var geocodeParams = {
@@ -40,6 +44,7 @@ router.get('/location', function(req, res) {
                     person.save();
                     teller++;
                     console.log(teller);
+
                 }else {
                     console.log(person.fullname);
                 }
@@ -71,6 +76,18 @@ router.get('/all', function(req, res) {
 router.post('/excel/upload', multipartyMiddleware, function(req, res){
     var timeout = 200;
     var teller = 0;
+    var journey;
+    var max = 0;
+
+    function updateJourney(){
+        journey.save();
+    };
+
+    Journey.findOne({_id:req.body.id}).populate('persons').exec(function(err, obj){
+        if (err) return console.error(err);
+        journey = obj;
+    });
+
     function getPersonGeo(person){
         setTimeout(function(){
             var geocodeParams = {
@@ -83,8 +100,12 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                     person.location.lat = location.lat;
                     person.location.lng = location.lng;
                     person.save();
+                    journey.persons.push(person);
                     teller++;
                     console.log(teller);
+                    if (teller == (max - 2)){
+                        updateJourney();
+                    }
                 }else {
                     console.log(person.fullname);
                 }
@@ -95,62 +116,65 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
     }
 
   var file = req.files.file;
-  var workbook = XLSX.readFile(file.path);
-    var first_sheet_name = workbook.SheetNames[0];
-    var sheet = workbook.Sheets[first_sheet_name] ;
-    var max = 0;
-    for (z in sheet) {
-        /* all keys that do not begin with "!" correspond to cell addresses */
-        if(z[0] === '!') continue;
-        var rowcount = Number(z.substr(1, z.length - 1));
-        if (rowcount > max){
-            max = rowcount;
-        }
-    }
+    try {
+        var workbook = XLSX.readFile(file.path);
+        var first_sheet_name = workbook.SheetNames[0];
+        var sheet = workbook.Sheets[first_sheet_name];
 
-    for (var i=3;i<= max;i++) {
-        if (sheet['B' + i] !== undefined) {
-            var person = new Person();
-            person.lastname = sheet['B' + i].v;
-            person.firstname = sheet['C' + i].v;
-            person.city = sheet['D' + i].v;
-            person.postalcode = sheet['E' + i].v;
-            person.street = sheet['F' + i].v;
-            person.streetnumber = sheet['G' + i].v;
-
-            var canDrive = sheet['H' + i];
-
-            if (canDrive !== undefined && canDrive.v.toLowerCase() === 'x') {
-                person.canDrive = true;
+        for (z in sheet) {
+            /* all keys that do not begin with "!" correspond to cell addresses */
+            if (z[0] === '!') continue;
+            var rowcount = Number(z.substr(1, z.length - 1));
+            if (rowcount > max) {
+                max = rowcount;
             }
-
-            var licence = sheet['I' + i];
-            var passengers = sheet['J' + i];
-
-            if (licence !== undefined && passengers !== undefined && licence.v !== '' && passengers.v != '') {
-                var vehicle = new Vehicle();
-                vehicle.owner = person;
-                vehicle.licenceplate = licence.v;
-                vehicle.passengers = passengers.v;
-
-                vehicle.save(function (err) {
-                    if (err) return console.error(err);
-                });
-
-                person.vehicle = vehicle;
-            } else {
-                person.vehicle = null;
-            }
-
-            getPersonGeo(person);
-
-
         }
-    }
+        res.json(max - 2);
+        for (var i = 3; i <= max; i++) {
+            if (sheet['B' + i] !== undefined) {
+                var person = new Person();
+                person.lastname = sheet['B' + i].v;
+                person.firstname = sheet['C' + i].v;
+                person.city = sheet['D' + i].v;
+                person.postalcode = sheet['E' + i].v;
+                person.street = sheet['F' + i].v;
+                person.streetnumber = sheet['G' + i].v;
 
-  console.log(file.name);
-  console.log(file.path);
-  fs.unlinkSync(file.path);
+                var canDrive = sheet['H' + i];
+
+                if (canDrive !== undefined && canDrive.v.toLowerCase() === 'x') {
+                    person.canDrive = true;
+                }
+
+                //var licence = sheet['I' + i];
+                //var passengers = sheet['J' + i];
+                //
+                //if (licence !== undefined && passengers !== undefined && licence.v !== '' && passengers.v != '') {
+                //    var vehicle = new Vehicle();
+                //    vehicle.owner = person;
+                //    vehicle.licenceplate = licence.v;
+                //    vehicle.passengers = passengers.v;
+                //
+                //    vehicle.save(function (err) {
+                //        if (err) return console.error(err);
+                //    });
+                //
+                //    person.vehicle = vehicle;
+                //} else {
+                //    person.vehicle = null;
+                //}
+
+                getPersonGeo(person);
+
+            }
+        }
+
+        console.log(file.name);
+        console.log(file.path);
+        fs.unlinkSync(file.path);
+    }catch(err){
+        res.json(-1);
+    }
 });
 
 module.exports = router;

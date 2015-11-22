@@ -1,0 +1,33 @@
+<h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy' }}</h1>
+<div class="row">
+    <div class="col-lg-3">
+        <h2>Upload met excel</h2>
+        <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
+                accept=".xls,.csv,.xlsx" ngf-max-size="10MB">
+            Select File</button>
+        <br><br>
+        File:
+        <div>{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+
+        </div>
+        <p>{{ dynamic }}</p>
+        <div ng-show="show">
+        <uib-progressbar animate="true" value="dynamic" type="success"><b>{{dynamic}}%</b></uib-progressbar>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <table class="table table-striped">
+            <tr>
+                <th>Voornaam</th>
+                <th>Achternaam</th>
+                <th>Kan rijden</th>
+            </tr>
+            <tr ng-repeat="person in persons">
+                <td>{{ person.firstname }}</td>
+                <td>{{ person.lastname }}</td>
+                <td><input type="checkbox" ng-checked="person.canDrive" /></td>
+                <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+            </tr>
+        </table>
+    </div>
+</div>
