@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var Journey = require("../models/journey").Journey;
-
+var Person = require("../models/person").Person;
+var Vehicle = require("../models/vehicle").Vehicle;
+var journey;
 
 router.get('/allActive', function(req, res) {
 
@@ -30,9 +32,26 @@ router.post('/', function(req, res){
 });
 
 router.get('/:id', function(req, res) {
-    Journey.findOne({_id:req.params.id}).populate('persons').exec(function(err, obj){
+    Journey.findOne({_id:req.params.id}).populate('vehicles').populate('owner').populate('persons').populate('vehicle').exec(function(err, obj){
         if (err) return console.error(err);
         res.json(obj);
+        journey = obj;
+    });
+});
+
+router.post('/', function(req, res){
+    var vehicle = new Vehicle;
+    vehicle.licenceplate = req.body.licenceplate;
+    vehicle.passengers = req.body.passengers;
+    vehicle.type = req.body.type;
+    vehicle.merk = req.body.merk;
+    vehicle.owner = req.body.ownerId;
+    vehicle.save(function (err) {
+        if (err) return console.error(err);
+    });
+    journey.vehicles.push(vehicle);
+    journey.save(function (err) {
+        if (err) return console.error(err);
     });
 });
 

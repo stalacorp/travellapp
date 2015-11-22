@@ -27,7 +27,7 @@
                     <td>{{ journey.name }}</td>
                     <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
                     <td>{{ journey.endDate | date:'dd/MM/yyyy'}}</td>
-                    <td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>
+                    <td><a  href="#/journeys/persons/{{journey._id}}" class="btn btn-default">Wijzigen</a></td>
                 </tr>
             </table>
         </div>

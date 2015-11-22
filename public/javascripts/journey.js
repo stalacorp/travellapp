@@ -127,38 +127,47 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             });
         };
 
+        $scope.edit = function(id){
+            var Journeys = $resource('/journeys');
+            Journeys.save($scope.journey, function(response){
+                $location.path('/journeys/persons/' + id);
+            });
+        };
+
 
     }]);
 
-routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload', '$timeout','$routeParams',
-    function($scope, $resource, $location, Upload, $timeout, $routeParams){
+routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload', '$timeout','$routeParams','$interval',
+    function($scope, $resource, $location, Upload, $timeout, $routeParams, $interval){
         var Journey = $resource('/journeys/:id', { id:'@_id' }, {
             update: { method: 'PUT' }
         });
         var journey;
-        $scope.dynamic = 0;
 
         function refreshPersons(){
             Journey.get({id: $routeParams.id} ,function(obj) {
                 journey = obj;
                 $scope.journey = journey;
                 $scope.persons = journey.persons;
+                $scope.vehicles = journey.vehicles;
 
             });
         }
 
         refreshPersons();
 
-        var nIntervId;
+        $scope.personId= 0;
+        $scope.showPersons = true;
+
+        $scope.add = function(){
+
+        };
+
+        var dynamic = 0;
 
         function updateProgressbar(){
-            console.log('test');
-            if ($scope.dynamic != 100){
-                $scope.dynamic = $scope.dynamic + 1;
-            }else {
-                clearInterval(nIntervId);
-                $scope.show = false;
-            }
+            dynamic++;
+            $scope.dynamic = dynamic;
         };
 
         // excel fileUpload
@@ -174,11 +183,13 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
 
                 file.upload.success(function(response){
                     if (response != -1){
-                        var time = response / 5 *1000;
+                        var time = response / 5 *1000 + 2000;
+                        dynamic = 0;
+                        $scope.dynamic = dynamic;
                         $scope.show = true;
-                        setTimeout(refreshPersons, (time));
+                        $timeout(refreshPersons, (time));
 
-                        nIntervId = setInterval(updateProgressbar, time / 100);
+                        $interval(updateProgressbar, time / 100, 100);
 
                     }
 

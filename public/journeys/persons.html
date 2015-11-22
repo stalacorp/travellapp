@@ -10,24 +10,92 @@
         <div>{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
 
         </div>
-        <p>{{ dynamic }}</p>
         <div ng-show="show">
-        <uib-progressbar animate="true" value="dynamic" type="success"><b>{{dynamic}}%</b></uib-progressbar>
+        <uib-progressbar animate="true" class="progress-striped active" value="dynamic" type="success"><b>{{dynamic}}%</b></uib-progressbar>
         </div>
     </div>
     <div class="col-lg-9">
-        <table class="table table-striped">
-            <tr>
-                <th>Voornaam</th>
-                <th>Achternaam</th>
-                <th>Kan rijden</th>
-            </tr>
-            <tr ng-repeat="person in persons">
-                <td>{{ person.firstname }}</td>
-                <td>{{ person.lastname }}</td>
-                <td><input type="checkbox" ng-checked="person.canDrive" /></td>
-                <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
-            </tr>
-        </table>
+
+            <div class="btn-group" style="margin-bottom: 1em" role="group" aria-label="...">
+                <button type="button" ng-class="{ active: showPersons}" ng-click="showPersons = true" class="btn btn-default">Personen</button>
+                <button type="button" ng-class="{ active: !showPersons}" ng-click="showPersons = false" class="btn btn-default">Auto's</button>
+            </div>
+            <div ng-show="showPersons">
+            <table class="table table-striped">
+                <tr>
+                    <th>Voornaam</th>
+                    <th>Achternaam</th>
+                    <th>Kan rijden</th>
+                    <th>Auto</th>
+                </tr>
+                <tr ng-repeat="person in persons">
+                    <td>{{ person.firstname }}</td>
+                    <td>{{ person.lastname }}</td>
+                    <td><input type="checkbox" ng-checked="person.canDrive" /></td>
+                    <td><button type="button" ng-show="!person.vehicle" class="btn btn-primary" data-toggle="modal" ng-click="personId = person._id" data-target="#vehicleModal">Voeg auto toe</button>
+                        <span ng-show="person.vehicle">{{ person.vehicle.licenceplate }} - {{ person.vehicle.passengers }} personen</span>
+                    </td>
+                    <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+                </tr>
+            </table>
+            </div>
+            <div ng-show="!showPersons">
+                <button class="btn btn-primary" style="margin-bottom: 1em" data-toggle="modal" ng-click="personId = 0" data-target="#vehicleModal">Voeg auto toe</button>
+                <table  class="table table-striped">
+                    <tr>
+                        <th>Nummerplaat</th>
+                        <th>Aantal plaatsen</th>
+                        <th>Merk</th>
+                        <th>Type</th>
+                    </tr>
+                    <tr ng-repeat="vehicle in vehicles">
+                        <td>{{ vehicle.licenceplate }}</td>
+                        <td>{{ vehicle.passengers }}</td>
+                        <td>{{ vehicle.brand }}</td>
+                        <td>{{ vehicle.type }}</td>
+                        <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+                    </tr>
+                </table>
+            </div>
+        </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Auto toevoegen</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-show="showPersons">
+                    <select><option>LES 154</option></select>
+                    <button class="btn btn-primary" data-dismiss="modal" >via Bestaande auto</button>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="licenceplate" >Nummerplaat: </label>
+                        <input class="form-control" type="text" id="licenceplate" ng-model="newVehicle.licenceplate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="passengers" >Aantal plaatsen: </label>
+                        <input class="form-control" type="text" id="passengers" ng-model="newVehicle.passengers" />
+                    </div>
+                    <div class="form-group">
+                        <label for="brand" >Merk: </label>
+                        <input class="form-control" type="text" id="brand" ng-model="newVehicle.brand" />
+                    </div>
+                    <div class="form-group">
+                        <label for="brand" >Type: </label>
+                        <input class="form-control" type="text" id="type" ng-model="newVehicle.type" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Sluiten</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()" >Toevoegen</button>
+            </div>
+        </div>
     </div>
 </div>
