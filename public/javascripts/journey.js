@@ -16,6 +16,11 @@ routesapp.config(['$routeProvider', function($routeProvider){
             controller: 'PersonsCtrl',
             title: 'Personen toevoegen'
         })
+        .when('/journeys/vehicles/:id', {
+            templateUrl: 'journeys/vehicles.html',
+            controller: 'VehiclesCtrl',
+            title: "Auto's"
+        })
 
 }]);
 
@@ -108,6 +113,38 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
 
 routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
     function($scope, $resource, $location){
+
+        // date
+        $scope.today = function() {
+            $scope.dt = new Date();
+        };
+
+        $scope.clear = function () {
+            $scope.dt = null;
+        };
+
+        $scope.open = function($event) {
+            $scope.status.opened = true;
+        };
+
+        $scope.openE = function($event) {
+            $scope.statusE.opened = true;
+        };
+
+
+        $scope.setDate = function(year, month, day) {
+            $scope.dt = new Date(year, month, day);
+        };
+
+        $scope.status = {
+            opened: false
+        };
+
+        $scope.statusE = {
+            opened: false
+        };
+
+
         var JourneysActive = $resource('/journeys/allActive');
 
         JourneysActive.query(function(objs){
@@ -143,25 +180,38 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
             update: { method: 'PUT' }
         });
         var journey;
+        var persons;
 
         function refreshPersons(){
             Journey.get({id: $routeParams.id} ,function(obj) {
                 journey = obj;
                 $scope.journey = journey;
-                $scope.persons = journey.persons;
-                $scope.vehicles = journey.vehicles;
+                $scope.persons = journey.persons.slice(0,10);
+                $scope.currentPage = 1;
+                $scope.totalItems = journey.persons.length;
 
             });
-        }
+        };
 
         refreshPersons();
 
-        $scope.personId= 0;
-        $scope.showPersons = true;
+        $scope.pageChanged = function(){
+            $scope.persons = persons.slice($scope.currentPage *10 -10, $scope.currentPage *10);
+        };
 
-        $scope.add = function(){
+        $scope.search = function(){
+            var searchText = $scope.searchText.toLowerCase();
+            persons = journey.persons.filter(function (person){
+                return (person.firstname.toLowerCase().indexOf(searchText) != -1 || person.lastname.toLowerCase().indexOf(searchText) != -1);
+            });
+
+            $scope.persons = persons.slice(0,10);
+            $scope.currentPage = 1;
+            $scope.totalItems = persons.length;
 
         };
+
+        $scope.personId= 0;
 
         var dynamic = 0;
 
@@ -219,6 +269,40 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
             var Journeys = $resource('/journeys');
             Journeys.save($scope.journey, function(response){
                 $location.path('/journeys/plan/' + response._id);
+            });
+        };
+
+
+    }]);
+
+routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
+    function($scope, $resource, $routeParams){
+        var Journey = $resource('/journeys/:id', { id:'@_id' }, {
+            update: { method: 'PUT' }
+        });
+        var journey;
+        var persons;
+        var vehicles;
+
+        function refreshVehicles(){
+            $scope.journey = journey;
+            $scope.persons = journey.persons.slice(0,10);
+            $scope.vehicles = journey.vehicles.slice(0,10);
+            $scope.currentPage = 1;
+            $scope.totalItems = journey.vehicles.length;
+        };
+
+        Journey.get({id: $routeParams.id} ,function(obj) {
+            journey = obj;
+            refreshVehicles();
+        });
+
+        $scope.add = function(){
+            var Vehicles = $resource('/journeys/addVehicle');
+            $scope.vehicle.journeyId = journey._id;
+            Vehicles.save($scope.vehicle, function(response){
+                journey.vehicles.push(response);
+                refreshVehicles();
             });
         };
 

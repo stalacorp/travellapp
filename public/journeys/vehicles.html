@@ -1,0 +1,61 @@
+<h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy' }}</h1>
+<div class="col-lg-12">
+    <div class="col-lg-12">
+        <label for="search">Zoeken:</label><input id="search" ng-model="searchText" type="text" ng-change="search()" /><button class="btn btn-primary" ng-click="searchText = '';search()" >Wissen</button>
+    </div>
+    <table  class="table table-striped">
+        <tr>
+            <th>Nummerplaat</th>
+            <th>Verantwoordelijke</th>
+            <th>Aantal plaatsen</th>
+            <th>Merk</th>
+            <th>Type</th>
+        </tr>
+        <tr ng-repeat="vehicle in vehicles">
+            <td>{{ vehicle.licenceplate }}</td>
+            <td><a ng-show="vehicle.owner" href="">{{ vehicle.owner.firstname }} {{ vehicle.owner.lastname}}</a><a href=""  ng-show="!vehicle.owner">Kies verantwoordelijke</a></td>
+            <td>{{ vehicle.passengers }}</td>
+            <td>{{ vehicle.brand }}</td>
+            <td>{{ vehicle.type }}</td>
+            <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+        </tr>
+    </table>
+    <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+    <button class="btn btn-primary" style="margin-top: 1em" data-toggle="modal" data-target="#vehicleModal">Voeg auto toe</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Auto toevoegen</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="licenceplate" >Nummerplaat: </label>
+                        <input class="form-control" type="text" id="licenceplate" ng-model="vehicle.licenceplate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="passengers" >Aantal plaatsen: </label>
+                        <input class="form-control" type="text" id="passengers" ng-model="vehicle.passengers" />
+                    </div>
+                    <div class="form-group">
+                        <label for="brand" >Merk: </label>
+                        <input class="form-control" type="text" id="brand" ng-model="vehicle.brand" />
+                    </div>
+                    <div class="form-group">
+                        <label for="brand" >Type: </label>
+                        <input class="form-control" type="text" id="type" ng-model="vehicle.type" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Sluiten</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()" >Toevoegen</button>
+            </div>
+        </div>
+    </div>
+</div>
