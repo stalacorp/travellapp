@@ -293,6 +293,26 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
             $scope.totalItems = journey.vehicles.length;
         };
 
+        $scope.search = function(){
+            var searchText = $scope.searchText.toLowerCase();
+            vehicles = journey.vehicles.filter(function (vehicle){
+                if (vehicle.owner != null){
+                    if (vehicle.owner.firstname.toLowerCase().indexOf(searchText) != -1 || vehicle.owner.lastname.toLowerCase().indexOf(searchText) != -1){
+                        return true;
+                    }
+                }
+                return (vehicle.licenceplate.toLowerCase().indexOf(searchText) != -1);
+            });
+
+            $scope.vehicles = vehicles.slice(0,10);
+            $scope.currentPage = 1;
+            $scope.totalItems = vehicles.length;
+        };
+
+        $scope.pageChanged = function(){
+            $scope.vehicles = $scope.vehicles.slice($scope.currentPage *10 -10, $scope.currentPage *10);
+        };
+
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
             refreshVehicles();
