@@ -2,6 +2,7 @@
 <div class="col-lg-12">
     <div class="col-lg-12">
         <label for="search">Zoeken:</label><input id="search" ng-model="searchText" type="text" ng-change="search()" /><button class="btn btn-primary" ng-click="searchText = '';search()" >Wissen</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#vehicleModal">Voeg auto toe</button>
     </div>
     <table  class="table table-striped">
         <tr>
@@ -21,7 +22,9 @@
         </tr>
     </table>
     <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
-    <button class="btn btn-primary" style="margin-top: 1em" data-toggle="modal" data-target="#vehicleModal">Voeg auto toe</button>
+    <div class="col-lg-12">
+        <a class="btn btn-default pull-left" href="#/journeys/persons/{{journey._id}}" >Vorige</a><a href="#/journeys/vehicles/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
+    </div>
 </div>
 
 <!-- Modal -->
