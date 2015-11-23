@@ -189,6 +189,7 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
                 $scope.persons = journey.persons.slice(0,10);
                 $scope.currentPage = 1;
                 $scope.totalItems = journey.persons.length;
+                $scope.pageChanged();
 
             });
         };
@@ -196,7 +197,7 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
         refreshPersons();
 
         $scope.pageChanged = function(){
-            $scope.persons = persons.slice($scope.currentPage *10 -10, $scope.currentPage *10);
+            $scope.persons = journey.persons.slice($scope.currentPage *10 -10, $scope.currentPage *10);
         };
 
         $scope.search = function(){
