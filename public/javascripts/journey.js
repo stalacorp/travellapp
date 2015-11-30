@@ -331,9 +331,18 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         $scope.pick = function(id){
             var vehicle = $scope.vehicles[vehicleClicked];
             var person = $scope.persons[id];
-            person.vehicle = vehicle;
+            var Vehicles = $resource('/journeys/updateVehicle');
+
             vehicle.owner = person;
             $scope.vehicles[vehicleClicked] = vehicle;
+            person.vehicle = vehicle;
+
+            var mockVehicle = Object();
+            mockVehicle._id = vehicle._id;
+            mockVehicle.owner = person._id;
+
+            Vehicles.save(mockVehicle);
+
 
             if (typeof(previousOwner) !== 'undefined'){
                 journey.persons.forEach(function(p){
@@ -355,6 +364,12 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
             $('#ownerModal').modal('hide');
             refreshPersons();
+
+
+
+
+
+
 
         };
 

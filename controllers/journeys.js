@@ -32,27 +32,21 @@ router.post('/', function(req, res){
 
 
 router.get('/:id', function(req, res) {
-    Journey.findOne({_id:req.params.id}).populate('vehicles').populate('owner').populate('persons').populate('vehicle').exec(function(err, obj){
+    Journey.findOne({_id:req.params.id}).populate('vehicles').populate('owner').populate('persons').exec(function(err, obj){
         if (err) return console.error(err);
         res.json(obj);
     });
 });
 
-router.put('/:id', function(req, res){
-    var collection = db.get('videos');
-    collection.update({
-            _id: req.params.id
-        },
-        {
-            title: req.body.title,
-            description: req.body.description
-        }, function(err, video){
-            if (err) throw err;
+router.post('/updateVehicle', function(req){
+    Vehicle.findOne({_id:req.body._id}).exec(function(err, veh){
+        if (err) return console.error(err);
 
-            res.json(video);
-        });
-
-    Vehicle.update({ _id: id }, { $set: { owner: req.body.personId }}, callback);
+        veh.owner = req.body.owner;
+        veh.save();
+        console.log("test");
+    });
+    console.log(req.body._id + "  -  " + req.body.owner);
 });
 
 router.post('/addVehicle', function(req, res){
