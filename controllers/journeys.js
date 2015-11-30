@@ -32,7 +32,7 @@ router.post('/', function(req, res){
 
 
 router.get('/:id', function(req, res) {
-    Journey.findOne({_id:req.params.id}).populate('vehicles').populate('owner').populate('persons').exec(function(err, obj){
+    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner persons').exec(function(err, obj){
         if (err) return console.error(err);
         res.json(obj);
     });
@@ -41,12 +41,14 @@ router.get('/:id', function(req, res) {
 router.post('/updateVehicle', function(req){
     Vehicle.findOne({_id:req.body._id}).exec(function(err, veh){
         if (err) return console.error(err);
-
         veh.owner = req.body.owner;
         veh.save();
-        console.log("test");
+
     });
-    console.log(req.body._id + "  -  " + req.body.owner);
+    Person.findOne({_id:req.body.owner}).exec(function(err, pers){
+        pers.vehicle = req.body._id;
+        pers.save();
+    });
 });
 
 router.post('/addVehicle', function(req, res){

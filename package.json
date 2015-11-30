@@ -23,6 +23,7 @@
     "googlemaps": "^1.0.2",
     "jade": "~1.11.0",
     "mongoose": "^4.2.4",
+    "mongoose-deep-populate": "^2.0.3",
     "morgan": "~1.6.1",
     "ng-file-upload": "^9.1.2",
     "passport": "^0.3.2",
