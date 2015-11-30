@@ -14,7 +14,7 @@
         </tr>
         <tr ng-repeat="vehicle in vehicles">
             <td>{{ vehicle.licenceplate }}</td>
-            <td><a ng-show="vehicle.owner" href="">{{ vehicle.owner.firstname }} {{ vehicle.owner.lastname}}</a><a href=""  ng-show="!vehicle.owner">Kies verantwoordelijke</a></td>
+            <td><a href="" data-toggle="modal" data-target="#ownerModal" ng-click="vehicleClick($index, vehicle.owner)"><span ng-show="vehicle.owner">{{ vehicle.owner.firstname }} {{ vehicle.owner.lastname}}</span><span ng-show="!vehicle.owner">Kies verantwoordelijke</span></a></td>
             <td>{{ vehicle.passengers }}</td>
             <td>{{ vehicle.brand }}</td>
             <td>{{ vehicle.type }}</td>
@@ -58,6 +58,39 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" >Sluiten</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()" >Toevoegen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ownerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Verantwoordelijke kiezen</h4>
+            </div>
+            <div class="modal-body">
+                <p>Nummerplaat auto: </p>
+                <div class="col-lg-12">
+                    <label for="searchPersons">Zoeken:</label><input id="searchPersons" ng-model="searchPersonText" type="text" ng-change="searchPerson()" /><button class="btn btn-primary" ng-click="searchText = '';searchPerson()" >Wissen</button>
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Voornaam</th>
+                        <th>Achternaam</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="person in persons">
+                        <td>{{ person.firstname }}</td>
+                        <td>{{ person.lastname }}</td>
+                        <td><button ng-click="pick($index)" class="btn btn-primary">Kiezen</button></td>
+                    </tr>
+                </table>
+                <uib-pagination total-items="totalPersonItems" ng-model="currentPersonPage" ng-change="pagePersonChanged()"></uib-pagination>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Sluiten</button>
             </div>
         </div>
     </div>

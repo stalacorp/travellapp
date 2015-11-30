@@ -281,18 +281,84 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         var Journey = $resource('/journeys/:id', { id:'@_id' }, {
             update: { method: 'PUT' }
         });
+
         var journey;
         var persons;
+        var searchPersons;
         var vehicles;
+        var vehicleClicked = 0;
+        var previousOwner;
+
+        function refreshPersons(){
+            persons = journey.persons.filter(function(person){
+                if (person.canDrive && !person.vehicle){
+                    return true;
+                }
+            });
+            searchPersons = persons;
+            $scope.persons = persons.slice(0,10);
+            $scope.totalPersonItems = persons.length;
+        };
 
         function refreshVehicles(){
             $scope.journey = journey;
-            $scope.persons = journey.persons.slice(0,10);
+            refreshPersons();
             $scope.vehicles = journey.vehicles.slice(0,10);
             $scope.currentPage = 1;
             $scope.totalItems = journey.vehicles.length;
         };
 
+
+
+        // person dialog
+        $scope.pagePersonChanged = function(){
+            $scope.persons = searchPersons.slice($scope.currentPersonPage *10 -10, $scope.currentPersonPage *10);
+        };
+
+
+        $scope.searchPerson = function(){
+            var searchText = $scope.searchPersonText.toLowerCase();
+            searchPersons = persons.filter(function (person){
+                return (person.firstname.toLowerCase().indexOf(searchText) != -1 || person.lastname.toLowerCase().indexOf(searchText) != -1);
+            });
+
+            $scope.persons = searchPersons.slice(0,10);
+            $scope.currentPersonPage = 1;
+            $scope.totalPersonItems = searchPersons.length;
+
+        };
+
+        $scope.pick = function(id){
+            var vehicle = $scope.vehicles[vehicleClicked];
+            var person = $scope.persons[id];
+            person.vehicle = vehicle;
+            vehicle.owner = person;
+            $scope.vehicles[vehicleClicked] = vehicle;
+
+            if (typeof(previousOwner) !== 'undefined'){
+                journey.persons.forEach(function(p){
+                    if (p._id == person._id){
+                        p = person;
+                    }
+                    if (p._id == previousOwner._id){
+                        previousOwner.vehicle = null;
+                        p = previousOwner;
+                    }
+                });
+            }else {
+                persons.forEach(function(p) {
+                    if (p._id == person._id) {
+                        p = person;
+                    }
+                });
+            }
+
+            $('#ownerModal').modal('hide');
+            refreshPersons();
+
+        };
+
+        // vehicles table
         $scope.search = function(){
             var searchText = $scope.searchText.toLowerCase();
             vehicles = journey.vehicles.filter(function (vehicle){
@@ -313,9 +379,17 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
             $scope.vehicles = $scope.vehicles.slice($scope.currentPage *10 -10, $scope.currentPage *10);
         };
 
+        $scope.vehicleClick = function(id, p){
+            vehicleClicked = id;
+            previousOwner = p;
+        };
+
+
+
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
             refreshVehicles();
+
         });
 
         $scope.add = function(){

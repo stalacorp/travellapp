@@ -38,6 +38,22 @@ router.get('/:id', function(req, res) {
     });
 });
 
+router.put('/:id', function(req, res){
+    var collection = db.get('videos');
+    collection.update({
+            _id: req.params.id
+        },
+        {
+            title: req.body.title,
+            description: req.body.description
+        }, function(err, video){
+            if (err) throw err;
+
+            res.json(video);
+        });
+
+    Vehicle.update({ _id: id }, { $set: { owner: req.body.personId }}, callback);
+});
 
 router.post('/addVehicle', function(req, res){
     Journey.findOne({_id:req.body.journeyId}).populate('vehicles').exec(function(err, journey){
