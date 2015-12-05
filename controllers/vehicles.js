@@ -15,5 +15,8 @@ router.get('/all', function(req, res) {
         });
     });
 });
+router.put('/', function(req){
+    Vehicle.findOneAndUpdate({_id:req.params.id},{$set: {licenceplate: req.body.licenceplate, type: req.body.type, brand: req.body.brand, passengersNr:req.body.passengersNr}}).exec();
+});
 
 module.exports = router;

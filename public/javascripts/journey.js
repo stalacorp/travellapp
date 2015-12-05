@@ -364,13 +364,6 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
             $('#ownerModal').modal('hide');
             refreshPersons();
-
-
-
-
-
-
-
         };
 
         // vehicles table
@@ -407,13 +400,35 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
         });
 
+        // vehicle add/update
+
+        $scope.update = function(v){
+            $scope.vehicle = v;
+        };
+
         $scope.add = function(){
-            var Vehicles = $resource('/journeys/addVehicle');
-            $scope.vehicle.journeyId = journey._id;
-            Vehicles.save($scope.vehicle, function(response){
-                journey.vehicles.push(response);
-                refreshVehicles();
-            });
+            console.log($scope.vehicle._id);
+            if ($scope.vehicle._id != null){
+                var Vehicles = $resource('/vehicles/:id', { id: '@_id' }, {
+                    update: { method: 'PUT' }
+                });
+                Vehicles.update($scope.vehicle);
+                journey.vehicles.forEach(function (vehicle){
+                    if (vehicle._id == $scope.vehicle._id){
+                        vehicle = $scope.vehicle;
+                    }
+                });
+
+            }else {
+                var Vehicles = $resource('/journeys/addVehicle');
+                $scope.vehicle.journeyId = journey._id;
+                Vehicles.save($scope.vehicle, function(response){
+                    journey.vehicles.push(response);
+                    refreshVehicles();
+                });
+
+            }
+
         };
 
 
