@@ -73,6 +73,15 @@ router.get('/all', function(req, res) {
     });
 });
 
+router.put('/:id', function(req){
+    Person.findOneAndUpdate({_id:req.params.id},{$set: {isPas:true}}).exec();
+    Vehicle.findOne({_id:req.body.vId}, function(err, v){
+        if (err) return console.error(err);
+        v.passengers.push(req.params.id);
+        v.save();
+    });
+});
+
 router.post('/excel/upload', multipartyMiddleware, function(req, res){
     var timeout = 200;
     var teller = 0;

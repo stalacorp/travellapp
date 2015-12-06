@@ -32,7 +32,7 @@ router.post('/', function(req, res){
 
 
 router.get('/:id', function(req, res) {
-    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner').populate('persons').exec(function(err, obj){
+    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner vehicles.passengers').populate('persons').exec(function(err, obj){
         if (err) return console.error(err);
         res.json(obj);
     });

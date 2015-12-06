@@ -7,11 +7,12 @@
         <div class="col-lg-12">
             <h2>Auto</h2>
             <select ng-model="selectedVehicle" ng-options="vehicle.licenceplate for vehicle in vehicles"></select>
-            <p>Plaatsen: {{ selectedVehicle.passengers }}</p>
+            <p>Plaatsen: {{ selectedVehicle.passengersNr }}</p>
             <p>Merk: {{ selectedVehicle.brand }}</p>
             <p>Type: {{ selectedVehicle.type }}</p>
             <ol>
-                <li ng-repeat="passenger in passengers">{{ passenger.firstname + ' ' + passenger.lastname }}</li>
+                <li ng-show="selectedVehicle.owner">{{ selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</li>
+                <li ng-repeat="passenger in selectedVehicle.passengers">{{ passenger.firstname + ' ' + passenger.lastname }}</li>
             </ol>
         </div>
         <div class="col-lg-12">
@@ -20,7 +21,7 @@
             <p>{{ selectedPerson.city }} {{ selectedPerson.postalcode }}</p>
             <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
             <p ng-show="selectedPerson.canDrive">Heeft een rijbewijs</p>
-            <button class="btn btn-primary" ng-show="selectedPerson" ng-click="addToVehicle()">Toevoegen aan auto</button>
+            <button class="btn btn-primary" ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id" ng-click="addToVehicle()">Toevoegen aan auto</button>
         </div>
     </div>
     <div class="col-lg-8">
@@ -28,5 +29,8 @@
     <ui-gmap-markers models="theMarkers" coords="'self'" click="onClick" icon="'icon'">
     </ui-gmap-markers>
 </ui-gmap-google-map>
+    </div>
+    <div class="col-lg-12">
+        <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}" >Vorige</a><a href="#/journeys/plan/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
     </div>
 </div>
