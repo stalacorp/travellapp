@@ -57,7 +57,7 @@ router.post('/addVehicle', function(req, res){
         var vehicle = new Vehicle;
 
         vehicle.licenceplate = req.body.licenceplate;
-        vehicle.passengers = req.body.passengers;
+        vehicle.passengersNr = req.body.passengersNr;
         vehicle.type = req.body.type;
         vehicle.merk = req.body.merk;
         vehicle.save(function (err, obj) {

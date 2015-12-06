@@ -288,6 +288,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         var vehicles;
         var vehicleClicked = 0;
         var previousOwner;
+        $scope.vehicleText = 'Toevoegen';
 
         function refreshPersons(){
             persons = journey.persons.filter(function(person){
@@ -401,23 +402,29 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         });
 
         // vehicle add/update
-
+        var backupVehicle;
         $scope.update = function(v){
+            backupVehicle = angular.copy(v);
             $scope.vehicle = v;
+            $scope.vehicleText = 'Wijzigen';
+        };
+
+        $scope.cancel = function(){
+            journey.vehicles.forEach(function (vehicle, index, array){
+                if (vehicle._id == backupVehicle._id){
+                    console.log('test');
+                    array[index] = backupVehicle;
+                }
+            });
+            refreshVehicles();
         };
 
         $scope.add = function(){
-            console.log($scope.vehicle._id);
             if ($scope.vehicle._id != null){
                 var Vehicles = $resource('/vehicles/:id', { id: '@_id' }, {
                     update: { method: 'PUT' }
                 });
                 Vehicles.update($scope.vehicle);
-                journey.vehicles.forEach(function (vehicle){
-                    if (vehicle._id == $scope.vehicle._id){
-                        vehicle = $scope.vehicle;
-                    }
-                });
 
             }else {
                 var Vehicles = $resource('/journeys/addVehicle');

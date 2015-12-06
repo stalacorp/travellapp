@@ -2,7 +2,7 @@
 <div class="col-lg-12">
     <div class="col-lg-12">
         <label for="search">Zoeken:</label><input id="search" ng-model="searchText" type="text" ng-change="search()" /><button class="btn btn-primary" ng-click="searchText = '';search()" >Wissen</button>
-        <button class="btn btn-primary" data-toggle="modal" ng-click="vehicle = null" data-target="#vehicleModal">Voeg auto toe</button>
+        <button class="btn btn-primary" data-toggle="modal" ng-click="vehicle = null; vehicleText = 'Toevoegen'" data-target="#vehicleModal">Voeg auto toe</button>
     </div>
     <table  class="table table-striped">
         <tr>
@@ -56,8 +56,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" >Sluiten</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()" >Toevoegen</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()" >Sluiten</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()" >{{ vehicleText }}</button>
             </div>
         </div>
     </div>
