@@ -19,4 +19,9 @@ router.put('/:id', function(req){
     Vehicle.findOneAndUpdate({_id:req.params.id},{$set: {licenceplate: req.body.licenceplate, type: req.body.type, brand: req.body.brand, passengersNr:req.body.passengersNr}}).exec();
 });
 
+router.delete('/:id', function(req){
+    Vehicle.findOne({_id:req.params.id}).remove().exec();
+    Person.findOneAndUpdate({vehicle: req.params.id},{$set: {vehicle:null}}).exec();
+});
+
 module.exports = router;

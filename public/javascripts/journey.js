@@ -407,17 +407,19 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
             backupVehicle = angular.copy(v);
             $scope.vehicle = v;
             $scope.vehicleText = 'Wijzigen';
+            $scope.isUpdate = true;
         };
 
         $scope.cancel = function(){
             journey.vehicles.forEach(function (vehicle, index, array){
                 if (vehicle._id == backupVehicle._id){
-                    console.log('test');
                     array[index] = backupVehicle;
                 }
             });
             refreshVehicles();
         };
+
+
 
         $scope.add = function(){
             if ($scope.vehicle._id != null){
@@ -435,6 +437,27 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
                 });
 
             }
+
+        };
+
+        // vehicle delete
+
+        $scope.delete = function(){
+            journey.vehicles.forEach(function (vehicle, index, array){
+                if (vehicle._id == backupVehicle._id){
+                    array.splice(index, 1);
+                    var Vehicles = $resource('/vehicles/:id');
+                    Vehicles.delete({id: vehicle._id });
+                    journey.persons.forEach(function(p, index,array){
+                        if (p.vehicle == vehicle._id){
+                            p.vehicle = null;
+                            array[index] = p;
+                        }
+                    });
+                }
+            });
+            refreshVehicles();
+            refreshPersons();
 
         };
 
