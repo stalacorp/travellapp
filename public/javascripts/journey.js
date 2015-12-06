@@ -36,6 +36,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
         var position;
         var map;
 
+        $scope.wayPoints = [];
+
         function refreshMap(){
 
             $scope.markers = [];
@@ -85,8 +87,10 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
                 $scope.selectedVehicle = journey.vehicles[0];
 
                 $scope.selectedPerson = null;
+                $scope.origin = [50.9591399, 5.5050771];
 
                 refreshMap();
+                $scope.updateDirections();
             }
         };
 
@@ -105,8 +109,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
 
         NgMap.getMap().then(function(m) {
             map = m;
-            handleComplete();
             map.setCenter({"lat":51.5 , "lng": 19.5});
+            handleComplete();
         });
 
         // scope functions
@@ -118,14 +122,24 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
             journey.vehicles.forEach(function(v, index){
                 if (v.owner != null && v.owner._id == journey.persons[pos]){
                     $scope.selectedVehicle = journey.vehicles[index];
+
                 }
             });
+        };
+
+        $scope.updateDirections = function(){
+            $scope.wayPoints = [];
+            $scope.destination = [$scope.selectedVehicle.owner.location.lat, $scope.selectedVehicle.owner.location.lng];
+            $scope.selectedVehicle.passengers.forEach(function(p){
+                $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+            });
+
         };
 
         $scope.addToVehicle = function(){
             var p = $scope.selectedPerson;
             var v = $scope.selectedVehicle;
-            if (!p.isPas){
+            if (p.isPas){
                 $scope.selectedPerson.isPas = true;
                 $scope.selectedVehicle.passengers.push(p);
                 p.vehicle = v._id;
@@ -134,8 +148,11 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
                 }else {
                     $scope.markers[position].icon.url = "../images/fadedredmarker.png";
                 }
+                $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+
                 var Journey = $resource('/journeys/addPassenger');
                 Journey.save(p);
+                console.log(p);
             }
         };
 
@@ -318,7 +335,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         var searchPersons;
         var vehicles;
         var vehicleClicked = 0;
-        var previousOwner;
+        var previousOwner = null;
         $scope.vehicleText = 'Toevoegen';
 
         function refreshPersons(){
@@ -333,8 +350,6 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
         function refreshVehicles(){
-            $scope.journey = journey;
-            refreshPersons();
             $scope.vehicles = journey.vehicles.slice(0,10);
             $scope.currentPage = 1;
             $scope.totalItems = journey.vehicles.length;
@@ -376,7 +391,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
             Vehicles.save(mockVehicle);
 
 
-            if (typeof(previousOwner) !== 'undefined'){
+            if (previousOwner !== null){
                 journey.persons.forEach(function(p){
                     if (p._id == person._id){
                         p = person;
@@ -428,7 +443,9 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
+            $scope.journey = obj;
             refreshVehicles();
+            refreshPersons();
 
         });
 

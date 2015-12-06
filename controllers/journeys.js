@@ -32,7 +32,7 @@ router.post('/', function(req, res){
 
 
 router.get('/:id', function(req, res) {
-    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner vehicles.passengers').populate('persons').exec(function(err, obj){
+    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, obj){
         if (err) return console.error(err);
         res.json(obj);
     });
@@ -41,6 +41,14 @@ router.get('/:id', function(req, res) {
 router.post('/updateVehicle', function(req){
     Vehicle.findOne({_id:req.body._id}).exec(function(err, veh){
         if (err) return console.error(err);
+        if (veh.owner != null){
+            Person.findOne({_id:veh.owner}).exec(function(err, pers){
+                if (err) return console.error(err);
+                pers.vehicle = null;
+                pers.save();
+            });
+        }
+
         veh.owner = req.body.owner;
         veh.save();
 
@@ -51,7 +59,7 @@ router.post('/updateVehicle', function(req){
     });
 });
 
-router.post('/addPassenger', function(req){
+router.post('/addPassenger', function(req, res){
     Person.findOne({_id:req.body._id}).exec(function(err, pers){
         if (err) return console.error(err);
         pers.isPas = true;
@@ -62,6 +70,7 @@ router.post('/addPassenger', function(req){
             veh.save();
         });
     });
+    res.status(201);
 });
 
 router.post('/addVehicle', function(req, res){
