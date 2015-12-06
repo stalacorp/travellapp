@@ -1,5 +1,13 @@
 <style type="text/css">
     .angular-google-map-container { height:600px; }
+    .custom-image {
+        position: absolute;
+        display: block;
+        z-index: 1;
+        margin-left: -6px;
+        bottom: -6px;
+        left: 50%;
+    }
 </style>
 <h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy' }}</h1>
 <div class="row">
@@ -25,10 +33,10 @@
         </div>
     </div>
     <div class="col-lg-8">
-<ui-gmap-google-map center='map.center' zoom='map.zoom'>
-    <ui-gmap-markers models="theMarkers" coords="'self'" click="onClick" icon="'icon'">
-    </ui-gmap-markers>
-</ui-gmap-google-map>
+        <ng-map zoom="6" style="height:600px">
+            <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]" on-click="onMarkerClick({{marker.pos}})" icon="{{marker.icon}}" >
+            </marker>
+        </ng-map>
     </div>
     <div class="col-lg-12">
         <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}" >Vorige</a><a href="#/journeys/plan/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>

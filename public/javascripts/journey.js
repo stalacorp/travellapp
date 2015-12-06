@@ -1,4 +1,4 @@
-var routesapp = angular.module("routesapp", ['ngResource', 'ngRoute', 'ngFileUpload' , 'uiGmapgoogle-maps', 'ui.bootstrap']);
+var routesapp = angular.module("routesapp", ['ngResource', 'ngRoute', 'ngFileUpload' , 'uiGmapgoogle-maps', 'ui.bootstrap', 'ngMap']);
 routesapp.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/journeys/overview', {
@@ -24,8 +24,8 @@ routesapp.config(['$routeProvider', function($routeProvider){
 
 }]);
 
-app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$routeParams',
-    function($scope, $resource, uiGmapGoogleMapApi, $routeParams){
+app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$routeParams','NgMap',
+    function($scope, $resource, uiGmapGoogleMapApi, $routeParams, NgMap){
         var inProgress = 2;
 
 
@@ -34,40 +34,46 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
         var journey;
         var owners;
         var position;
+        var map;
 
         function refreshMap(){
 
-            $scope.theMarkers = [];
+            $scope.markers = [];
             var markers = [];
             var teller = 0;
             journey.persons.forEach(function(person){
                 var ret = {};
+                ret.lat = person.location.lat;
+                ret.lng = person.location.lng;
+                ret.pos = teller;
+                ret.icon = {};
+                ret.icon.size = [372, 594];
+                ret.icon.origin = [0,0];
+                ret.icon.anchor = [11.625, 37.125];
+                ret.icon.scaledSize = [23.25, 37.125];
                 if (person.canDrive){
                     if (person.vehicle === null){
-                        ret = {latitude: person.location.lat, longitude: person.location.lng, title: person.firstname, id: teller, icon: { url: 'images/bluemarker.png',
-                            size: new google.maps.Size(372, 594),
-                            origin: new google.maps.Point(0, 0),
-                            anchor: new google.maps.Point(11.625, 37.125),
-                            scaledSize: new google.maps.Size(23.25, 37.125)}};
+                        if (person.isPas){
+                            ret.icon.url = '../images/fadedbluemarker.png';
+                        }else {
+                            ret.icon.url = '../images/bluemarker.png';
+                        }
+
                     }else {
-                        ret = {latitude: person.location.lat, longitude: person.location.lng, title: person.firstname, id: teller, icon: { url: 'images/greenmarker.png',
-                            size: new google.maps.Size(372, 594),
-                            origin: new google.maps.Point(0, 0),
-                            anchor: new google.maps.Point(11.625, 37.125),
-                            scaledSize: new google.maps.Size(23.25, 37.125)}};
+                        ret.icon.url = '../images/greenmarker.png';
                     }
                 }else {
-                    ret = {latitude: person.location.lat, longitude: person.location.lng, title: person.firstname, id: teller, icon: { url: 'images/redmarker.png',
-                        size: new google.maps.Size(372, 594),
-                        origin: new google.maps.Point(0, 0),
-                        anchor: new google.maps.Point(11.625, 37.125),
-                        scaledSize: new google.maps.Size(23.25, 37.125)}};
+                    if (person.isPas){
+                        ret.icon.url = '../images/fadedredmarker.png';
+                    }else {
+                        ret.icon.url = '../images/redmarker.png';
+                    }
                 }
 
                 markers.push(ret);
                 teller++;
             });
-            $scope.theMarkers = markers;
+            $scope.markers = markers;
         };
 
         function handleComplete() {
@@ -79,7 +85,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
                 $scope.selectedVehicle = journey.vehicles[0];
 
                 $scope.selectedPerson = null;
-                $scope.map = { center: { latitude:  51.5, longitude: 19.5 }, zoom: 6 };
 
                 refreshMap();
             }
@@ -95,16 +100,23 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
         });
 
         uiGmapGoogleMapApi.then(function(maps) {
+
+        });
+
+        NgMap.getMap().then(function(m) {
+            map = m;
             handleComplete();
+            map.setCenter({"lat":51.5 , "lng": 19.5});
         });
 
         // scope functions
 
-        $scope.onClick = function(data){
-            $scope.selectedPerson = journey.persons[data.key];
-            position = data.key;
+        $scope.onMarkerClick = function(data,pos){
+            position = pos;
+            $scope.selectedPerson = journey.persons[pos];
+
             journey.vehicles.forEach(function(v, index){
-                if (v.owner != null && v.owner._id == journey.persons[data.key]){
+                if (v.owner != null && v.owner._id == journey.persons[pos]){
                     $scope.selectedVehicle = journey.vehicles[index];
                 }
             });
@@ -116,7 +128,14 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
             if (!p.isPas){
                 $scope.selectedPerson.isPas = true;
                 $scope.selectedVehicle.passengers.push(p);
-                $scope.theMarkers[position].url = "";
+                p.vehicle = v._id;
+                if (p.canDrive){
+                    $scope.markers[position].icon.url = "../images/fadedbluemarker.png";
+                }else {
+                    $scope.markers[position].icon.url = "../images/fadedredmarker.png";
+                }
+                var Journey = $resource('/journeys/addPassenger');
+                Journey.save(p);
             }
         };
 

@@ -26,6 +26,7 @@
     "mongoose-deep-populate": "^2.0.3",
     "morgan": "~1.6.1",
     "ng-file-upload": "^9.1.2",
+    "ngmap": "^1.14.16",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^3.1.0",

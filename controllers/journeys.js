@@ -51,6 +51,19 @@ router.post('/updateVehicle', function(req){
     });
 });
 
+router.post('/addPassenger', function(req){
+    Person.findOne({_id:req.body._id}).exec(function(err, pers){
+        if (err) return console.error(err);
+        pers.isPas = true;
+        pers.save();
+        Vehicle.findOne({_id:req.body.vehicle}).exec(function(err, veh){
+            if (err) return console.error(err);
+            veh.passengers.push(pers);
+            veh.save();
+        });
+    });
+});
+
 router.post('/addVehicle', function(req, res){
     Journey.findOne({_id:req.body.journeyId}).populate('vehicles').exec(function(err, journey){
         if (err) return console.error(err);
