@@ -38,7 +38,7 @@ router.get('/:id', function(req, res) {
     });
 });
 
-router.post('/updateVehicle', function(req){
+router.post('/updateVehicle', function(req, res){
     Vehicle.findOne({_id:req.body._id}).exec(function(err, veh){
         if (err) return console.error(err);
         if (veh.owner != null){
@@ -57,6 +57,8 @@ router.post('/updateVehicle', function(req){
         pers.vehicle = req.body._id;
         pers.save();
     });
+    res.status(201);
+    res.send('success');
 });
 
 router.post('/addPassenger', function(req, res){
@@ -71,6 +73,7 @@ router.post('/addPassenger', function(req, res){
         });
     });
     res.status(201);
+    res.send('success');
 });
 
 router.post('/addVehicle', function(req, res){

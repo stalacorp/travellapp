@@ -9,13 +9,7 @@ app.config(['$routeProvider', function($routeProvider){
         .otherwise({
             redirectTo: '/'
         });
-}], function(uiGmapGoogleMapApiProvider){
-    uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyCJOLfo5eFbcn_lBz9i7YNzvgwTazgLdMU',
-        v: '3.20' //defaults to latest 3.X anyhow
-
-    });
-});
+}]);
 app.run(['$location', '$rootScope', '$route', 'AuthService', function($location, $rootScope, $route, AuthService) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;

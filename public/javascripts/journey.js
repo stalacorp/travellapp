@@ -1,4 +1,4 @@
-var routesapp = angular.module("routesapp", ['ngResource', 'ngRoute', 'ngFileUpload' , 'uiGmapgoogle-maps', 'ui.bootstrap', 'ngMap']);
+var routesapp = angular.module("routesapp", ['ngResource', 'ngRoute', 'ngFileUpload' , 'ui.bootstrap', 'ngMap']);
 routesapp.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/journeys/overview', {
@@ -24,8 +24,8 @@ routesapp.config(['$routeProvider', function($routeProvider){
 
 }]);
 
-app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$routeParams','NgMap',
-    function($scope, $resource, uiGmapGoogleMapApi, $routeParams, NgMap){
+app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$timeout',
+    function($scope, $resource, $routeParams, NgMap, $timeout){
         var inProgress = 2;
 
 
@@ -35,7 +35,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
         var owners;
         var position;
         var map;
-
+        var personIds = [];
+        var oldvehicle;
         $scope.wayPoints = [];
 
         function refreshMap(){
@@ -44,10 +45,12 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
             var markers = [];
             var teller = 0;
             journey.persons.forEach(function(person){
+                personIds.push(person._id);
                 var ret = {};
                 ret.lat = person.location.lat;
                 ret.lng = person.location.lng;
                 ret.pos = teller;
+                ret.title = person.firstname + " " + person.lastname;
                 ret.icon = {};
                 ret.icon.size = [372, 594];
                 ret.icon.origin = [0,0];
@@ -78,19 +81,64 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
             $scope.markers = markers;
         };
 
+        function updateDirections(){
+            if (typeof($scope.selectedVehicle) !== 'undefined') {
+                //oldvehicle.passengers.forEach(function(p){
+                //    if (p.canDrive){
+                //        $scope.markers[journey.persons.map(function (e) {
+                //            return e._id
+                //        }).indexOf(p._id)].icon.url = "../images/fadedbluemarker.png";
+                //    }else {
+                //        $scope.markers[journey.persons.map(function (e) {
+                //            return e._id
+                //        }).indexOf(p._id)].icon.url = "../images/fadedredmarker.png";
+                //    }
+                //});
+                if ($scope.selectedVehicle.owner != null) {
+                    $scope.destination = [$scope.selectedVehicle.owner.location.lat, $scope.selectedVehicle.owner.location.lng];
+                } else {
+                    $scope.destination = null;
+                }
+                $timeout(function () {
+                    $scope.wayPoints = [];
+                    $scope.selectedVehicle.passengers.forEach(function (p) {
+                        if (p.canDrive) {
+                            $scope.markers[journey.persons.map(function (e) {
+                                return e._id
+                            }).indexOf(p._id)].icon.url = "../images/selectedbluemarker.png";
+                        } else {
+                            $scope.markers[journey.persons.map(function (e) {
+                                return e._id
+                            }).indexOf(p._id)].icon.url = "../images/selectedredmarker.png";
+                        }
+                        $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+
+                    });
+                }, 50);
+
+
+
+            }
+            //oldvehicle = $scope.selectedVehicle;
+        }
+
         function handleComplete() {
             // main function
 
             if (!--inProgress) {
                 $scope.journey = journey;
-                $scope.vehicles = journey.vehicles;
-                $scope.selectedVehicle = journey.vehicles[0];
+                vehicles = journey.vehicles.filter(function(v){
+                    return v.owner;
+                });
+                $scope.vehicles = vehicles;
+                $scope.selectedVehicle = vehicles[0];
+                oldvehicle = vehicles[0];
 
                 $scope.selectedPerson = null;
                 $scope.origin = [50.9591399, 5.5050771];
 
                 refreshMap();
-                $scope.updateDirections();
+                updateDirections();
             }
         };
 
@@ -101,10 +149,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
             handleComplete();
-        });
-
-        uiGmapGoogleMapApi.then(function(maps) {
-
         });
 
         NgMap.getMap().then(function(m) {
@@ -119,40 +163,34 @@ app.controller('PlanCtrl', ['$scope', '$resource', 'uiGmapGoogleMapApi', '$route
             position = pos;
             $scope.selectedPerson = journey.persons[pos];
 
-            journey.vehicles.forEach(function(v, index){
-                if (v.owner != null && v.owner._id == journey.persons[pos]){
-                    $scope.selectedVehicle = journey.vehicles[index];
-
+            vehicles.forEach(function(v, index){
+                if (v.owner != null && v.owner._id == journey.persons[pos]._id){
+                    $scope.selectedVehicle = vehicles[index];
+                    $scope.updateDirections();
                 }
             });
         };
 
-        $scope.updateDirections = function(){
-            $scope.wayPoints = [];
-            $scope.destination = [$scope.selectedVehicle.owner.location.lat, $scope.selectedVehicle.owner.location.lng];
-            $scope.selectedVehicle.passengers.forEach(function(p){
-                $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
-            });
-
+        $scope.vehicleChange = function(){
+            updateDirections();
         };
 
         $scope.addToVehicle = function(){
             var p = $scope.selectedPerson;
             var v = $scope.selectedVehicle;
-            if (p.isPas){
+            if (!p.isPas && v.passengers.length < v.passengersNr - 1){
                 $scope.selectedPerson.isPas = true;
                 $scope.selectedVehicle.passengers.push(p);
                 p.vehicle = v._id;
                 if (p.canDrive){
-                    $scope.markers[position].icon.url = "../images/fadedbluemarker.png";
+                    $scope.markers[position].icon.url = "../images/selectedbluemarker.png";
                 }else {
-                    $scope.markers[position].icon.url = "../images/fadedredmarker.png";
+                    $scope.markers[position].icon.url = "../images/selectedredmarker.png";
                 }
                 $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
 
                 var Journey = $resource('/journeys/addPassenger');
                 Journey.save(p);
-                console.log(p);
             }
         };
 

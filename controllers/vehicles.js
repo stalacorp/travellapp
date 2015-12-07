@@ -18,12 +18,14 @@ router.get('/all', function(req, res) {
 router.put('/:id', function(req, res){
     Vehicle.findOneAndUpdate({_id:req.params.id},{$set: {licenceplate: req.body.licenceplate, type: req.body.type, brand: req.body.brand, passengersNr:req.body.passengersNr}}).exec();
     res.status(201);
+    res.send('success');
 });
 
 router.delete('/:id', function(req, res){
     Vehicle.findOne({_id:req.params.id}).remove().exec();
     Person.findOneAndUpdate({vehicle: req.params.id},{$set: {vehicle:null}}).exec();
     res.status(201);
+    res.send('success');
 });
 
 module.exports = router;
