@@ -39,6 +39,10 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         var oldvehicle;
         $scope.wayPoints = [];
 
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
+        directionsDisplay.suppressMarkers ='true';
+
         function refreshMap(){
 
             $scope.markers = [];
@@ -82,50 +86,61 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         };
 
         function updateDirections(){
-            if (typeof($scope.selectedVehicle) !== 'undefined') {
-                //oldvehicle.passengers.forEach(function(p){
-                //    if (p.canDrive){
-                //        $scope.markers[journey.persons.map(function (e) {
-                //            return e._id
-                //        }).indexOf(p._id)].icon.url = "../images/fadedbluemarker.png";
-                //    }else {
-                //        $scope.markers[journey.persons.map(function (e) {
-                //            return e._id
-                //        }).indexOf(p._id)].icon.url = "../images/fadedredmarker.png";
-                //    }
-                //});
-                if ($scope.selectedVehicle.owner != null) {
-                    $scope.destination = [$scope.selectedVehicle.owner.location.lat, $scope.selectedVehicle.owner.location.lng];
-                } else {
-                    $scope.destination = null;
-                }
-                $timeout(function () {
-                    $scope.wayPoints = [];
-                    $scope.selectedVehicle.passengers.forEach(function (p) {
-                        if (p.canDrive) {
-                            $scope.markers[journey.persons.map(function (e) {
-                                return e._id
-                            }).indexOf(p._id)].icon.url = "../images/selectedbluemarker.png";
-                        } else {
-                            $scope.markers[journey.persons.map(function (e) {
-                                return e._id
-                            }).indexOf(p._id)].icon.url = "../images/selectedredmarker.png";
-                        }
-                        $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+            if (typeof($scope.selectedVehicle != 'undefined')) {
+                oldvehicle.passengers.forEach(function (p) {
 
-                    });
-                }, 50);
+                    if (p.canDrive) {
+                        $scope.markers[journey.persons.map(function (e) {
+                            return e._id
+                        }).indexOf(p._id)].icon.url = "../images/fadedbluemarker.png";
+                    } else {
+                        $scope.markers[journey.persons.map(function (e) {
+                            return e._id
+                        }).indexOf(p._id)].icon.url = "../images/fadedredmarker.png";
+                    }
+                });
 
+                var points = [];
 
+                $scope.selectedVehicle.passengers.forEach(function (p, index, array) {
+                    if (p.canDrive) {
+                        $scope.markers[journey.persons.map(function (e) {
+                            return e._id
+                        }).indexOf(p._id)].icon.url = "../images/selectedbluemarker.png";
+                    } else {
+                        $scope.markers[journey.persons.map(function (e) {
+                            return e._id
+                        }).indexOf(p._id)].icon.url = "../images/selectedredmarker.png";
+                    }
+                    points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+                });
 
+                directionsService.route({
+                    origin: {lat: 50.9591399, lng: 5.5050771},
+                    destination: {
+                        lat: $scope.selectedVehicle.owner.location.lat,
+                        lng: $scope.selectedVehicle.owner.location.lng
+                    },
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    waypoints: points,
+                    optimizeWaypoints:true
+                }, function (response, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                        console.log(response);
+                    }
+                });
+
+                oldvehicle = $scope.selectedVehicle;
             }
-            //oldvehicle = $scope.selectedVehicle;
+
         }
 
         function handleComplete() {
             // main function
 
             if (!--inProgress) {
+                directionsDisplay.setMap(map);
                 $scope.journey = journey;
                 vehicles = journey.vehicles.filter(function(v){
                     return v.owner;
@@ -166,7 +181,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
             vehicles.forEach(function(v, index){
                 if (v.owner != null && v.owner._id == journey.persons[pos]._id){
                     $scope.selectedVehicle = vehicles[index];
-                    $scope.updateDirections();
+                    updateDirections();
                 }
             });
         };
@@ -191,6 +206,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
 
                 var Journey = $resource('/journeys/addPassenger');
                 Journey.save(p);
+                updateDirections();
             }
         };
 
