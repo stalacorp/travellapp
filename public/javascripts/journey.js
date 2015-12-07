@@ -38,6 +38,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         var personIds = [];
         var oldvehicle;
         $scope.wayPoints = [];
+        $scope.deleteShow = false;
+        $scope.addShow = true;
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
@@ -184,10 +186,48 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
                     updateDirections();
                 }
             });
+
+            $scope.deleteShow = false;
+            $scope.addShow = true;
+            if (typeof ($scope.selectedVehicle) !== 'undefined' && typeof($scope.selectedPerson) !== 'undefined'){
+                if ($scope.selectedVehicle.passengers.map(function (e) {
+                        return e._id
+                    }).indexOf($scope.selectedPerson._id) !== -1){
+                    $scope.deleteShow = true;
+                    $scope.addShow = false;
+                    console.log('test');
+                }
+            }
+
         };
 
         $scope.vehicleChange = function(){
             updateDirections();
+        };
+
+        $scope.removePassenger = function(id){
+            $scope.selectedVehicle.passengers.forEach(function(p, index, array){
+                if (p._id == id){
+                    array.splice(index, 1);
+
+                    var Journey = $resource('/journeys/removePassenger');
+                    var mock = {};
+                    mock.vehicleId = $scope.selectedVehicle._id;
+                    mock.personId = p._id;
+                    Journey.save(mock);
+
+                    var persindex = journey.persons.map(function (e) {
+                        return e._id
+                    }).indexOf(p._id);
+                    journey.persons[persindex].isPas = false;
+                    if (p.canDrive){
+                        $scope.markers[persindex].icon.url = '../images/bluemarker.png';
+                    }else {
+                        $scope.markers[persindex].icon.url = '../images/redmarker.png';
+                    }
+                    updateDirections();
+                }
+            });
         };
 
         $scope.addToVehicle = function(){

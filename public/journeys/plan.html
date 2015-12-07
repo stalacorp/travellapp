@@ -23,7 +23,7 @@
                 <tr ng-repeat="passenger in selectedVehicle.passengers">
                     <td>{{$index + 1}}.</td>
                     <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
-                    <td><button class="btn btn-danger">X</button></td>
+                    <td><button class="btn btn-danger" ng-click="removePassenger(passenger._id)" >X</button></td>
                     <td><button class="btn btn-default">Notitie</button></td>
                 </tr>
             </table>
@@ -34,22 +34,14 @@
             <p>{{ selectedPerson.city }} {{ selectedPerson.postalcode }}</p>
             <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
             <p ng-show="selectedPerson.canDrive">Heeft een rijbewijs</p>
-            <button class="btn btn-primary" ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id" ng-click="addToVehicle()">Toevoegen aan auto</button>
+            <button class="btn btn-primary" ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow" ng-click="addToVehicle()">Toevoegen aan auto</button>
+            <button class="btn btn-danger" ng-show="selectedPerson && deleteShow" ng-click="removePassenger(selectedPerson._id)">Verwijderen uit auto</button>
         </div>
     </div>
     <div class="col-lg-8">
         <ng-map zoom="6" style="height:600px">
             <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]" on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}" >
             </marker>
-            <directions
-                    draggable="true"
-                    preserve-viewport="true"
-                    suppress-markers="true"
-                    travel-mode="DRIVING"
-                    origin="{{origin}}"
-                    waypoints="{{wayPoints}}"
-                    destination="{{destination}}">
-            </directions>
         </ng-map>
     </div>
     <div class="col-lg-12">
