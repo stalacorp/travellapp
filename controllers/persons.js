@@ -112,13 +112,13 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                     person.location.lng = location.lng;
                     person.save();
                     journey.persons.push(person);
-                    teller++;
                     console.log(teller);
-                    if (teller == (max - 2)){
-                        updateJourney();
-                    }
                 }else {
                     console.log(person.fullname);
+                }
+                teller++;
+                if (teller == (max - 2)){
+                    updateJourney();
                 }
             });
 

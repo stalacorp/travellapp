@@ -77,7 +77,6 @@ router.post('/addPassenger', function(req, res){
 });
 
 router.post('/removePassenger', function(req, res){
-    console.log(req.body);
     Vehicle.findOne({_id:req.body.vehicleId}).exec(function(err, v){
         if (err) return console.error(err);
         v.passengers.forEach(function(p,index,array){

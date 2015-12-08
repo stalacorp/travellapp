@@ -361,6 +361,9 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
         function updateProgressbar(){
             dynamic++;
             $scope.dynamic = dynamic;
+            if (dynamic == 100){
+                refreshPersons();
+            }
         };
 
         // excel fileUpload
@@ -380,7 +383,6 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
                         dynamic = 0;
                         $scope.dynamic = dynamic;
                         $scope.show = true;
-                        $timeout(refreshPersons, (time));
 
                         $interval(updateProgressbar, time / 100, 100);
 
