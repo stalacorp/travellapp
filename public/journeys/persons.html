@@ -59,21 +59,7 @@
                     </tbody>
                 </table>
             </div>
-            <uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
-        <table class="table table-striped">
-            <tr>
-                <th>Voornaam</th>
-                <th>Achternaam</th>
-                <th>Kan rijden</th>
-            </tr>
-            <tr ng-repeat="person in persons">
-                <td>{{ person.firstname }}</td>
-                <td>{{ person.lastname }}</td>
-                <td><input type="checkbox" ng-checked="person.canDrive" /></td>
-                <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
-            </tr>
-        </table>
-            <uib-pagination total-items="totalItems" ng-model="currentPage" items-per-page="15" ng-change="pageChanged()"></uib-pagination>
+            <uib-pagination total-items="totalItems" items-per-page="15" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
         </div>
         <div class="col-lg-12">
             <a class="btn btn-default pull-left" href="#/journeys/overview">Vorige</a><a

@@ -373,7 +373,7 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
             Journey.get({id: $routeParams.id} ,function(obj) {
                 journey = obj;
                 $scope.journey = journey;
-                $scope.persons = journey.persons.slice(0,10);
+                $scope.persons = journey.persons.slice(0,15);
                 $scope.currentPage = 1;
                 $scope.totalItems = journey.persons.length;
                 $scope.pageChanged();
@@ -384,7 +384,7 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
         refreshPersons();
 
         $scope.pageChanged = function(){
-            $scope.persons = journey.persons.slice($scope.currentPage *10 -10, $scope.currentPage *10);
+            $scope.persons = journey.persons.slice($scope.currentPage *15 -15, $scope.currentPage *15);
         };
 
         $scope.search = function(){
@@ -491,7 +491,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
         function refreshVehicles(){
-            $scope.vehicles = journey.vehicles.slice(0,10);
+            $scope.vehicles = journey.vehicles.slice(0,15);
             $scope.currentPage = 1;
             $scope.totalItems = journey.vehicles.length;
         };
@@ -572,7 +572,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
         $scope.pageChanged = function(){
-            $scope.vehicles = $scope.vehicles.slice($scope.currentPage *10 -10, $scope.currentPage *10);
+            $scope.vehicles = $scope.vehicles.slice($scope.currentPage *15 -15, $scope.currentPage *15);
         };
 
         $scope.vehicleClick = function(id, p){
