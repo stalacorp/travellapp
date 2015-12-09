@@ -1,5 +1,8 @@
 <style type="text/css">
-    .angular-google-map-container { height:600px; }
+    .angular-google-map-container {
+        height: 600px;
+    }
+
     .custom-image {
         position: absolute;
         display: block;
@@ -9,65 +12,67 @@
         left: 50%;
     }
 </style>
-<h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy' }}</h1>
-<div class="row">
-    <div class="col-lg-4">
-        <div class="col-lg-12">
-            <h2>Auto</h2>
-            <select class="form-control" ng-model="selectedVehicle" ng-options="vehicle.licenceplate for vehicle in vehicles" ng-change="vehicleChange()"></select>
-            <p>Plaatsen: {{ selectedVehicle.passengersNr }}</p>
-            <p>Merk: {{ selectedVehicle.brand }}</p>
-            <p>Type: {{ selectedVehicle.type }}</p>
-            <p ng-show="selectedVehicle.owner">Chauffeur: {{ selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</p>
-            <table class="table">
-                <tr ng-repeat="passenger in selectedVehicle.passengers">
-                    <td>{{$index + 1}}.</td>
-                    <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
-                    <td><button class="btn btn-danger" ng-click="removePassenger(passenger._id)" >X</button></td>
-                    <td><button class="btn btn-default" ng-click="remarkPerson = passenger">Notitie</button></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-lg-12">
-            <h2>Geselecteerd</h2>
-            <p>{{ selectedPerson.firstname }} {{ selectedPerson.lastname }}</p>
-            <p>{{ selectedPerson.city }} {{ selectedPerson.postalcode }}</p>
-            <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
-            <p ng-show="selectedPerson.canDrive">Heeft een rijbewijs</p>
-            <button class="btn btn-primary" ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow" ng-click="addToVehicle()">Toevoegen aan auto</button>
-            <button class="btn btn-danger" ng-show="selectedPerson && deleteShow" ng-click="removePassenger(selectedPerson._id)">Verwijderen uit auto</button>
-        </div>
-    </div>
-    <div class="col-lg-8">
-        <ng-map zoom="6" style="height:600px">
-            <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]" on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}" >
-            </marker>
-        </ng-map>
-    </div>
-    <div class="col-lg-12">
-        <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}" >Vorige</a><a href="#/journeys/lastoverview/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
-    </div>
-</div>
+<div class="container-fluid">
+    <h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        }}</h1>
 
-<div class="modal fade" id="remarkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Opmerking wijzigen</h4>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="col-lg-12">
+                <h2>Auto</h2>
+                <select class="form-control" ng-model="selectedVehicle"
+                        ng-options="vehicle.licenceplate for vehicle in vehicles" ng-change="vehicleChange()"></select>
+
+                <p>Plaatsen: {{ selectedVehicle.passengersNr }}</p>
+
+                <p>Merk: {{ selectedVehicle.brand }}</p>
+
+                <p>Type: {{ selectedVehicle.type }}</p>
+
+                <p ng-show="selectedVehicle.owner">Chauffeur: {{ selectedVehicle.owner.firstname + ' ' +
+                    selectedVehicle.owner.lastname}}</p>
+                <table class="table">
+                    <tr ng-repeat="passenger in selectedVehicle.passengers">
+                        <td>{{$index + 1}}.</td>
+                        <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
+                        <td>
+                            <button class="btn btn-danger" ng-click="removePassenger(passenger._id)">X</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-default">Notitie</button>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group col-lg-12">
-                        <label for="remark" >Opmerking: </label>
-                        <textarea class="form-control" id="remark" ng-model="remarkPerson.remark" ></textarea>
-                    </div>
-                </form>
+            <div class="col-lg-12">
+                <h2>Geselecteerd</h2>
+
+                <p>{{ selectedPerson.firstname }} {{ selectedPerson.lastname }}</p>
+
+                <p>{{ selectedPerson.city }} {{ selectedPerson.postalcode }}</p>
+
+                <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
+
+                <p ng-show="selectedPerson.canDrive">Heeft een rijbewijs</p>
+                <button class="btn btn-primary"
+                        ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow"
+                        ng-click="addToVehicle()">Toevoegen aan auto
+                </button>
+                <button class="btn btn-danger" ng-show="selectedPerson && deleteShow"
+                        ng-click="removePassenger(selectedPerson._id)">Verwijderen uit auto
+                </button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                <button class="btn btn-primary" data-dismiss="modal" ng-click="updateRemark()">Wijzigen</button>
-            </div>
+        </div>
+        <div class="col-lg-8">
+            <ng-map zoom="6" style="height:600px">
+                <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]"
+                        on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}">
+                </marker>
+            </ng-map>
+        </div>
+        <div class="col-lg-12">
+            <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}">Vorige</a><a
+                href="#/journeys/plan/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
         </div>
     </div>
 </div>
