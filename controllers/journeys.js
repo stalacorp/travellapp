@@ -91,6 +91,25 @@ router.post('/removePassenger', function(req, res){
     res.send('success');
 });
 
+router.post('/updatePassengers', function(req, res){
+    Vehicle.findOne({_id:req.body.vehicleId}).exec(function(err, v){
+        if (err) return console.error(err);
+        v.passengers.forEach(function(pas){
+            Person.findOneAndUpdate({_id:pas},{$set: {isPas: false}}).exec();
+        });
+        req.body.passengers.forEach(function(pas){
+            Person.findOneAndUpdate({_id:pas},{$set: {isPas: true}}).exec();
+        });
+
+        v.passengers = req.body.passengers;
+        v.distance = req.body.distance;
+        v.duration = req.body.duration;
+        v.save();
+    });
+    res.status(201);
+    res.send('success');
+});
+
 router.post('/addVehicle', function(req, res){
     Journey.findOne({_id:req.body.journeyId}).populate('vehicles').exec(function(err, journey){
         if (err) return console.error(err);

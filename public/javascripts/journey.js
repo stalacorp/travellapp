@@ -144,7 +144,34 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                 }, function (response, status) {
                     if (status === google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
-                        console.log(response);
+                        var distance = 0;
+                        var seconds = 0;
+                        response.routes[0].legs.forEach(function(l){
+                            distance += l.distance.value;
+                            seconds += l.duration.value;
+                        });
+
+                        var newPassengers = [];
+                        response.routes[0].waypoint_order.forEach(function(w){
+                            newPassengers.push($scope.selectedVehicle.passengers[w]);
+                        });
+                        $scope.selectedVehicle.passengers = newPassengers;
+                        $scope.$apply($scope.selectedVehicle.passengers);
+                        var passengerIds = [];
+                        $scope.selectedVehicle.passengers.forEach(function(p){
+                            passengerIds.push(p._id);
+                        });
+                        var mock = {};
+                        mock.vehicleId = $scope.selectedVehicle._id;
+                        mock.passengers = passengerIds;
+                        mock.duration = seconds;
+                        mock.distance = distance;
+
+                        var Journey = $resource('/journeys/updatePassengers');
+                        Journey.save(mock);
+
+
+
                     }
                 });
 
@@ -237,13 +264,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
             $scope.selectedVehicle.passengers.forEach(function(p, index, array){
                 if (p._id == id){
                     array.splice(index, 1);
-
-                    var Journey = $resource('/journeys/removePassenger');
-                    var mock = {};
-                    mock.vehicleId = $scope.selectedVehicle._id;
-                    mock.personId = p._id;
-                    Journey.save(mock);
-
                     var persindex = journey.persons.map(function (e) {
                         return e._id
                     }).indexOf(p._id);
@@ -272,8 +292,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                 }
                 $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
 
-                var Journey = $resource('/journeys/addPassenger');
-                Journey.save(p);
                 updateDirections();
             }
         };
