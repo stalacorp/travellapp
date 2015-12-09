@@ -1,69 +1,95 @@
-<div class="container-fluid">
-    <h1>Reis {{ journey.name }} {{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
-        }}</h1>
+<div class="container">
+    <div class="tht-header">
+        <h1>Zjazd {{ journey.name }} </h1>
+
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+            }}</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-1">
+            <a class="btn btn-default pull-left" href="#/journeys/overview">Vorige</a>
+        </div>
+        <div class="col-lg-offset-10 col-lg-1">
+            <a href="#/journeys/vehicles/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
+        </div>
+    </div>
 
     <div class="row">
 
         <div class="col-lg-3">
-            <h2>Upload met excel</h2>
-            <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
-                    accept=".xls,.csv,.xlsx" ngf-max-size="10MB">
-                Select File
-            </button>
-            <br><br>
-            File:
-            <div>{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
 
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h2>Upload met excel</h2>
+                    <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
+                            accept=".xls,.csv,.xlsx" ngf-max-size="10MB">
+                        Select File
+                    </button>
+                    <br><br>
+                    File:
+                    <div>{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+
+                    </div>
+                    <div ng-show="show">
+                        <uib-progressbar animate="true" class="progress-striped active" value="dynamic" type="success">
+                            <b>{{dynamic}}%</b>
+                        </uib-progressbar>
+                    </div>
+
+                </div>
             </div>
-            <div ng-show="show">
-                <uib-progressbar animate="true" class="progress-striped active" value="dynamic" type="success"><b>{{dynamic}}%</b>
-                </uib-progressbar>
-            </div>
+
         </div>
 
         <div class="col-lg-9">
-            <div class="col-lg-12">
 
-                <h2>Werknemers</h2>
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-                <div class="row">
-                    <div class="col-lg-4">
+                    <h2>Pracowników</h2>
 
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <input id="search" class="form-control" ng-model="searchText" type="text"
-                                       ng-change="search()" placeholder="Szukanie"/>
-                            </div>
-                            <button class="btn btn-primary" ng-click="searchText = '';search()">Wissen</button>
-                        </form>
+                    <div class="row">
+                        <div class="col-lg-12">
 
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <input id="search" class="form-control" ng-model="searchText" type="text"
+                                           ng-change="search()" placeholder="Szukanie"/>
+                                </div>
+                                <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
+                            </form>
+
+                        </div>
                     </div>
+
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Voornaam</th>
+                            <th>Achternaam</th>
+                            <th>Kan rijden</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="person in persons">
+                            <td>{{ person.firstname }}</td>
+                            <td>{{ person.lastname }}</td>
+                            <td><input type="checkbox" ng-checked="person.canDrive"/></td>
+                            <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
+                <uib-pagination total-items="totalItems" items-per-page="15" ng-model="currentPage"
+                                ng-change="pageChanged()"></uib-pagination>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Voornaam</th>
-                        <th>Achternaam</th>
-                        <th>Kan rijden</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="person in persons">
-                        <td>{{ person.firstname }}</td>
-                        <td>{{ person.lastname }}</td>
-                        <td><input type="checkbox" ng-checked="person.canDrive"/></td>
-                        <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
-                    </tr>
-                    </tbody>
-                </table>
             </div>
-            <uib-pagination total-items="totalItems" items-per-page="15" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
-        </div>
-        <div class="col-lg-12">
-            <a class="btn btn-default pull-left" href="#/journeys/overview">Vorige</a><a
-                href="#/journeys/vehicles/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
+
+
         </div>
     </div>
 
