@@ -7,17 +7,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#/">THT <span class="tht-red">Bouw</span></a>
+            <a class="navbar-brand" href="#/journeys/overview">THT <span class="tht-red">Bouw</span></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="NavCtrl">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('/journeys/overview')}"><a href="#/journeys/overview">Reizen</a></li>
-                <li ng-class="{ active: isActive('/vehicles')}"><a href="#/vehicles">Autos</a></li>
-                <li ng-class="{ active: isActive('/persons')}"><a href="#/persons">Werknemers</a></li>
-                <li ng-class="{ active: isActive('/persons/excel')}"><a href="#persons/excel">Excel</a></li>
+                <li ng-class="{ active: isActive('/journeys/overview')}"><a href="#/journeys/overview">Zjazd</a></li>
+                <li ng-class="{ active: isActive('/persons/excel')}"><a href="#persons/excel">Pomoc</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" ng-controller="LogoutCtrl" ng-switch>
-                <li ng-show="!isLoggedIn"><a href="#/login">Inloggen</a></li>
+                <li ng-show="!isLoggedIn"><a href="#/login">Zaloguj się</a></li>
                 <li ng-show="isLoggedIn"><a ng-click='logout()' href="">Uitloggen</a></li>
             </ul>
         </div><!--/.nav-collapse -->

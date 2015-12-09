@@ -1,5 +1,5 @@
 * {
-    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 h1 {
@@ -39,8 +39,8 @@ h2 {
 }
 /* link */
 .navbar-default .navbar-nav > li > a {
-    color: #222; /*#777;*/
-    font-weight:bold;
+    color: #777; /*#777;*/
+    font-size:1em;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
