@@ -24,7 +24,7 @@
                     <td>{{$index + 1}}.</td>
                     <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
                     <td><button class="btn btn-danger" ng-click="removePassenger(passenger._id)" >X</button></td>
-                    <td><button class="btn btn-default" ng-click="remarkPerson = passenger">Notitie</button></td>
+                    <td><button class="btn btn-default" data-toggle="modal" data-target="#remarkModal" ng-click="giveRemark($index)">Notitie</button></td>
                 </tr>
             </table>
         </div>
@@ -58,7 +58,7 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group col-lg-12">
+                    <div class="form-group">
                         <label for="remark" >Opmerking: </label>
                         <textarea class="form-control" id="remark" ng-model="remarkPerson.remark" ></textarea>
                     </div>

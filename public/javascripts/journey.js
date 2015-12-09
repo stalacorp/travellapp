@@ -42,7 +42,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
         var map;
         var personIds = [];
         var oldvehicle;
-        $scope.remarkPerson = {};
+        $scope.remarkPerson;
         $scope.wayPoints = [];
         $scope.deleteShow = false;
         $scope.addShow = true;
@@ -197,7 +197,10 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
             });
 
             Persons.update($scope.remarkPerson);
-            console.log($scope.remarkPerson.remark);
+        };
+
+        $scope.giveRemark = function(index){
+            $scope.remarkPerson = $scope.selectedVehicle.passengers[index];
         };
 
 

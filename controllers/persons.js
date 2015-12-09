@@ -84,7 +84,7 @@ router.put('/:id', function(req, res){
     });
 });
 
-router.put('remark/:id', function(req, res){
+router.put('/remark/:id', function(req, res){
     Person.findOneAndUpdate({_id:req.params.id},{$set: {remark: req.body.remark}}).exec();
     res.status(201);
     res.send('success');
