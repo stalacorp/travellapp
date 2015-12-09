@@ -22,6 +22,7 @@
     "express-session": "^1.12.1",
     "googlemaps": "^1.0.2",
     "jade": "~1.11.0",
+    "marker-spider": "^0.1.0",
     "mongoose": "^4.2.4",
     "mongoose-deep-populate": "^2.0.3",
     "morgan": "~1.6.1",

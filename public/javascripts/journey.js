@@ -16,6 +16,11 @@ routesapp.config(['$routeProvider', function($routeProvider){
             controller: 'PersonsCtrl',
             title: 'Personen toevoegen'
         })
+        .when('/journeys/lastoverview/:id', {
+            templateUrl: 'journeys/lastoverview.html',
+            controller: 'LastOverviewCtrl',
+            title: 'Overzicht reis'
+        })
         .when('/journeys/vehicles/:id', {
             templateUrl: 'journeys/vehicles.html',
             controller: 'VehiclesCtrl',
@@ -46,6 +51,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         directionsDisplay.suppressMarkers ='true';
 
         function refreshMap(){
+            var lats = [];
+            var lngs = [];
 
             $scope.markers = [];
             var markers = [];
@@ -53,8 +60,13 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
             journey.persons.forEach(function(person){
                 personIds.push(person._id);
                 var ret = {};
-                ret.lat = person.location.lat;
-                ret.lng = person.location.lng;
+                var lat = person.location.lat;
+                var lng = person.location.lng;
+                while (lats.indexOf(lat) !== -1 && lngs.indexOf(lng) !== -1){
+                    lng += 0.008;
+                }
+                ret.lat = lat;
+                ret.lng = lng;
                 ret.pos = teller;
                 ret.title = person.firstname + " " + person.lastname;
                 ret.icon = {};
@@ -83,6 +95,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
 
                 markers.push(ret);
                 teller++;
+                lats.push(lat);
+                lngs.push(lng);
             });
             $scope.markers = markers;
         };
@@ -311,6 +325,37 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             Journeys.save($scope.journey, function(response){
                 $location.path('/journeys/persons/' + id);
             });
+        };
+
+
+    }]);
+
+routesapp.controller('LastOverviewCtrl', ['$scope', '$resource', '$location', '$routeParams',
+    function($scope, $resource, $location, $routeParams){
+        var Journey = $resource('/journeys/:id', { id:'@_id' }, {
+            update: { method: 'PUT' }
+        });
+        var journey;
+        var persons;
+        var vehicles;
+
+        Journey.get({id: $routeParams.id} ,function(obj) {
+            journey = obj;
+            persons = journey.persons;
+            vehicles = journey.vehicles;
+            $scope.journey = obj;
+            $scope.vehicles = vehicles;
+
+            if (vehicles.length != 0){
+                $scope.vehicleClick(0);
+            }
+
+
+        });
+
+        $scope.vehicleClick = function(index){
+            $scope.selected = index;
+            $scope.selectedVehicle = vehicles[index];
         };
 
 
