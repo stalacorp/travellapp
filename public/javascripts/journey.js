@@ -170,8 +170,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                         var Journey = $resource('/journeys/updatePassengers');
                         Journey.save(mock);
 
-
-
                     }
                 });
 
@@ -388,6 +386,10 @@ routesapp.controller('LastOverviewCtrl', ['$scope', '$resource', '$location', '$
         $scope.vehicleClick = function(index){
             $scope.selected = index;
             $scope.selectedVehicle = vehicles[index];
+            var date = new Date($scope.selectedVehicle.duration * 1000);
+            var hh = date.getUTCHours();
+            var mm = date.getUTCMinutes();
+            $scope.duration = hh + ' uren en ' + mm + ' minuten';
         };
 
 
