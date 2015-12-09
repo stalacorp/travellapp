@@ -29,8 +29,8 @@ routesapp.config(['$routeProvider', function($routeProvider){
 
 }]);
 
-app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$timeout',
-    function($scope, $resource, $routeParams, NgMap, $timeout){
+app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
+    function($scope, $resource, $routeParams, NgMap){
         var inProgress = 2;
 
 
@@ -42,6 +42,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         var map;
         var personIds = [];
         var oldvehicle;
+        $scope.remarkPerson = {};
         $scope.wayPoints = [];
         $scope.deleteShow = false;
         $scope.addShow = true;
@@ -189,6 +190,16 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$time
         });
 
         // scope functions
+
+        $scope.updateRemark = function(){
+            var Persons = $resource('/persons/remark/:id', { id: '@_id' }, {
+                update: { method: 'PUT' }
+            });
+
+            Persons.update($scope.remarkPerson);
+            console.log($scope.remarkPerson.remark);
+        };
+
 
         $scope.onMarkerClick = function(data,pos){
             position = pos;

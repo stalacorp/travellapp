@@ -13,6 +13,7 @@
             <th></th>
             <th>Naam</th>
             <th>Adres</th>
+            <th>Notitie</th>
         </tr>
         <tr>
             <th>Chauffeur</th>
@@ -24,6 +25,7 @@
             <th><span ng-show="!passenger.canDrive">Passagier</span><span ng-show="passenger.canDrive">2de chauffeur</span></th>
             <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
             <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
+            <td>{{passenger.remark}}</td>
         </tr>
     </table>
 </div>

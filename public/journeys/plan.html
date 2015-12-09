@@ -24,7 +24,7 @@
                     <td>{{$index + 1}}.</td>
                     <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
                     <td><button class="btn btn-danger" ng-click="removePassenger(passenger._id)" >X</button></td>
-                    <td><button class="btn btn-default">Notitie</button></td>
+                    <td><button class="btn btn-default" ng-click="remarkPerson = passenger">Notitie</button></td>
                 </tr>
             </table>
         </div>
@@ -46,5 +46,28 @@
     </div>
     <div class="col-lg-12">
         <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}" >Vorige</a><a href="#/journeys/lastoverview/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
+    </div>
+</div>
+
+<div class="modal fade" id="remarkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Opmerking wijzigen</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group col-lg-12">
+                        <label for="remark" >Opmerking: </label>
+                        <textarea class="form-control" id="remark" ng-model="remarkPerson.remark" ></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                <button class="btn btn-primary" data-dismiss="modal" ng-click="updateRemark()">Wijzigen</button>
+            </div>
+        </div>
     </div>
 </div>
