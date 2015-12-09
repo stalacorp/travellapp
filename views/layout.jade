@@ -2,6 +2,7 @@ doctype html
 html(ng-app="travellapp")
   head
     title(ng-bind="title")
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(href='/scripts/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
     script(src='/scripts/lodash/index.js')
@@ -21,8 +22,6 @@ html(ng-app="travellapp")
     script(src='/javascripts/journey.js')
   body
     include navbar.html
-    div.container
-      div.row
-        block content
+    block content
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
     script(src='/scripts/bootstrap/dist/js/bootstrap.min.js')
