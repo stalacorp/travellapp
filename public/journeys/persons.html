@@ -6,21 +6,40 @@
             }}</p>
     </div>
 
-    <div class="row">
+    <!--<div class="row">
         <div class="col-lg-1">
             <a class="btn btn-default pull-left" href="#/journeys/overview">Vorige</a>
         </div>
         <div class="col-lg-offset-10 col-lg-1">
             <a href="#/journeys/vehicles/{{journey._id}}" class="btn btn-default pull-right">Volgende</a>
         </div>
+    </div>-->
+
+    <div class="row journey-navbar">
+        <div class="col-md-3 text-center">
+            <a href=""><span class="icon-Mens icon active-icon"></span></a>
+            <p>Pracowników</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href="#/journeys/vehicles/{{journey._id}}"><span class="icon-Car-2 icon"></span></a>
+            <p>Pracowników</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href=""><span class="icon-Map2 icon"></span></a>
+            <p>Pracowników</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href=""><span class="icon-Notepad-2 icon"></span></a>
+            <p>Pracowników</p>
+        </div>
     </div>
+
 
     <div class="row">
 
         <div class="col-lg-3">
 
-            <div class="panel panel-default">
-                <div class="panel-body">
+
 
                     <h2>Upload met excel</h2>
                     <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
@@ -38,15 +57,13 @@
                         </uib-progressbar>
                     </div>
 
-                </div>
-            </div>
+
 
         </div>
 
         <div class="col-lg-9">
 
-            <div class="panel panel-default">
-                <div class="panel-body">
+
 
                     <h2>Pracowników</h2>
 
@@ -82,12 +99,11 @@
                         </tr>
                         </tbody>
                     </table>
-                </div>
+
 
                 <uib-pagination total-items="totalItems" items-per-page="15" ng-model="currentPage"
                                 ng-change="pageChanged()"></uib-pagination>
 
-            </div>
 
 
         </div>

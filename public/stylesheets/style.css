@@ -23,6 +23,49 @@ h2 {
     margin-bottom:40px;
 }
 
+.icon {
+    font-size:4em;
+    font-weight:bold;
+}
+
+.active-icon {
+    color:#e72b23;
+}
+
+.journey-navbar {
+    margin-top:30px;
+    margin-bottom:30px;
+}
+
+.journey-navbar a {
+    color:#333;
+    text-transform:none;
+}
+
+.journey-navbar p {
+    margin-top:10px;
+    font-size:1.2em;
+}
+
+.journey-navbar .icon:hover {
+    text-decoration: none;
+    color:#e72b23;
+}
+
+.journey-navbar a:hover {
+    text-decoration: none;
+    color:#e72b23;
+}
+
+.journey-navbar a:visited {
+    text-decoration: none;
+    color:#333;
+}
+
+.journey-navbar a:active {
+    text-decoration: none;
+    color:#333;
+}
 
 /* navbar */
 .navbar-default {
