@@ -19,6 +19,13 @@ router.get('/allHistory', function(req, res) {
     });
 });
 
+router.get('/all', function(req, res) {
+    Journey.find(function(err, objs) {
+        if (err) return console.error(err);
+        res.json(objs);
+    });
+});
+
 router.post('/', function(req, res){
     var journey = new Journey();
     journey.name = req.body.name;
@@ -141,6 +148,50 @@ router.post('/addVehicle', function(req, res){
 
         journey.vehicles.push(vehicle);
         journey.save();
+
+    });
+
+});
+
+router.post('/importVehicles', function(req, res){
+    Journey.findOne({_id:req.body.currentJourneyId}).deepPopulate('vehicles persons vehicles.owner').exec(function(err, cj){
+        if (err) return console.error(err);
+        Journey.findOne({_id:req.body.importJourneyId}).deepPopulate('vehicles vehicles.owner').exec(function(error, ij){
+            if (error) return console.error(error);
+            ij.vehicles.forEach(function(v){
+                if (cj.vehicles.map(function (e) {
+                        return e.licenceplate
+                    }).indexOf(v.licenceplate) === -1){
+                    var teller = 0;
+                    v.passengers = [];
+
+                    cj.persons.forEach(function(p){
+                        if (p.firstname == v.owner.firstname && p.lastname == v.owner.lastname && p.street == v.owner.street && p.streetnumber == v.owner.streetnumber){
+                            teller++;
+                            v.owner = p;
+                        }
+                    });
+                    if (teller !== 0){
+                        v.owner = null;
+                    }
+
+                    var vehicle = new Vehicle();
+                    vehicle.licenceplate = v.licenceplate;
+                    vehicle.passengersNr = v.passengersNr;
+                    vehicle.type = v.type;
+                    vehicle.merk = v.merk;
+                    vehicle.save(function(somerr){
+                        if (somerr) return console.error(somerr);
+                    });
+
+                    cj.vehicles.push(vehicle);
+                }
+            });
+            cj.save(function(){
+                res.status(201);
+                res.send('success');
+            });
+        });
 
     });
 

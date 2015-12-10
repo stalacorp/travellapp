@@ -614,14 +614,26 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
 
+        function refreshJourney(){
+            Journey.get({id: $routeParams.id} ,function(obj) {
+                journey = obj;
+                $scope.journey = obj;
+                refreshVehicles();
+                refreshPersons();
 
-        Journey.get({id: $routeParams.id} ,function(obj) {
-            journey = obj;
-            $scope.journey = obj;
-            refreshVehicles();
-            refreshPersons();
-
+            });
+        };
+        // page load
+        refreshJourney();
+        var Journeys = $resource('/journeys/all');
+        Journeys.query(function(objs) {
+            var filterObjs = objs.filter(function(j){
+               return j._id !== $routeParams.id;
+            });
+            $scope.journeys = filterObjs;
+            $scope.selectedJourney = $scope.journeys[0];
         });
+
 
         // vehicle add/update
         var backupVehicle;
@@ -642,6 +654,15 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
 
+        $scope.import = function(){
+            var Vehicles = $resource('/journeys/importVehicles');
+            var mock = {};
+            mock.currentJourneyId = journey._id;
+            mock.importJourneyId = $scope.selectedJourney._id;
+            Vehicles.save(mock, function(response){
+                refreshJourney();
+            });
+        };
 
         $scope.add = function(){
             if ($scope.vehicle._id != null){

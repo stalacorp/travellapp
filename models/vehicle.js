@@ -1,7 +1,7 @@
 var mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 var vehicleSchema = Schema({
-    licenceplate: {type: String, index: {unique:true, dropDups: true}} ,
+    licenceplate: {type: String},
     passengersNr: Number,
     owner: {type: Schema.Types.ObjectId, ref: 'Person', default:null},
     passengers: [{ type: Schema.Types.ObjectId, ref: 'Person' }],
