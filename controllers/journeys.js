@@ -162,20 +162,15 @@ router.post('/importVehicles', function(req, res){
                 if (cj.vehicles.map(function (e) {
                         return e.licenceplate
                     }).indexOf(v.licenceplate) === -1){
-                    var teller = 0;
+                    var vehicle = new Vehicle();
                     v.passengers = [];
 
                     cj.persons.forEach(function(p){
                         if (p.firstname == v.owner.firstname && p.lastname == v.owner.lastname && p.street == v.owner.street && p.streetnumber == v.owner.streetnumber){
-                            teller++;
-                            v.owner = p;
+                            vehicle.owner = p;
                         }
                     });
-                    if (teller !== 0){
-                        v.owner = null;
-                    }
 
-                    var vehicle = new Vehicle();
                     vehicle.licenceplate = v.licenceplate;
                     vehicle.passengersNr = v.passengersNr;
                     vehicle.type = v.type;
