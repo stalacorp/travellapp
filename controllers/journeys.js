@@ -93,13 +93,28 @@ router.post('/removePassenger', function(req, res){
 
 router.post('/updatePassengers', function(req, res){
     Vehicle.findOne({_id:req.body.vehicleId}).exec(function(err, v){
-        if (err) return console.error(err);
-        v.passengers.forEach(function(pas){
-            Person.findOneAndUpdate({_id:pas},{$set: {isPas: false}}).exec();
-        });
-        req.body.passengers.forEach(function(pas){
-            Person.findOneAndUpdate({_id:pas},{$set: {isPas: true}}).exec();
-        });
+        if (err) return console.error(err)
+        if (v.passengers.length > req.body.passengers.length){
+            v.passengers.forEach(function(pas){
+                if (req.body.passengers.indexOf(pas) === -1){
+                    Person.findOneAndUpdate({_id:pas},{$set: {isPas: false}}).exec();
+                }
+            });
+        }
+
+        if (v.passengers.length < req.body.passengers.length){
+            req.body.passengers.forEach(function(pas){
+                if (v.passengers.indexOf(pas) === -1){
+                    Person.findOneAndUpdate({_id:pas},{$set: {isPas: true}}).exec();
+                }
+            });
+        }
+        //v.passengers.forEach(function(pas){
+        //    Person.findOneAndUpdate({_id:pas},{$set: {isPas: false}}).exec();
+        //});
+        //req.body.passengers.forEach(function(pas){
+        //    Person.findOneAndUpdate({_id:pas},{$set: {isPas: true}}).exec();
+        //});
 
         v.passengers = req.body.passengers;
         v.distance = req.body.distance;

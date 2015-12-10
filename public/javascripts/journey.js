@@ -248,7 +248,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                     }).indexOf($scope.selectedPerson._id) !== -1){
                     $scope.deleteShow = true;
                     $scope.addShow = false;
-                    console.log('test');
                 }
             }
 
