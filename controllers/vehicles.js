@@ -22,7 +22,14 @@ router.put('/:id', function(req, res){
 });
 
 router.delete('/:id', function(req, res){
-    Vehicle.findOne({_id:req.params.id}).remove().exec();
+    Vehicle.findOne({_id:req.params.id}).populate('passengers').exec(function(err, v){
+        if (err) return console.error(err);
+        v.passengers.forEach(function(p){
+            p.isPas = false;
+            p.save();
+        });
+        v.remove();
+    });
     Person.findOneAndUpdate({vehicle: req.params.id},{$set: {vehicle:null}}).exec();
     res.status(201);
     res.send('success');
