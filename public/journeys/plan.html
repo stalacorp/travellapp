@@ -29,7 +29,7 @@
             <p>Samochody</p>
         </div>
         <div class="col-md-3 text-center">
-            <a href=""><span class="icon-Map2 icon active-icon"></span></a>
+            <span class="icon-Map2 icon active-icon"></span>
             <p>Mapa</p>
         </div>
         <div class="col-md-3 text-center">
@@ -41,7 +41,8 @@
     </div>
 <div class="container-fluid">
 <div class="row">
-    <div class="col-lg-4">
+    <div class="col-md-offset-1 col-md-2">
+        <div class="row">
         <div class="col-lg-12">
             <h2>Auto</h2>
             <select class="form-control" ng-model="selectedVehicle" ng-options="vehicle.licenceplate for vehicle in vehicles" ng-change="vehicleChange()"></select>
@@ -58,6 +59,8 @@
                 </tr>
             </table>
         </div>
+        </div>
+        <div class="row">
         <div class="col-lg-12">
             <h2>Geselecteerd</h2>
             <p>{{ selectedPerson.firstname }} {{ selectedPerson.lastname }}</p>
@@ -67,8 +70,9 @@
             <button class="btn btn-primary" ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow" ng-click="addToVehicle()">Toevoegen aan auto</button>
             <button class="btn btn-danger" ng-show="selectedPerson && deleteShow" ng-click="removePassenger(selectedPerson._id)">Verwijderen uit auto</button>
         </div>
+        </div>
     </div>
-    <div class="col-lg-8">
+    <div class="col-md-offset-1 col-lg-8">
         <ng-map zoom="6" style="height:600px">
             <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]" on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}" >
             </marker>
