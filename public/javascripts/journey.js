@@ -238,6 +238,13 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                     $scope.selectedVehicle = vehicles[index];
                     updateDirections();
                 }
+                if (v.passengers.map(function(e){
+                        return e._id;
+                    }).indexOf(journey.persons[pos]._id) !== -1){
+                    console.log('test');
+                    $scope.selectedVehicle = vehicles[index];
+                    updateDirections();
+                }
             });
 
             $scope.deleteShow = false;
