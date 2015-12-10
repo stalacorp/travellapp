@@ -12,7 +12,9 @@
     }
 </style>
 <div class="container">
+    <div class="tht-header">
 <h1>Zjazd</h1>
+        </div>
 <div class="row">
     <div class="col-lg-6">
         <div class="row">
@@ -21,15 +23,15 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
 
-                <h2>Nieuwe reis</h2>
+                <h2>Novy zjazd</h2>
 
                 <form ng-submit="save()">
                     <div class="form-group">
-                        <label for="name">Naam:</label>
+                        <label for="name">Imię</label>
                         <input type="text" class="form-control" ng-model="journey.name" id="name" ng-required="true"/>
                     </div>
                     <div class="form-group">
-                        <label for="startDate">StartDatum:</label>
+                        <label for="startDate">Wylot</label>
 
                         <p class="input-group">
                             <input type="text" class="form-control" id="startDate" uib-datepicker-popup="dd/MM/yyyy"
@@ -42,7 +44,7 @@
                         </p>
                     </div>
                     <div class="form-group">
-                        <label for="endDate">EindDatum:</label>
+                        <label for="endDate">Powrót</label>
 
                         <p class="input-group">
                             <input type="text" class="form-control" id="endDate" uib-datepicker-popup="dd/MM/yyyy"
@@ -54,7 +56,7 @@
                           </span>
                         </p>
                     </div>
-                    <button type="submit" class="btn btn-primary">Aanmaken</button>
+                    <button type="submit" class="btn btn-primary">Kontynułuj</button>
                 </form>
 
                         </div></div>
@@ -65,13 +67,13 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
 
-                <h2>Reis wijzigen</h2>
+                <h2>Edytować Zjazd</h2>
                 <table class="table">
                     <tr ng-repeat="journey in journeysActive">
                         <td>{{ journey.name }}</td>
                         <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
                         <td>{{ journey.endDate | date:'dd/MM/yyyy'}}</td>
-                        <td><a href="#/journeys/persons/{{journey._id}}" class="btn btn-default">Wijzigen</a></td>
+                        <td><a href="#/journeys/persons/{{journey._id}}" class="btn btn-default">Edytować</a></td>
                     </tr>
                 </table>
 
@@ -84,13 +86,13 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-        <h2>Historiek</h2>
+        <h2>Historia</h2>
         <table class="table">
             <tr>
-                <th>Naam</th>
-                <th>Heenreis</th>
-                <th>Terugreis</th>
-                <th>Bekijken</th>
+                <th>Imię</th>
+                <th>Wylot</th>
+                <th>Powrót</th>
+                <th>Otwarte</th>
             </tr>
             <tr ng-repeat="journey in journeysHistory">
                 <td>{{ journey.name }}</td>
