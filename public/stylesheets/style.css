@@ -24,7 +24,7 @@ h2 {
 }
 
 .icon {
-    font-size:4em;
+    font-size:2.7em;
     font-weight:bold;
 }
 
@@ -39,12 +39,12 @@ h2 {
 
 .journey-navbar a {
     color:#333;
-    text-transform:none;
+    text-decoration:none;
 }
 
 .journey-navbar p {
     margin-top:10px;
-    font-size:1.2em;
+    font-size:1em;
 }
 
 .journey-navbar .icon:hover {
