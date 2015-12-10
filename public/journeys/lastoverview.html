@@ -1,63 +1,71 @@
 <div class="container">
-<div class="tht-header">
-    <h1>Zjazd {{ journey.name }} </h1>
+    <div class="tht-header">
+        <h1>Zjazd {{ journey.name }} </h1>
 
-    <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
-        }}</p>
-</div>
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+            }}</p>
+    </div>
 
     <div class="row journey-navbar">
-    <div class="col-md-3 text-center">
-        <a href="#/journeys/persons/{{journey._id}}"><span class="icon-Mens icon"></span></a>
-        <p>Pracowników</p>
-    </div>
-    <div class="col-md-3 text-center">
-        <a href="#/journeys/vehicles/{{journey._id}}"><span class="icon-Car-2 icon"></span></a>
-        <p>Samochody</p>
-    </div>
-    <div class="col-md-3 text-center">
-        <a href="#/journeys/plan/{{journey._id}}"><span class="icon-Map2 icon"></span></a>
-        <p>Mapa</p>
-    </div>
-    <div class="col-md-3 text-center">
-        <span class="icon-Notepad-2 icon active-icon"></span>
-        <p>Przegląd</p>
-    </div>
-</div>
+        <div class="col-md-3 text-center">
+            <a href="#/journeys/persons/{{journey._id}}"><span class="icon-Mens icon"></span></a>
 
-<div class="col-md-2">
-    <ul class="nav nav-pills nav-stacked">
-        <li ng-repeat="vehicle in vehicles" ng-click="vehicleClick($index)" ng-class="{active: $index == selected}" role="presentation"><a href="">{{ vehicle.licenceplate }}</a></li>
-    </ul>
-</div>
-<div class="col-md-offset-1 col-md-9">
-    <h2>{{ selectedVehicle.licenceplate }}</h2>
-    <h4>Afstand: {{selectedVehicle.distance / 1000}} km</h4>
-    <h4>Tijdsduur: &plusmn;{{ duration }}</h4>
-    <table class="table table-bordered">
-        <tr>
-            <th></th>
-            <th>Naam</th>
-            <th>Adres</th>
-            <th>Notitie</th>
-        </tr>
-        <tr>
-            <td>Chauffeur</td>
-            <td>{{selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</td>
+            <p>Pracowników</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href="#/journeys/vehicles/{{journey._id}}"><span class="icon-Car-2 icon"></span></a>
 
-            <td>{{selectedVehicle.owner.street}} {{selectedVehicle.owner.streetnumber}}, {{selectedVehicle.owner.city}} {{selectedVehicle.owner.postalcode}}</td>
-            <td></td>
-        </tr>
-        <tr ng-repeat="passenger in selectedVehicle.passengers">
-            <td><span ng-show="!passenger.canDrive">Passagier</span><span ng-show="passenger.canDrive">2de chauffeur</span></td>
-            <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
-            <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
-            <td>{{passenger.remark}}</td>
-        </tr>
-    </table>
-</div>
-<div class="col-lg-12">
-    <a class="btn btn-default pull-left" href="#/journeys/plan/{{journey._id}}" >Vorige</a>
-    <a class="btn btn-primary" href="/journeys/toPdf/{{journey._id}}">To pdf</a>
-</div>
+            <p>Samochody</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href="#/journeys/plan/{{journey._id}}"><span class="icon-Map2 icon"></span></a>
+
+            <p>Mapa</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <span class="icon-Notepad-2 icon active-icon"></span>
+
+            <p>Przegląd</p>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-repeat="vehicle in vehicles" ng-click="vehicleClick($index)" ng-class="{active: $index == selected}"
+                role="presentation"><a href="">{{ vehicle.licenceplate }}</a></li>
+        </ul>
+    </div>
+    <div class="col-md-offset-1 col-md-9">
+        <h2>{{ selectedVehicle.licenceplate }}</h2>
+        <h4>Afstand: {{selectedVehicle.distance / 1000}} km</h4>
+        <h4>Tijdsduur: &plusmn;{{ duration }}</h4>
+        <table class="table table-bordered">
+            <tr>
+                <th></th>
+                <th>Naam</th>
+                <th>Adres</th>
+                <th>Notitie</th>
+            </tr>
+            <tr>
+                <td>Chauffeur</td>
+                <td>{{selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</td>
+
+                <td>{{selectedVehicle.owner.street}} {{selectedVehicle.owner.streetnumber}},
+                    {{selectedVehicle.owner.city}} {{selectedVehicle.owner.postalcode}}
+                </td>
+                <td></td>
+            </tr>
+            <tr ng-repeat="passenger in selectedVehicle.passengers">
+                <td><span ng-show="!passenger.canDrive">Passagier</span><span
+                        ng-show="passenger.canDrive">2de chauffeur</span></td>
+                <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
+                <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
+                <td>{{passenger.remark}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-12">
+        <a class="btn btn-default pull-left" href="#/journeys/plan/{{journey._id}}">Z powrotem</a>
+        <a class="btn btn-primary" href="/journeys/toPdf/{{journey._id}}">To pdf</a>
+    </div>
 </div>
