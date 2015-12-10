@@ -19,6 +19,70 @@ router.get('/allHistory', function(req, res) {
     });
 });
 
+router.get('/toPdf/:id', function(req, res) {
+
+    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, journey){
+        if (err) return console.error(err);
+
+        var fonts = {
+            Roboto: {
+                normal: 'public/fonts/Roboto-Regular.ttf',
+                bold: 'public/fonts/Roboto-Medium.ttf',
+                italics: 'public/fonts/Roboto-Italic.ttf',
+                bolditalics: 'public/fonts/Roboto-Italic.ttf'
+            }
+        };
+
+        var PdfPrinter = require('pdfmake/src/printer');
+        var printer = new PdfPrinter(fonts);
+        var fs = require('fs');
+
+        var docDefinition = {
+            content: [],
+            pageOrientation: 'landscape',
+            pageSize: 'A4'
+        };
+
+
+        journey.vehicles.forEach(function(v, index){
+            console.log(index);
+            var body = [[ 'First', 'Second', 'Third', 'The last one' ],
+                [ 'Value 1', 'Value 2', 'Value 3', 'Value 4' ],
+            [ { text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4' ]];
+            //body.push([ '', { text: 'Naam', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Notitie', style: 'tableHeader' }]);
+            //v.passengers.forEach(function(p){
+            //    body.push([{ text: 'Bold value', bold: true }, p.fullname, p.address, p.remark ]);
+            //});
+            docDefinition.content.push({table: {
+                // headers are automatically repeated if the table spans over multiple pages
+                // you can declare how many rows should be treated as headers
+                headerRows: 1,
+                widths: [ '*', 'auto', 100, '*' ],
+
+                body: body
+            },
+                pageBreak:'after'});
+
+
+        });
+
+
+        var pdfDoc = printer.createPdfKitDocument(docDefinition);
+        pdfDoc.pipe(fs.createWriteStream('basics.pdf')).on('finish',function(){
+            var file = fs.createReadStream('basics.pdf');
+            var stat = fs.statSync('basics.pdf');
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+            file.pipe(res);
+        });
+        pdfDoc.end();
+    });
+
+
+
+});
+
 router.get('/all', function(req, res) {
     Journey.find(function(err, objs) {
         if (err) return console.error(err);
@@ -191,5 +255,6 @@ router.post('/importVehicles', function(req, res){
     });
 
 });
+
 
 module.exports = router;
