@@ -70,13 +70,13 @@ router.get('/toPdf/:id', function(req, res) {
             // header information
 
             var startDate = journey.startDate.getDate() + '-' + (journey.startDate.getMonth() + 1) + '-' + journey.startDate.getFullYear();
-            var endDate = journey.endDate.getDate() + '-' + (journey.endDate.getMonth() + 1) + '-' + journey.endDate.getFullYear();
+            //var endDate = journey.endDate.getDate() + '-' + (journey.endDate.getMonth() + 1) + '-' + journey.endDate.getFullYear();
 
             var date = new Date(v.duration * 1000);
             var hh = date.getUTCHours();
             var mm = date.getUTCMinutes();
 
-            docDefinition.content.push({ text: journey.name + ' ' + startDate + ' / ' + endDate, style: 'header' });
+            docDefinition.content.push({ text: journey.name + ' ' + startDate , style: 'header' });
             docDefinition.content.push({ text: v.licenceplate, style: 'subHeader' });
             docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
@@ -139,7 +139,6 @@ router.post('/', function(req, res){
     var journey = new Journey();
     journey.name = req.body.name;
     journey.startDate = req.body.startDate;
-    journey.endDate = req.body.endDate;
     journey.save(function (err) {
         if (err) return console.error(err);
     });

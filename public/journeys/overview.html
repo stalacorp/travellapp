@@ -46,21 +46,6 @@
               </span>
                                     </p>
                                 </div>
-                                <div class="form-group">
-                                    <label for="endDate">Powrót</label>
-
-                                    <p class="input-group">
-                                        <input type="text" class="form-control" id="endDate"
-                                               uib-datepicker-popup="dd/MM/yyyy"
-                                               ng-model="journey.endDate" is-open="statusE.opened"
-                                               datepicker-options="dateOptions"
-                                               ng-required="true" close-text="Sluiten"/>
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="openE($event)"><i
-                                    class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                                    </p>
-                                </div>
                                 <button type="submit" class="btn btn-primary">Kontynułuj</button>
                             </form>
 
@@ -78,7 +63,6 @@
                                 <tr ng-repeat="journey in journeysActive">
                                     <td>{{ journey.name }}</td>
                                     <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
-                                    <td>{{ journey.endDate | date:'dd/MM/yyyy'}}</td>
                                     <td><a href="#/journeys/persons/{{journey._id}}"
                                            class="btn btn-default">Edytować</a></td>
                                 </tr>
@@ -99,13 +83,11 @@
                         <tr>
                             <th>Imię</th>
                             <th>Wylot</th>
-                            <th>Powrót</th>
                             <th>Otwarte</th>
                         </tr>
                         <tr ng-repeat="journey in journeysHistory">
                             <td>{{ journey.name }}</td>
                             <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
-                            <td>{{ journey.endDate | date:'dd/MM/yyyy'}}</td>
                             <td>
                                 <button ng-click="view(journey._id)" class="btn btn-default">Openen</button>
                             </td>
