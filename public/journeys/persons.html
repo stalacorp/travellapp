@@ -2,7 +2,7 @@
     <div class="tht-header">
         <h1>Zjazd {{ journey.name }} </h1>
 
-        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} - {{ journey.endDate | date:'dd/MM/yyyy'
             }}</p>
     </div>
 
@@ -34,7 +34,7 @@
 
 
 
-                    <h2>Upload met excel</h2>
+                    <h2 class="tht-header">Upload Excel</h2>
                     <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
                             accept=".xls,.csv,.xlsx" ngf-max-size="10MB">
                         Select File
@@ -58,7 +58,7 @@
 
 
 
-                    <h2>Pracowników</h2>
+                    <h2 class="tht-header">Pracowników</h2>
 
                     <div class="row">
                         <div class="col-lg-12">
@@ -78,9 +78,9 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>Voornaam</th>
-                            <th>Achternaam</th>
-                            <th>Kan rijden</th>
+                            <th>Nazwisko</th>
+                            <th>Nazwisko</th>
+                            <th>Prawo jazdy</th>
                         </tr>
                         </thead>
                         <tbody>

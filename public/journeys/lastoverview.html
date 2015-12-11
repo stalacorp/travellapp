@@ -2,7 +2,7 @@
     <div class="tht-header">
         <h1>Zjazd {{ journey.name }} </h1>
 
-        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} - {{ journey.endDate | date:'dd/MM/yyyy'
             }}</p>
     </div>
 
@@ -30,13 +30,16 @@
     </div>
 
     <div class="col-md-2">
+
+        <h2 class="tht-header">Samochody</h2>
+
         <ul class="nav nav-pills nav-stacked">
             <li ng-repeat="vehicle in vehicles" ng-click="vehicleClick($index)" ng-class="{active: $index == selected}"
                 role="presentation"><a href="">{{ vehicle.licenceplate }}</a></li>
         </ul>
     </div>
     <div class="col-md-offset-1 col-md-9">
-        <h2>{{ selectedVehicle.licenceplate }}</h2>
+        <h2 class="tht-header">{{ selectedVehicle.licenceplate }}</h2>
         <h4>Afstand: {{selectedVehicle.distance / 1000}} km</h4>
         <h4>Tijdsduur: &plusmn;{{ duration }}</h4>
         <table class="table table-bordered">

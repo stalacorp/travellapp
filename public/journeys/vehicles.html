@@ -2,7 +2,7 @@
     <div class="tht-header">
         <h1>Zjazd {{ journey.name }} </h1>
 
-        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} - {{ journey.endDate | date:'dd/MM/yyyy'
             }}</p>
     </div>
 
@@ -40,42 +40,41 @@
     <div class="row">
         <div class="col-md-3">
 
-            <h2>Import</h2>
+            <h2 class="tht-header">Import</h2>
 
             <div class="form-group">
-                <label for="import">Importeer auto's van een vorige reis:</label>
+                <label for="import">Import z poprzedniego zjazdu</label>
                 <select class="form-control" ng-model="selectedJourney" id="import"
                         ng-options="journey.name for journey in journeys"></select>
 
             </div>
-            <button class="btn btn-primary" ng-click="import()">Importeer</button>
+            <button class="btn btn-primary" ng-click="import()">Import</button>
 
 
         </div>
         <div class="col-md-offset-1 col-md-8">
 
-            <h2>Samochody</h2>
+            <h2 class="tht-header">Samochody</h2>
 
             <form class="form-inline">
                 <div class="form-group">
                     <input id="search" class="form-control" ng-model="searchText" type="text"
                            ng-change="search()" placeholder="Szukanie"/>
                 </div>
-                <button class="btn btn-primary" ng-click="searchText = '';search()">Wissen</button>
+                <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
                 <button class="btn btn-primary" data-toggle="modal"
                         ng-click="vehicle = null; vehicleText = 'Toevoegen'; isUpdate=false"
-                        data-target="#vehicleModal">Voeg auto toe
-                </button>
+                        data-target="#vehicleModal">Dodaj samochód</button>
             </form>
 
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>Nummerplaat</th>
-                    <th>Verantwoordelijke</th>
-                    <th>Aantal plaatsen</th>
-                    <th>Merk</th>
-                    <th>Type</th>
+                    <th>Tablica rejestracyjna</th>
+                    <th>Kierowca</th>
+                    <th>Miejsca siedzące</th>
+                    <th>Marka</th>
+                    <th>Rodzaj</th>
                 </tr>
                 </thead>
 
