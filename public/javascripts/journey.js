@@ -439,7 +439,7 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
                 return (person.firstname.toLowerCase().indexOf(searchText) != -1 || person.lastname.toLowerCase().indexOf(searchText) != -1);
             });
 
-            $scope.persons = persons.slice(0,10);
+            $scope.persons = persons.slice(0,15);
             $scope.currentPage = 1;
             $scope.totalItems = persons.length;
 
@@ -612,7 +612,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
                 return (vehicle.licenceplate.toLowerCase().indexOf(searchText) != -1);
             });
 
-            $scope.vehicles = vehicles.slice(0,10);
+            $scope.vehicles = vehicles.slice(0,15);
             $scope.currentPage = 1;
             $scope.totalItems = vehicles.length;
         };
