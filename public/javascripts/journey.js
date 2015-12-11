@@ -46,6 +46,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
         $scope.wayPoints = [];
         $scope.deleteShow = false;
         $scope.addShow = true;
+        $scope.giveCarShow = false;
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
@@ -187,6 +188,13 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                 vehicles = journey.vehicles.filter(function(v){
                     return v.owner;
                 });
+
+                $scope.emptyVehicles = journey.vehicles.filter(function(v){
+                    return !v.owner;
+                });
+
+                $scope.selectedEmptyVehicle= $scope.emptyVehicles[0];
+
                 $scope.vehicles = vehicles;
                 $scope.selectedVehicle = vehicles[0];
                 oldvehicle = vehicles[0];
@@ -215,6 +223,28 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
         });
 
         // scope functions
+
+        $scope.giveVehicle = function(){
+            var v = $scope.selectedEmptyVehicle;
+            v.owner = $scope.selectedPerson;
+            $scope.selectedPerson.vehicle = v;
+            $scope.emptyVehicles.pop(v);
+            $scope.vehicles.push(v);
+            $scope.selectedVehicle = $scope.vehicles[$scope.vehicles.length - 1];
+
+            var Vehicles = $resource('/journeys/updateVehicle');
+
+            var mockVehicle = Object();
+            mockVehicle._id = v._id;
+            mockVehicle.owner = $scope.selectedPerson._id;
+
+            Vehicles.save(mockVehicle);
+
+            $scope.markers[journey.persons.map(function (e) {
+                return e._id
+            }).indexOf($scope.selectedPerson._id)].icon.url = "../images/greenmarker.png";
+            updateDirections();
+        };
 
         $scope.updateRemark = function(){
             var Persons = $resource('/persons/remark/:id', { id: '@_id' }, {
@@ -249,6 +279,12 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
 
             $scope.deleteShow = false;
             $scope.addShow = true;
+            $scope.giveCarShow = false;
+
+            if (typeof($scope.selectedPerson) !== 'undefined' && !$scope.selectedPerson.isPas && $scope.selectedPerson.canDrive){
+                $scope.giveCarShow = true;
+            }
+
             if (typeof ($scope.selectedVehicle) !== 'undefined' && typeof($scope.selectedPerson) !== 'undefined'){
                 if ($scope.selectedVehicle.passengers.map(function (e) {
                         return e._id
