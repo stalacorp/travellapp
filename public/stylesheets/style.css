@@ -9,10 +9,19 @@ h1 {
 
 h2 {
     font-size:1.3em;
+    font-weight:bold;
+}
+
+.margin-top-20 {
+    margin-top:20px;
 }
 
 .navbar-brand {
     font-weight:bold;
+}
+
+.tht-footer {
+    padding:40px 0px 40px 0px;
 }
 
 .tht-red {
@@ -20,7 +29,7 @@ h2 {
 }
 
 .tht-header {
-    margin-bottom:20px;
+    margin-bottom:30px;
 }
 
 .icon {

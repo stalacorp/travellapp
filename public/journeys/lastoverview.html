@@ -2,7 +2,7 @@
     <div class="tht-header">
         <h1>Zjazd {{ journey.name }} </h1>
 
-        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} - {{ journey.endDate | date:'dd/MM/yyyy'
             }}</p>
     </div>
 
@@ -28,23 +28,27 @@
             <p>Przegląd</p>
         </div>
     </div>
+    <div class="row">
 
     <div class="col-md-2">
+
+        <h2 class="tht-header">Samochody</h2>
+
         <ul class="nav nav-pills nav-stacked">
             <li ng-repeat="vehicle in vehicles" ng-click="vehicleClick($index)" ng-class="{active: $index == selected}"
                 role="presentation"><a href="">{{ vehicle.licenceplate }}</a></li>
         </ul>
     </div>
     <div class="col-md-offset-1 col-md-9">
-        <h2>{{ selectedVehicle.licenceplate }}</h2>
-        <h4>Afstand: {{selectedVehicle.distance / 1000}} km</h4>
-        <h4>Tijdsduur: &plusmn;{{ duration }}</h4>
+        <h2 class="tht-header">{{ selectedVehicle.licenceplate }}</h2>
+        <h4>Dystans: {{selectedVehicle.distance / 1000}} km</h4>
+        <h4>Trwanie: &plusmn;{{ duration }}</h4>
         <table class="table table-bordered">
             <tr>
                 <th></th>
-                <th>Naam</th>
+                <th>Nazwisko</th>
                 <th>Adres</th>
-                <th>Notitie</th>
+                <th>Komentarz</th>
             </tr>
             <tr>
                 <td>Chauffeur</td>
@@ -64,8 +68,14 @@
             </tr>
         </table>
     </div>
-    <div class="col-lg-12">
-        <a class="btn btn-default pull-left" href="#/journeys/plan/{{journey._id}}">Z powrotem</a>
-        <a class="btn btn-primary" href="/journeys/toPdf/{{journey._id}}">To pdf</a>
     </div>
+<div class="row tht-footer">
+    <div class="col-md-2">
+        <a class="btn btn-default pull-left" href="#/journeys/plan/{{journey._id}}">Z powrotem</a>
+    </div>
+    <div class="col-md-offset-9 col-md-1">
+        <a class="btn btn-primary" href="/journeys/toPdf/{{journey._id}}"><span class="icon-File-Download"></span> PDF</a>
+    </div>
+    </div>
+
 </div>

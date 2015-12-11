@@ -3,7 +3,7 @@
     <div class="tht-header">
         <h1>Zjazd {{ journey.name }} </h1>
 
-        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} terug {{ journey.endDate | date:'dd/MM/yyyy'
+        <p>{{ journey.startDate | date:'dd/MM/yyyy' }} - {{ journey.endDate | date:'dd/MM/yyyy'
             }}</p>
     </div>
 
@@ -37,18 +37,25 @@
         <div class="col-md-offset-1 col-md-3">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Auto</h2>
+                    <h2 class="tht-header">Samochód</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                    <div class="form-group">
                     <select class="form-control" ng-model="selectedVehicle"
                             ng-options="vehicle.licenceplate for vehicle in vehicles"
                             ng-change="vehicleChange()"></select>
+                    </div>
+                    </div>
+                    </div>
 
-                    <p>Plaatsen: {{ selectedVehicle.passengersNr }}</p>
+                    <p>Miejsca siedzące: {{ selectedVehicle.passengersNr }}</p>
 
-                    <p>Merk: {{ selectedVehicle.brand }}</p>
+                    <p>Marka: {{ selectedVehicle.brand }}</p>
 
-                    <p>Type: {{ selectedVehicle.type }}</p>
+                    <p>Rodzaj: {{ selectedVehicle.type }}</p>
 
-                    <p ng-show="selectedVehicle.owner">Chauffeur: {{ selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</p>
+                    <p ng-show="selectedVehicle.owner">Kierowca: {{ selectedVehicle.owner.firstname + ' ' +
+                        selectedVehicle.owner.lastname}}</p>
                     <table class="table">
                         <tr ng-repeat="passenger in selectedVehicle.passengers">
                             <td>{{$index + 1}}.</td>
@@ -58,7 +65,7 @@
                             </td>
                             <td>
                                 <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal"
-                                        ng-click="giveRemark($index)">Notitie
+                                        ng-click="giveRemark($index)">Komentarz
                                 </button>
                             </td>
                         </tr>
@@ -67,7 +74,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Geselecteerd</h2>
+                    <h2>Wybrany</h2>
 
                     <p>{{ selectedPerson.firstname }} {{ selectedPerson.lastname }}</p>
 
@@ -75,13 +82,13 @@
 
                     <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
 
-                    <p ng-show="selectedPerson.canDrive">Heeft een rijbewijs</p>
+                    <p ng-show="selectedPerson.canDrive">Prawo jazdy</p>
                     <button class="btn btn-primary"
                             ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow"
-                            ng-click="addToVehicle()">Toevoegen aan auto
+                            ng-click="addToVehicle()">Dodać do samochodu
                     </button>
                     <button class="btn btn-danger" ng-show="selectedPerson && deleteShow"
-                            ng-click="removePassenger(selectedPerson._id)">Verwijderen uit auto
+                            ng-click="removePassenger(selectedPerson._id)">Usuń z samochodu
                     </button>
                     <button class="btn btn-success" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && giveCarShow && emptyVehicles.length > 0">
                         Geef een auto
@@ -96,6 +103,12 @@
                 </marker>
             </ng-map>
         </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <div class="row tht-footer">
         <div class="col-lg-12">
             <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}">Z powrotem</a>
             <a href="#/journeys/lastoverview/{{journey._id}}" class="btn btn-default pull-right">Następny</a>
@@ -108,12 +121,12 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Opmerking wijzigen</h4>
+                    <h4 class="modal-title" id="myModalLabel">Edytuj komentarz</h4>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="remark">Opmerking: </label>
+                            <label for="remark">Komentarz: </label>
                             <textarea class="form-control" id="remark" ng-model="remarkPerson.remark"></textarea>
                         </div>
                     </form>
