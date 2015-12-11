@@ -40,28 +40,72 @@ router.get('/toPdf/:id', function(req, res) {
         var docDefinition = {
             content: [],
             pageOrientation: 'landscape',
-            pageSize: 'A4'
+            pageSize: 'A4',
+            styles: {
+                tableHeader: {
+                    bold: true,
+                    fontSize: 13,
+                    color: 'black'
+                },
+                header: {
+                    bold: true,
+                    fontSize: 19,
+                    margin: [0, 0, 0, 10]
+                },
+                subHeader: {
+                    fontSize: 16,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                subText: {
+                    fontSize: 14,
+                    bold: false,
+                    margin: [0, 0, 0, 10]
+                }
+            }
         };
 
 
         journey.vehicles.forEach(function(v, index){
-            console.log(index);
-            var body = [[ 'First', 'Second', 'Third', 'The last one' ],
-                [ 'Value 1', 'Value 2', 'Value 3', 'Value 4' ],
-            [ { text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4' ]];
-            //body.push([ '', { text: 'Naam', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Notitie', style: 'tableHeader' }]);
-            //v.passengers.forEach(function(p){
-            //    body.push([{ text: 'Bold value', bold: true }, p.fullname, p.address, p.remark ]);
-            //});
+            // header information
+
+            var startDate = journey.startDate.getDate() + '-' + (journey.startDate.getMonth() + 1) + '-' + journey.startDate.getFullYear();
+            var endDate = journey.endDate.getDate() + '-' + (journey.endDate.getMonth() + 1) + '-' + journey.endDate.getFullYear();
+
+            var date = new Date(v.duration * 1000);
+            var hh = date.getUTCHours();
+            var mm = date.getUTCMinutes();
+
+            docDefinition.content.push({ text: journey.name + ' ' + startDate + ' / ' + endDate, style: 'header' });
+            docDefinition.content.push({ text: v.licenceplate, style: 'subHeader' });
+            docDefinition.content.push({ text: 'Afstand: ' + (v.distance / 1000) + ' km', style: 'subText' });
+            docDefinition.content.push({ text: 'Tijdsduur: ' + hh + ' uren en ' + mm + ' minuten', style: 'subText' });
+
+            // table
+            var body = [[ '', { text: 'Naam', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Notitie', style: 'tableHeader' }]];
+
+            body.push([{text: 'Chauffeur', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, '' ]);
+
+            v.passengers.forEach(function(p){                
+                if (p.canDrive){
+                    body.push([{text: '2de chauffeur', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                }else {
+                    body.push([{text: 'Passagier', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                }
+
+            });
+            var pageBreak = 'after';
+            if (index === journey.vehicles.length - 1){
+                pageBreak = '';
+            }
             docDefinition.content.push({table: {
                 // headers are automatically repeated if the table spans over multiple pages
                 // you can declare how many rows should be treated as headers
                 headerRows: 1,
-                widths: [ '*', 'auto', 100, '*' ],
-
+                widths: [ 100, 180, 270, '*' ],
                 body: body
             },
-                pageBreak:'after'});
+                pageBreak:pageBreak});
 
 
         });
@@ -71,9 +115,10 @@ router.get('/toPdf/:id', function(req, res) {
         pdfDoc.pipe(fs.createWriteStream('basics.pdf')).on('finish',function(){
             var file = fs.createReadStream('basics.pdf');
             var stat = fs.statSync('basics.pdf');
+            var fileStartDate = journey.startDate.getDate() + '_' + (journey.startDate.getMonth() + 1) + '_' + journey.startDate.getFullYear();
             res.setHeader('Content-Length', stat.size);
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=' + journey.name + ' ' + fileStartDate + '.pdf');
             file.pipe(res);
         });
         pdfDoc.end();
