@@ -26,10 +26,10 @@ router.get('/toPdf/:id', function(req, res) {
 
         var fonts = {
             Roboto: {
-                normal: 'public/fonts/Roboto-Regular.ttf',
-                bold: 'public/fonts/Roboto-Medium.ttf',
-                italics: 'public/fonts/Roboto-Italic.ttf',
-                bolditalics: 'public/fonts/Roboto-Italic.ttf'
+                normal: 'public/fonts/OpenSans-Regular.ttf',
+                bold: 'public/fonts/OpenSans-Bold.ttf',
+                italics: 'public/fonts/OpenSans-Italic.ttf',
+                bolditalics: 'public/fonts/OpenSans-BoldItalic.ttf'
             }
         };
 
