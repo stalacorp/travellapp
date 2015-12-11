@@ -277,6 +277,9 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                     }else {
                         $scope.markers[persindex].icon.url = '../images/redmarker.png';
                     }
+                    $scope.deleteShow = false;
+                    $scope.addShow = true;
+
                     updateDirections();
                 }
             });
@@ -295,6 +298,9 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                     $scope.markers[position].icon.url = "../images/selectedredmarker.png";
                 }
                 $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+
+                $scope.deleteShow = true;
+                $scope.addShow = false;
 
                 updateDirections();
             }
@@ -662,13 +668,16 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
 
         $scope.import = function(){
-            var Vehicles = $resource('/journeys/importVehicles');
-            var mock = {};
-            mock.currentJourneyId = journey._id;
-            mock.importJourneyId = $scope.selectedJourney._id;
-            Vehicles.save(mock, function(response){
-                refreshJourney();
-            });
+            if (typeof($scope.selectedJourney) !== 'undefined') {
+
+                var Vehicles = $resource('/journeys/importVehicles');
+                var mock = {};
+                mock.currentJourneyId = journey._id;
+                mock.importJourneyId = $scope.selectedJourney._id;
+                Vehicles.save(mock, function (response) {
+                    refreshJourney();
+                });
+            }
         };
 
         $scope.add = function(){

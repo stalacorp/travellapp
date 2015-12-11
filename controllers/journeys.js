@@ -78,19 +78,19 @@ router.get('/toPdf/:id', function(req, res) {
 
             docDefinition.content.push({ text: journey.name + ' ' + startDate + ' / ' + endDate, style: 'header' });
             docDefinition.content.push({ text: v.licenceplate, style: 'subHeader' });
-            docDefinition.content.push({ text: 'Afstand: ' + (v.distance / 1000) + ' km', style: 'subText' });
-            docDefinition.content.push({ text: 'Tijdsduur: ' + hh + ' uren en ' + mm + ' minuten', style: 'subText' });
+            docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
+            docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
 
             // table
-            var body = [[ '', { text: 'Naam', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Notitie', style: 'tableHeader' }]];
+            var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Komentarz', style: 'tableHeader' }]];
 
-            body.push([{text: 'Chauffeur', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, '' ]);
+            body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, '' ]);
 
             v.passengers.forEach(function(p){                
                 if (p.canDrive){
-                    body.push([{text: '2de chauffeur', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                    body.push([{text: 'Kierowca 2', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
                 }else {
-                    body.push([{text: 'Passagier', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                    body.push([{text: 'Pasażer', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
                 }
 
             });
