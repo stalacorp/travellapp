@@ -136,13 +136,53 @@ router.get('/all', function(req, res) {
 });
 
 router.post('/', function(req, res){
+
     var journey = new Journey();
+    if (req.body.copyId !== 0){
+        var persons = [];
+        Journey.findOne({_id:req.body.copyId}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, obj){
+            if (err) return console.error(err);
+            obj.persons.forEach(function(p){
+                var person = new Person(p);
+                person._id = undefined;
+                person.save(function(pers){
+                    persons.push(pers);
+                });
+            });
+
+            obj.vehicles.forEach(function(v){
+                var vehicle = new Vehicle(v);
+                vehicle.passengers.forEach(function(p, index, array){
+                    array[index] = persons[obj.persons.map(function (e) {
+                        return e._id
+                    }).indexOf(p._id)];
+                });
+                vehicle.owner = persons[obj.persons.map(function (e) {
+                    return e._id
+                }).indexOf(v.owner._id)];
+                vehicle._id = undefined;
+
+                vehicle.save(function(veh){
+                    Person.findOne({_id:veh.owner}, function(p){
+                        p.vehicle = veh._id;
+                        p.save();
+                    })
+                });
+
+            });
+
+
+        });
+
+    }
+
     journey.name = req.body.name;
     journey.startDate = req.body.startDate;
     journey.save(function (err) {
         if (err) return console.error(err);
+        res.json(journey);
     });
-    res.json(journey);
+
 });
 
 

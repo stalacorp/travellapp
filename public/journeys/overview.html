@@ -27,6 +27,11 @@
 
                             <form ng-submit="save()">
                                 <div class="form-group">
+                                    <label for="copy">Copy from</label>
+                                    <select class="form-control" id="copy" ng-model="selectedJourney"
+                                            ng-options="journey.name for journey in journeys" ></select>
+                                </div>
+                                <div class="form-group">
                                     <label for="name">Imię</label>
                                     <input type="text" class="form-control" ng-model="journey.name" id="name"
                                            ng-required="true"/>

@@ -347,7 +347,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
 
 routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
     function($scope, $resource, $location){
-
+        var inProgress = 2;
         // date
         $scope.today = function() {
             $scope.dt = new Date();
@@ -361,10 +361,6 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             $scope.status.opened = true;
         };
 
-        $scope.openE = function($event) {
-            $scope.statusE.opened = true;
-        };
-
 
         $scope.setDate = function(year, month, day) {
             $scope.dt = new Date(year, month, day);
@@ -374,26 +370,37 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             opened: false
         };
 
-        $scope.statusE = {
-            opened: false
+        function handleComplete() {
+            // main function
+
+            if (!--inProgress) {
+                var journeys = [{name:'', _id: 0}];
+                $scope.journeys = journeys.concat($scope.journeysActive).concat($scope.journeysHistory);
+                $scope.selectedJourney = $scope.journeys[0];
+            }
         };
+
 
 
         var JourneysActive = $resource('/journeys/allActive');
 
         JourneysActive.query(function(objs){
             $scope.journeysActive = objs;
+            handleComplete();
         });
 
         var JourneysHistory = $resource('/journeys/allHistory');
 
         JourneysHistory.query(function(objs){
             $scope.journeysHistory = objs;
+            handleComplete();
         });
 
         $scope.save = function(){
             var Journeys = $resource('/journeys');
-            Journeys.save($scope.journey, function(response){
+            var journey = $scope.journey;
+            journey.copyId = $scope.selectedJourney._id;
+            Journeys.save(journey, function(response){
                 $location.path('/journeys/persons/' + response._id);
             });
         };
