@@ -84,15 +84,15 @@ router.get('/toPdf/:id', function(req, res) {
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
 
             // table
-            var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Komentarz', style: 'tableHeader' }]];
+            var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Telefon', style: 'tableHeader' } ,{ text: 'Komentarz', style: 'tableHeader' }]];
 
-            body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, '' ]);
+            body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, v.owner.telephone ,'' ]);
 
             v.passengers.forEach(function(p){                
                 if (p.canDrive){
-                    body.push([{text: 'Kierowca 2', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                    body.push([{text: 'Kierowca 2', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone , p.remark ]);
                 }else {
-                    body.push([{text: 'Pasażer', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.remark ]);
+                    body.push([{text: 'Pasażer', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone, p.remark ]);
                 }
 
             });
@@ -104,7 +104,7 @@ router.get('/toPdf/:id', function(req, res) {
                 // headers are automatically repeated if the table spans over multiple pages
                 // you can declare how many rows should be treated as headers
                 headerRows: 1,
-                widths: [ 100, 180, 270, '*' ],
+                widths: [ 100, 160, 200, 130 , '*' ],
                 body: body
             },
                 pageBreak:pageBreak});
@@ -348,7 +348,7 @@ router.post('/addVehicle', function(req, res){
         vehicle.licenceplate = req.body.licenceplate;
         vehicle.passengersNr = req.body.passengersNr;
         vehicle.type = req.body.type;
-        vehicle.merk = req.body.merk;
+        vehicle.brand = req.body.brand;
         vehicle.save(function (err, obj) {
             if (err) return console.error(err);
             res.json(obj);

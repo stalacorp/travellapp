@@ -95,6 +95,7 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
     var teller = 0;
     var journey;
     var max = 0;
+    var minMax = 5;
 
     function updateJourney(){
         journey.save();
@@ -123,7 +124,7 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                     console.log(person.fullname);
                 }
                 teller++;
-                if (teller == (max - 2)){
+                if (teller == (max - minMax)){
                     updateJourney();
                 }
             });
@@ -146,20 +147,22 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                 max = rowcount;
             }
         }
-        res.json(max - 2);
-        for (var i = 3; i <= max; i++) {
+        res.json(max - minMax);
+        for (var i = 6; i <= max; i++) {
             if (sheet['B' + i] !== undefined) {
                 var person = new Person();
                 person.lastname = sheet['B' + i].v;
                 person.firstname = sheet['C' + i].v;
-                person.city = sheet['D' + i].v;
-                person.postalcode = sheet['E' + i].v;
-                person.street = sheet['F' + i].v;
-                person.streetnumber = sheet['G' + i].v;
+                person.province = sheet['D' + i].v;
+                person.city = sheet['E' + i].v;
+                person.postalcode = sheet['F' + i].v;
+                person.street = sheet['G' + i].v;
+                person.streetnumber = sheet['H' + i].v;
+                person.telephone = sheet['I' + i].v;
 
-                var canDrive = sheet['H' + i];
+                var canDrive = sheet['J' + i];
 
-                if (canDrive !== undefined && canDrive.v.toLowerCase() === 'x') {
+                if (canDrive !== undefined && canDrive.v.toLowerCase().indexOf('b') !== -1) {
                     person.canDrive = true;
                 }
 

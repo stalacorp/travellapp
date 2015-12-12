@@ -7,6 +7,8 @@ var personSchema = Schema({
     street: String,
     city: String,
     postalcode: String,
+    province: String,
+    telephone: {type: String, default:''},
     location: {lat: Number, lng: Number},
     canDrive: {type: Boolean, default:false},
     vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle', default:null },
