@@ -33,7 +33,7 @@ h2 {
 }
 
 .icon {
-    font-size:2.7em;
+    font-size:2.3em;
     font-weight:bold;
 }
 
@@ -44,6 +44,11 @@ h2 {
 .journey-navbar {
     margin-top:30px;
     margin-bottom:30px;
+    border:1px solid #EEE;
+    border-radius: 15px;
+    padding-top:25px;
+    padding-bottom:20px;
+    background-color:#FAFAFA;
 }
 
 .journey-navbar a {
@@ -53,7 +58,7 @@ h2 {
 
 .journey-navbar p {
     margin-top:10px;
-    font-size:1em;
+    font-size:0.8em;
 }
 
 .journey-navbar .icon:hover {
