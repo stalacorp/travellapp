@@ -3,6 +3,7 @@ var router = express.Router();
 var Journey = require("../models/journey").Journey;
 var Person = require("../models/person").Person;
 var Vehicle = require("../models/vehicle").Vehicle;
+var mongoose = require("mongoose");
 
 router.get('/allActive', function(req, res) {
 
@@ -140,48 +141,96 @@ router.post('/', function(req, res){
     var journey = new Journey();
     if (req.body.copyId !== 0){
         var persons = [];
-        Journey.findOne({_id:req.body.copyId}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, obj){
+        var vehicles = [];
+        var personIds = [];
+
+        Journey.findOne({_id:req.body.copyId}).deepPopulate('vehicles persons').exec(function(err, obj){
             if (err) return console.error(err);
-            obj.persons.forEach(function(p){
+            var oldPersons = obj.persons;
+            obj.persons.forEach(function(p, index, array){
+                personIds.push(p._id);
                 var person = new Person(p);
-                person._id = undefined;
-                person.save(function(pers){
+                person._id = mongoose.Types.ObjectId();
+                person.isNew = true;
+                person.save(function(err, pers){
+                    if (err) return console.error(err);
                     persons.push(pers);
+                    if (index === array.length - 1) {
+                        createVehicles();
+                    }
+
                 });
             });
 
-            obj.vehicles.forEach(function(v){
-                var vehicle = new Vehicle(v);
-                vehicle.passengers.forEach(function(p, index, array){
-                    array[index] = persons[obj.persons.map(function (e) {
-                        return e._id
-                    }).indexOf(p._id)];
+            function createVehicles(){
+                obj.vehicles.forEach(function(v, ind, arr){
+
+                    v.passengers.forEach(function(pas, index, array){
+                        //array[index] = persons[obj.persons.map(function (e) {
+                        //    return e._id
+                        //}).indexOf(p)];
+                        personIds.forEach(function(ps){
+                            if (pas == ps){
+                                console.log('wtf');
+                            }
+                        });
+
+
+
+                        //console.log(obj.persons.map(function (e) {
+                        //    return e._id
+                        //}).indexOf(p));
+
+                    });
+
+                    var vehicle = new Vehicle(v);
+
+                    //if (v.owner !== null){
+                    //    vehicle.owner = persons[obj.persons.map(function (e) {
+                    //        return e._id
+                    //    }).indexOf(v.owner._id)];
+                    //}
+
+                    vehicle._id = mongoose.Types.ObjectId();
+                    vehicle.isNew = true;
+
+                    vehicle.save(function(err, veh){
+                        if (err) return console.error(err);
+                        //if (veh.owner !== null){
+                        //    Person.findOne({_id:veh.owner}, function(p){
+                        //        p.vehicle = veh._id;
+                        //        p.save();
+                        //    });
+                        //}
+
+
+                        if (ind === arr.length - 1) {
+                            createJourney();
+                        }
+
+                    });
+
                 });
-                vehicle.owner = persons[obj.persons.map(function (e) {
-                    return e._id
-                }).indexOf(v.owner._id)];
-                vehicle._id = undefined;
+            };
 
-                vehicle.save(function(veh){
-                    Person.findOne({_id:veh.owner}, function(p){
-                        p.vehicle = veh._id;
-                        p.save();
-                    })
-                });
+            function createJourney(){
+                journey.persons = persons;
+                journey.vehicles = vehicles;
 
-            });
-
+            }
 
         });
 
+    }else {
+        journey.name = req.body.name;
+        journey.startDate = req.body.startDate;
+        journey.save(function (err) {
+            if (err) return console.error(err);
+            res.json(journey);
+        });
     }
 
-    journey.name = req.body.name;
-    journey.startDate = req.body.startDate;
-    journey.save(function (err) {
-        if (err) return console.error(err);
-        res.json(journey);
-    });
+
 
 });
 
