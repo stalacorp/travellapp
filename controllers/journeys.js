@@ -146,7 +146,7 @@ router.post('/', function(req, res){
 
         Journey.findOne({_id:req.body.copyId}).deepPopulate('vehicles persons').exec(function(err, obj){
             if (err) return console.error(err);
-            var oldPersons = obj.persons;
+
             obj.persons.forEach(function(p, index, array){
                 personIds.push(p._id);
                 var person = new Person(p);
@@ -154,61 +154,64 @@ router.post('/', function(req, res){
                 person.isNew = true;
                 person.save(function(err, pers){
                     if (err) return console.error(err);
-                    persons.push(pers);
+
                     if (index === array.length - 1) {
                         createVehicles();
                     }
 
                 });
+                persons.push(person);
             });
 
             function createVehicles(){
-                obj.vehicles.forEach(function(v, ind, arr){
+                obj.vehicles.forEach(function(v, theind, arr){
 
                     v.passengers.forEach(function(pas, index, array){
-                        //array[index] = persons[obj.persons.map(function (e) {
-                        //    return e._id
-                        //}).indexOf(p)];
-                        personIds.forEach(function(ps){
-                            if (pas == ps){
-                                console.log('wtf');
+
+                        personIds.forEach(function(ps, ind){
+                            if (ps.equals(pas)){
+                                array[index] = persons[ind];
+
                             }
                         });
 
-
-
-                        //console.log(obj.persons.map(function (e) {
-                        //    return e._id
-                        //}).indexOf(p));
-
                     });
 
-                    var vehicle = new Vehicle(v);
 
-                    //if (v.owner !== null){
-                    //    vehicle.owner = persons[obj.persons.map(function (e) {
-                    //        return e._id
-                    //    }).indexOf(v.owner._id)];
-                    //}
+                    if (v.owner !== null){
+
+                        personIds.forEach(function(ps, ind){
+                            if (ps.equals(v.owner)){
+                                v.owner = persons[ind];
+                            }
+                        });
+                    }
+
+                    var vehicle = new Vehicle(v);
 
                     vehicle._id = mongoose.Types.ObjectId();
                     vehicle.isNew = true;
 
                     vehicle.save(function(err, veh){
                         if (err) return console.error(err);
-                        //if (veh.owner !== null){
-                        //    Person.findOne({_id:veh.owner}, function(p){
-                        //        p.vehicle = veh._id;
-                        //        p.save();
-                        //    });
-                        //}
+
+                        if (veh.owner !== null){
+                            Person.findOne({_id:veh.owner}, function(err, p){
+                                if (err) return console.error(err);
+
+                                p.vehicle = veh._id;
+                                p.save();
+                            });
+                        }
 
 
-                        if (ind === arr.length - 1) {
+                        if (theind === arr.length - 1) {
                             createJourney();
                         }
 
                     });
+
+                    vehicles.push(vehicle);
 
                 });
             };
@@ -216,6 +219,13 @@ router.post('/', function(req, res){
             function createJourney(){
                 journey.persons = persons;
                 journey.vehicles = vehicles;
+
+                journey.name = req.body.name;
+                journey.startDate = req.body.startDate;
+                journey.save(function (err) {
+                    if (err) return console.error(err);
+                    res.json(journey);
+                });
 
             }
 
