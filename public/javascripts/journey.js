@@ -29,6 +29,8 @@ routesapp.config(['$routeProvider', function($routeProvider){
 
 }]);
 
+
+
 app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
     function($scope, $resource, $routeParams, NgMap){
         var inProgress = 2;
@@ -143,6 +145,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                     waypoints: points,
                     optimizeWaypoints:true
                 }, function (response, status) {
+                    console.log(response);
                     if (status === google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                         var distance = 0;
@@ -223,6 +226,101 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
         });
 
         // scope functions
+
+        $scope.autoRoute = function(){
+            directionsService.route({
+                origin: {lat: 50.9591399, lng: 5.5050771},
+                destination: {
+                    lat: $scope.selectedVehicle.owner.location.lat,
+                    lng: $scope.selectedVehicle.owner.location.lng
+                },
+                travelMode: google.maps.TravelMode.DRIVING,
+                waypoints: [],
+                optimizeWaypoints:true
+            }, function (response, status) {
+                //console.log(response);
+
+                if (status === google.maps.DirectionsStatus.OK) {
+
+
+                    //var distance = 0;
+                    //var seconds = 0;
+                    var mocks = [];
+
+                    response.routes[0].overview_path.forEach(function(path){
+
+                        var value = path.lat() + (path.lng() * 2.5);
+
+                        journey.persons.forEach(function(p){
+                            if (!p.isPas && !p.vehicle) {
+                                var persValue = p.location.lat + (p.location.lng * 2.5);
+                                var difference = getDistanceFromLatLonInKm(path.lat(),path.lng(), p.location.lat, p.location.lng);
+
+                                var mock = {};
+                                mock.difference = difference;
+                                mock.id = p._id;
+                                mocks.push(mock);
+                            }
+
+                        });
+                    });
+
+
+                    mocks.sort(by('difference'));
+
+                    var uniques = [];
+                    var teller = 0;
+                    var max = $scope.selectedVehicle.passengersNr -2;
+                    while (teller < max){
+                        var mock = mocks[teller];
+                        if (uniques.map(function (e) {
+                                return e.id
+                            }).indexOf(mock.id) === -1){
+                            console.log('fak');
+                            uniques.push(mock);
+
+                        }else {
+                            max++;
+                        }
+                        teller++;
+                    }
+
+                    uniques.forEach(function(u){
+                        console.log(u);
+                        journey.persons.forEach(function(p){
+                            if (p._id === u.id){
+                                p.isPas = true;
+                                $scope.selectedVehicle.passengers.push(p);
+                            }
+                        });
+                    });
+
+                    $scope.$apply($scope.selectedVehicle.passengers);
+                    updateDirections();
+
+
+                    //var newPassengers = [];
+                    //response.routes[0].waypoint_order.forEach(function(w){
+                    //    newPassengers.push($scope.selectedVehicle.passengers[w]);
+                    //});
+                    //$scope.selectedVehicle.passengers = newPassengers;
+                    //$scope.$apply($scope.selectedVehicle.passengers);
+                    //var passengerIds = [];
+                    //$scope.selectedVehicle.passengers.forEach(function(p){
+                    //    passengerIds.push(p._id);
+                    //});
+                    //var mock = {};
+                    //mock.vehicleId = $scope.selectedVehicle._id;
+                    //mock.passengers = passengerIds;
+                    //mock.duration = seconds;
+                    //mock.distance = distance;
+                    //
+                    //var Journey = $resource('/journeys/updatePassengers');
+                    //Journey.save(mock);
+
+                }
+            });
+        };
 
         $scope.giveVehicle = function(){
             var v = $scope.selectedEmptyVehicle;
@@ -333,7 +431,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                 }else {
                     $scope.markers[position].icon.url = "../images/selectedredmarker.png";
                 }
-                $scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+                //$scope.wayPoints.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
 
                 $scope.deleteShow = true;
                 $scope.addShow = false;
@@ -807,3 +905,49 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
 
     }]);
+
+/* sort function*/
+var by = function (path, reverse, primer, then) {
+    var get = function (obj, path) {
+            if (path) {
+                path = path.split('.');
+                for (var i = 0, len = path.length - 1; i < len; i++) {
+                    obj = obj[path[i]];
+                };
+                return obj[path[len]];
+            }
+            return obj;
+        },
+        prime = function (obj) {
+            return primer ? primer(get(obj, path)) : get(obj, path);
+        };
+
+    return function (a, b) {
+        var A = prime(a),
+            B = prime(b);
+
+        return (
+                (A < B) ? -1 :
+                    (A > B) ?  1 :
+                        (typeof then === 'function') ? then(a, b) : 0
+            ) * [1,-1][+!!reverse];
+    };
+};
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
