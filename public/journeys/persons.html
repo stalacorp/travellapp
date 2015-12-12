@@ -65,6 +65,9 @@
                                            ng-change="search()" placeholder="Szukanie"/>
                                 </div>
                                 <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        ng-click="person = null; personText = 'Toevoegen'; isUpdate=false"
+                                        data-target="#personModal">Dodaj samochód</button>
                             </form>
 
                         </div>
@@ -83,8 +86,9 @@
                         <tr ng-repeat="person in persons">
                             <td>{{ person.firstname }}</td>
                             <td>{{ person.lastname }}</td>
-                            <td><input type="checkbox" ng-checked="person.canDrive"/></td>
-                            <!--<td><button ng-click="edit(journey._id)" class="btn btn-default">Wijzigen</button></td>-->
+                            <td><button class="btn btn-primary" data-toggle="modal"
+                                        ng-click="update(person); personText = 'Wijzigen'; isUpdate=false"
+                                        data-target="#personModal">Wijzigen</button></td>
                         </tr>
                         </tbody>
                     </table>
@@ -105,6 +109,76 @@
         <a href="#/journeys/vehicles/{{journey._id}}" class="btn btn-default pull-right">Następny</a>
     </div>
 </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="cancel()" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Samochód {{ personText }}</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="firstname">Imię</label>
+                            <input class="form-control" type="text" id="firstname"
+                                   ng-model="person.firstname"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Nazwisko</label>
+                            <input class="form-control" type="text" id="lastname"
+                                   ng-model="person.lastname"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="province">Wojewódźtwo</label>
+                            <input class="form-control" type="text" id="province" ng-model="person.province"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Miejscowość</label>
+                            <input class="form-control" type="text" id="city" ng-model="person.city"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="postalcode">Kod pocztowy</label>
+                            <input class="form-control" type="text" id="postalcode" ng-model="person.postalcode"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="street">Ulica</label>
+                            <input class="form-control" type="text" id="street" ng-model="person.street"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="streetnumber">Nr domu</label>
+                            <input class="form-control" type="text" id="streetnumber" ng-model="person.streetnumber"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone">Telefon komórkowy</label>
+                            <input class="form-control" type="text" id="telephone" ng-model="person.telephone"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="person.canDrive"/>Prawo jazdy
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger pull-left" data-dismiss="modal" ng-show="isUpdate"
+                            ng-click="delete()">Usunąć
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">
+                        Zamknąć
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()">Dodaj <!--{{
+                        vehicleText }}-->
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

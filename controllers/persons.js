@@ -74,14 +74,81 @@ router.get('/all', function(req, res) {
 });
 
 router.put('/:id', function(req, res){
-    Person.findOneAndUpdate({_id:req.params.id},{$set: {isPas:true}}).exec();
-    Vehicle.findOne({_id:req.body.vId}, function(err, v){
-        if (err) return console.error(err);
-        v.passengers.push(req.params.id);
-        v.save();
-        res.status(201);
-        res.send('success');
+    Person.findOne({_id:req.params.id},function(err, p){
+        p.firstname = req.body.firstname;
+        p.lastname = req.body.lastname;
+        p.postalcode = req.body.postalcode;
+        p.city = req.body.city;
+        p.street = req.body.street;
+        p.streetnumber = req.body.streetnumber;
+        p.telephone = req.body.telephone;
+        p.province = req.body.province;
+        p.canDrive = req.body.canDrive;
+        if (p.postalcode !== req.body.postalcode || p.street !== req.body.street || p.streetnumber !== req.body.streetnumber){
+            
+            var geocodeParams = {
+                "address": p.address,
+                "language": "en"
+            };
+
+            gmAPI.geocode(geocodeParams, function (err, result) {
+                if (result.status === 'OK') {
+                    var location = result.results[0].geometry.location;
+                    p.location.lat = location.lat;
+                    p.location.lng = location.lng;
+                    p.save();                    
+                }else {
+                    console.log(p.fullname);
+                }
+            });
+        }
+
+        p.save();
+
     });
+
+    res.status(201);
+    res.send('success');
+});
+
+router.post('/', function(req, res){
+    var person = new Person();
+    person.firstname = req.body.firstname;
+    person.lastname = req.body.lastname;
+    person.postalcode = req.body.postalcode;
+    person.city = req.body.city;
+    person.street = req.body.street;
+    person.streetnumber = req.body.streetnumber;
+    person.telephone = req.body.telephone;
+    person.province = req.body.province;
+    person.canDrive = req.body.canDrive;
+
+    var geocodeParams = {
+        "address": person.address,
+        "language": "en"
+    };
+
+    gmAPI.geocode(geocodeParams, function (err, result) {
+        if (result.status === 'OK') {
+            var location = result.results[0].geometry.location;
+            person.location.lat = location.lat;
+            person.location.lng = location.lng;            
+            
+        }else {
+            console.log(person.fullname);
+        }
+    });
+
+    person.save();
+    res.json(person);
+
+    Journey.findOne({_id:req.body.journeyId}).exec(function(err, obj){
+        if (err) return console.error(err);
+        obj.persons.push(person);
+        obj.save();
+    });
+    
+
 });
 
 router.put('/remark/:id', function(req, res){
@@ -113,7 +180,7 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                 "language": "en"
             };
             gmAPI.geocode(geocodeParams, function (err, result) {
-                if (typeof(result) !== 'undefined') {
+                if (result.status === 'OK') {
                     var location = result.results[0].geometry.location;
                     person.location.lat = location.lat;
                     person.location.lng = location.lng;

@@ -459,18 +459,20 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
         var persons;
 
         function refreshPersons(){
-            Journey.get({id: $routeParams.id} ,function(obj) {
-                journey = obj;
+
                 $scope.journey = journey;
                 $scope.persons = journey.persons.slice(0,15);
                 $scope.currentPage = 1;
                 $scope.totalItems = journey.persons.length;
                 $scope.pageChanged();
 
-            });
+
         };
 
-        refreshPersons();
+        Journey.get({id: $routeParams.id} ,function(obj) {
+            journey = obj;
+            refreshPersons();
+        });
 
         $scope.pageChanged = function(){
             $scope.persons = journey.persons.slice($scope.currentPage *15 -15, $scope.currentPage *15);
@@ -543,13 +545,51 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
             }
         };
 
-
-        $scope.save = function(){
-            var Journeys = $resource('/journeys');
-            Journeys.save($scope.journey, function(response){
-                $location.path('/journeys/plan/' + response._id);
-            });
+        var backupPerson;
+        $scope.update = function(p){
+            backupPerson = angular.copy(p);
+            $scope.person = p;
+            $scope.vehicleText = 'Wijzigen';
+            $scope.isUpdate = true;
         };
+
+        $scope.cancel = function(){
+            if ($scope.isUpdate){
+                journey.persons.forEach(function (p, index, array){
+                    if (p._id == backupPerson._id){
+                        array[index] = backupPerson;
+                    }
+                });
+                refreshPersons();
+            }
+        };
+
+        $scope.add = function(){
+            if ($scope.person._id != null){
+                var Persons = $resource('/persons/:id', { id: '@_id' }, {
+                    update: { method: 'PUT' }
+                });
+                Persons.update($scope.person);
+
+            }else {
+                var Persons = $resource('/persons');
+                $scope.person.journeyId = journey._id;
+                Persons.save($scope.person, function(response){
+                    journey.persons.push(response);
+                    refreshPersons();
+                });
+
+            }
+
+        };
+
+
+        //$scope.save = function(){
+        //    var Journeys = $resource('/journeys');
+        //    Journeys.save($scope.journey, function(response){
+        //        $location.path('/journeys/plan/' + response._id);
+        //    });
+        //};
 
 
     }]);
@@ -701,12 +741,14 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
         $scope.cancel = function(){
-            journey.vehicles.forEach(function (vehicle, index, array){
-                if (vehicle._id == backupVehicle._id){
-                    array[index] = backupVehicle;
-                }
-            });
-            refreshVehicles();
+            if ($scope.isUpdate){
+                journey.vehicles.forEach(function (vehicle, index, array){
+                    if (vehicle._id == backupVehicle._id){
+                        array[index] = backupVehicle;
+                    }
+                });
+                refreshVehicles();
+            }
         };
 
 
