@@ -79,6 +79,7 @@ router.get('/toPdf/:id', function(req, res) {
 
             docDefinition.content.push({ text: journey.name + ' ' + startDate , style: 'header' });
             docDefinition.content.push({ text: v.licenceplate, style: 'subHeader' });
+            docDefinition.content.push({ text: 'Marka: ' + v.brand, style: 'subText' });
             docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
 
