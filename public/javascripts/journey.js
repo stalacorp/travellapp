@@ -347,7 +347,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
 
                                 var JourneyUpdate = $resource('/journeys/updatePassengers');
                                 JourneyUpdate.save(mock, function(res){
-                                    if (index == array.length - 1){
+                                    if (index === array.length - 1){
                                         var Journey = $resource('/journeys/:id', { id:'@_id' }, {
                                             update: { method: 'PUT' }
                                         });
@@ -427,7 +427,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
             $scope.addShow = true;
             $scope.giveCarShow = false;
 
-            if (typeof($scope.selectedPerson) !== 'undefined' && !$scope.selectedPerson.isPas && $scope.selectedPerson.canDrive){
+            if (typeof($scope.selectedPerson) !== 'undefined' && !$scope.selectedPerson.isPas && $scope.selectedPerson.canDrive && !$scope.selectedPerson.vehicle){
                 $scope.giveCarShow = true;
             }
 
