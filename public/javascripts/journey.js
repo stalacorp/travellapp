@@ -300,9 +300,10 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                             console.log(u);
                             journey.persons.forEach(function(p, ind, arr){
                                 if (p._id === u.id){
-                                    arr[ind].isPas = true;
+
                                     vehicleMock.passengers.push(p);
                                     points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+                                    arr[ind].isPas = true;
                                     //p.isPas = true;
                                     //$scope.selectedVehicle.passengers.push(p);
                                 }
@@ -319,7 +320,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                             waypoints: points,
                             optimizeWaypoints:true
                         }, function (response, status) {
-                            console.log(response);
                             if (status === google.maps.DirectionsStatus.OK) {
 
                                 var distance = 0;
@@ -328,7 +328,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                                     distance += l.distance.value;
                                     seconds += l.duration.value;
                                 });
-
+                                console.log(vehicleMock.passengers);
                                 var newPassengers = [];
                                 response.routes[0].waypoint_order.forEach(function(w){
                                     newPassengers.push(vehicleMock.passengers[w]);
