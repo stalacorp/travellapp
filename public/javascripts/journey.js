@@ -380,7 +380,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         $scope.autoRoute = function(){
             calcIndex = 0;
             console.log($scope.vehicles.length);
-            $interval(autoCalcRoute , 1500, $scope.vehicles.length);
+            $interval(autoCalcRoute , 2000, $scope.vehicles.length);
 
         };
 
