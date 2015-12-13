@@ -380,7 +380,7 @@ router.post('/importVehicles', function(req, res){
                     vehicle.save(function(somerr, veh){
                         if (somerr) return console.error(somerr);
                         if (veh.owner){
-                            Person.findOneAndUpdate({_id:veh.owner}, {$set: {vehicle: veh._id}}).execute();
+                            Person.findOneAndUpdate({_id:veh.owner}, {$set: {vehicle: veh._id}}).exec();
                         }
                     });
 
