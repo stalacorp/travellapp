@@ -321,8 +321,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                     directionsService.route({
                         origin: {lat: 50.9591399, lng: 5.5050771},
                         destination: {
-                            lat: $scope.selectedVehicle.owner.location.lat,
-                            lng: $scope.selectedVehicle.owner.location.lng
+                            lat: v.owner.location.lat,
+                            lng: v.owner.location.lng
                         },
                         travelMode: google.maps.TravelMode.DRIVING,
                         waypoints: points,

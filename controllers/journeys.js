@@ -5,6 +5,18 @@ var Person = require("../models/person").Person;
 var Vehicle = require("../models/vehicle").Vehicle;
 var mongoose = require("mongoose");
 
+var GoogleMapsAPI = require('googlemaps');
+
+// google api
+
+var publicConfig = {
+    key: 'AIzaSyCJOLfo5eFbcn_lBz9i7YNzvgwTazgLdMU',
+    stagger_time:       1000, // for elevationPath
+    encode_polylines:   false,
+    secure:             true // use https
+};
+var gmAPI = new GoogleMapsAPI(publicConfig);
+
 router.get('/allActive', function(req, res) {
 
     Journey.find({startDate: {$gt: new Date()}}, function(err, objs) {
@@ -398,6 +410,200 @@ router.post('/importVehicles', function(req, res){
         });
 
     });
+
+});
+
+router.get('/autoCalc/:id', function(req, res){
+
+    var calcIndex = 0;
+
+    Journey.findOne({_id:req.params.id}).deepPopulate('vehicles persons vehicles.owner').exec(function(err, journey) {
+        if (err) return console.error(err);
+
+        var vehicles = journey.vehicles.filter(function(v){
+           return v.owner;
+        });
+
+
+        var interval = setInterval(function () {
+
+            var v = vehicles[calcIndex];
+            console.log(calcIndex);
+
+            var directionsParams = {
+                origin: {lat: 50.9591399, lng: 5.5050771},
+                destination: {
+                    lat: v.owner.location.lat,
+                    lng: v.owner.location.lng
+                },
+                travelMode: "DRIVING"
+            };
+            gmAPI.directions(directionsParams, function (err, result) {
+                console.log(result);
+                if (result.status === "OK") {
+                    var mocks = [];
+
+                    result.results[0].routes[0].overview_path.forEach(function (path) {
+
+
+                        journey.persons.forEach(function (p) {
+                            if (!p.isPas && !p.vehicle) {
+
+                                var distance = getDistanceFromLatLonInKm(path.lat(), path.lng(), p.location.lat, p.location.lng);
+
+                                var mock = {};
+                                mock.distance = distance;
+                                mock.id = p._id;
+                                if (distance < 70) {
+                                    mocks.push(mock);
+                                }
+
+                            }
+
+                        });
+                    });
+
+
+                    mocks.sort(by('distance'));
+
+                    var uniques = [];
+                    var teller = 0;
+                    var drivers = 0;
+                    var max = v.passengersNr - 2;
+                    while (teller < max && teller < mocks.length) {
+                        var mock = mocks[teller];
+                        if (uniques.map(function (e) {
+                                return e.id
+                            }).indexOf(mock.id) === -1) {
+                            var person = journey.persons[journey.persons.map(function (e) {
+                                return e._id;
+                            }).indexOf(mock.id)];
+
+                            uniques.push(mock);
+                        } else {
+                            max++;
+                        }
+                        teller++;
+                    }
+
+                    var vehicleMock = {};
+                    vehicleMock.passengers = [];
+
+                    var points = [];
+                    uniques.forEach(function (u) {
+                        journey.persons.forEach(function (p, ind, arr) {
+                            if (p._id === u.id) {
+
+                                vehicleMock.passengers.push(p);
+                                points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+                                arr[ind].isPas = true;
+                                //p.isPas = true;
+                                //$scope.selectedVehicle.passengers.push(p);
+                            }
+                        });
+                    });
+
+                    var directionsParams = {
+                        origin: {lat: 50.9591399, lng: 5.5050771},
+                        destination: {
+                            lat: v.owner.location.lat,
+                            lng: v.selectedVehicle.owner.location.lng
+                        },
+                        travelMode: "DRIVING",
+                        waypoints: points,
+                        optimizeWaypoints: true
+                    };
+                    gmAPI.directions(directionsParams, function (err, result) {
+
+                        if (result.status === "OK") {
+
+                            var distance = 0;
+                            var seconds = 0;
+                            result.results[0].routes[0].legs.forEach(function (l) {
+                                distance += l.distance.value;
+                                seconds += l.duration.value;
+                            });
+
+                            var newPassengers = [];
+                            result.results[0].routes[0].waypoint_order.forEach(function (w) {
+                                newPassengers.push(vehicleMock.passengers[w]);
+                            });
+                            vehicleMock.passengers = newPassengers;
+
+                            var passengerIds = [];
+                            vehicleMock.passengers.forEach(function (p) {
+                                passengerIds.push(p._id);
+                            });
+                            var mock = {};
+
+
+                            v.passengers = passengerIds;
+                            v.duration = seconds;
+                            v.distance = distance;
+
+
+                            v.save(function(err, v){
+                                if (calcIndex === journey.vehicles.length) {
+                                    clearInterval(interval);
+                                }
+                            });
+
+                        }
+                    });
+
+
+                }
+            });
+            calcIndex++;
+
+        }, 200);
+
+    });
+
+    var by = function (path, reverse, primer, then) {
+        var get = function (obj, path) {
+                if (path) {
+                    path = path.split('.');
+                    for (var i = 0, len = path.length - 1; i < len; i++) {
+                        obj = obj[path[i]];
+                    };
+                    return obj[path[len]];
+                }
+                return obj;
+            },
+            prime = function (obj) {
+                return primer ? primer(get(obj, path)) : get(obj, path);
+            };
+
+        return function (a, b) {
+            var A = prime(a),
+                B = prime(b);
+
+            return (
+                    (A < B) ? -1 :
+                        (A > B) ?  1 :
+                            (typeof then === 'function') ? then(a, b) : 0
+                ) * [1,-1][+!!reverse];
+        };
+    };
+
+    function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = deg2rad(lat2-lat1);  // deg2rad below
+        var dLon = deg2rad(lon2-lon1);
+        var a =
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2)
+            ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c; // Distance in km
+        return d;
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI/180)
+    }
 
 });
 
