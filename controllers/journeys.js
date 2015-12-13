@@ -377,8 +377,11 @@ router.post('/importVehicles', function(req, res){
                     vehicle.passengersNr = v.passengersNr;
                     vehicle.type = v.type;
                     vehicle.merk = v.merk;
-                    vehicle.save(function(somerr){
+                    vehicle.save(function(somerr, veh){
                         if (somerr) return console.error(somerr);
+                        if (veh.owner){
+                            Person.findOne({_id:veh.owner}, {$set: {vehicle: veh._id}}).execute();
+                        }
                     });
 
                     cj.vehicles.push(vehicle);
