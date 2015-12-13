@@ -368,7 +368,7 @@ router.post('/importVehicles', function(req, res){
                     v.passengers = [];
 
                     cj.persons.forEach(function(p){
-                        if (p.firstname == v.owner.firstname && p.lastname == v.owner.lastname && p.street == v.owner.street && p.streetnumber == v.owner.streetnumber){
+                        if (v.owner && p.firstname == v.owner.firstname && p.lastname == v.owner.lastname && p.street == v.owner.street && p.streetnumber == v.owner.streetnumber){
                             vehicle.owner = p;
                         }
                     });
