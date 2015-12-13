@@ -417,7 +417,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
                 if (v.passengers.map(function(e){
                         return e._id;
                     }).indexOf(journey.persons[pos]._id) !== -1){
-                    console.log('test');
+
                     $scope.selectedVehicle = vehicles[index];
                     updateDirections();
                 }
