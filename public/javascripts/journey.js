@@ -850,7 +850,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         };
 
         $scope.pageChanged = function(){
-            $scope.vehicles = $scope.vehicles.slice($scope.currentPage *15 -15, $scope.currentPage *15);
+            $scope.vehicles = journey.vehicles.slice($scope.currentPage *15 -15, $scope.currentPage *15);
         };
 
         $scope.vehicleClick = function(id, p){
