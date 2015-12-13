@@ -644,7 +644,10 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
             dynamic++;
             $scope.dynamic = dynamic;
             if (dynamic == 100){
-                refreshPersons();
+                Journey.get({id: $routeParams.id} ,function(obj) {
+                    journey = obj;
+                    refreshPersons();
+                });
             }
         };
 
