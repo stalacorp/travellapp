@@ -324,12 +324,6 @@ router.post('/updatePassengers', function(req, res){
                 }
             });
         }
-        //v.passengers.forEach(function(pas){
-        //    Person.findOneAndUpdate({_id:pas},{$set: {isPas: false}}).exec();
-        //});
-        //req.body.passengers.forEach(function(pas){
-        //    Person.findOneAndUpdate({_id:pas},{$set: {isPas: true}}).exec();
-        //});
 
         v.passengers = req.body.passengers;
         v.distance = req.body.distance;
