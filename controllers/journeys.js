@@ -66,8 +66,12 @@ router.get('/toPdf/:id', function(req, res) {
             }
         };
 
+        var vehicles = journey.vehicles.filter(function(v){
+            return v.owner;
+        });
 
-        journey.vehicles.forEach(function(v, index){
+
+        vehicles.forEach(function(v, index){
             // header information
 
             var startDate = journey.startDate.getDate() + '-' + (journey.startDate.getMonth() + 1) + '-' + journey.startDate.getFullYear();
@@ -88,7 +92,7 @@ router.get('/toPdf/:id', function(req, res) {
 
             body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, v.owner.telephone ,'' ]);
 
-            v.passengers.forEach(function(p){                
+            v.passengers.forEach(function(p){
                 if (p.canDrive){
                     body.push([{text: 'Kierowca 2', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone , p.remark ]);
                 }else {
@@ -97,7 +101,7 @@ router.get('/toPdf/:id', function(req, res) {
 
             });
             var pageBreak = 'after';
-            if (index === journey.vehicles.length - 1){
+            if (index === vehicles.length - 1){
                 pageBreak = '';
             }
             docDefinition.content.push({table: {
