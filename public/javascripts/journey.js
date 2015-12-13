@@ -31,8 +31,8 @@ routesapp.config(['$routeProvider', function($routeProvider){
 
 
 
-app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
-    function($scope, $resource, $routeParams, NgMap){
+app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$interval',
+    function($scope, $resource, $routeParams, NgMap, $interval){
         var inProgress = 2;
 
 
@@ -44,6 +44,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
         var map;
         var personIds = [];
         var oldvehicle;
+        var calcIndex;
         $scope.remarkPerson;
         $scope.wayPoints = [];
         $scope.deleteShow = false;
@@ -231,142 +232,155 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap',
 
         // scope functions
 
-        $scope.autoRoute = function(){
-            $scope.vehicles.forEach(function(v, index, array){
-                directionsService.route({
-                    origin: {lat: 50.9591399, lng: 5.5050771},
-                    destination: {
-                        lat: v.owner.location.lat,
-                        lng: v.owner.location.lng
-                    },
-                    travelMode: google.maps.TravelMode.DRIVING
-                }, function (response, status) {
+        function autoCalcRoute(){
 
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        var mocks = [];
+            var v = $scope.vehicles[calcIndex];
+            console.log(calcIndex);
 
-                        response.routes[0].overview_path.forEach(function(path){
+            directionsService.route({
+                origin: {lat: 50.9591399, lng: 5.5050771},
+                destination: {
+                    lat: v.owner.location.lat,
+                    lng: v.owner.location.lng
+                },
+                travelMode: google.maps.TravelMode.DRIVING
+            }, function (response, status) {
+
+                if (status === google.maps.DirectionsStatus.OK) {
+                    var mocks = [];
+
+                    response.routes[0].overview_path.forEach(function(path){
 
 
-                            journey.persons.forEach(function(p){
-                                if (!p.isPas && !p.vehicle) {
+                        journey.persons.forEach(function(p){
+                            if (!p.isPas && !p.vehicle) {
 
-                                    var distance = getDistanceFromLatLonInKm(path.lat(),path.lng(), p.location.lat, p.location.lng);
+                                var distance = getDistanceFromLatLonInKm(path.lat(),path.lng(), p.location.lat, p.location.lng);
 
-                                    var mock = {};
-                                    mock.distance = distance;
-                                    mock.id = p._id;
+                                var mock = {};
+                                mock.distance = distance;
+                                mock.id = p._id;
+                                if (distance < 70){
                                     mocks.push(mock);
                                 }
 
-                            });
-                        });
-
-
-                        mocks.sort(by('distance'));
-
-                        var uniques = [];
-                        var teller = 0;
-                        var drivers = 0;
-                        var max = v.passengersNr -2;
-                        while (teller < max && teller < mocks.length){
-                            var mock = mocks[teller];
-                            if (uniques.map(function (e) {
-                                    return e.id
-                                }).indexOf(mock.id) === -1){
-                                var person = journey.persons[journey.persons.map(function(e){
-                                    return e._id;
-                                }).indexOf(mock.id)];
-                                //if (person.canDrive){
-                                //    drivers++;
-                                //}
-                                //if (drivers == 0 && uniques.length == v.passengersNr - 3){
-                                //    max++;
-                                //}else {
-                                //    uniques.push(mock);
-                                //}
-                                uniques.push(mock);
-                            }else {
-                                max++;
                             }
-                            teller++;
+
+                        });
+                    });
+
+
+                    mocks.sort(by('distance'));
+
+                    var uniques = [];
+                    var teller = 0;
+                    var drivers = 0;
+                    var max = v.passengersNr -2;
+                    while (teller < max && teller < mocks.length){
+                        var mock = mocks[teller];
+                        if (uniques.map(function (e) {
+                                return e.id
+                            }).indexOf(mock.id) === -1){
+                            var person = journey.persons[journey.persons.map(function(e){
+                                return e._id;
+                            }).indexOf(mock.id)];
+
+                            console.log(mock.distance);
+                            //if (person.canDrive){
+                            //    drivers++;
+                            //}
+                            //if (drivers == 0 && uniques.length == v.passengersNr - 3){
+                            //    max++;
+                            //}else {
+                            //    uniques.push(mock);
+                            //}
+                            uniques.push(mock);
+                        }else {
+                            max++;
                         }
+                        teller++;
+                    }
 
-                        var vehicleMock = {};
-                        vehicleMock.passengers = [];
+                    var vehicleMock = {};
+                    vehicleMock.passengers = [];
 
-                        var points = [];
-                        uniques.forEach(function(u){
-                            journey.persons.forEach(function(p, ind, arr){
-                                if (p._id === u.id){
+                    var points = [];
+                    uniques.forEach(function(u){
+                        journey.persons.forEach(function(p, ind, arr){
+                            if (p._id === u.id){
 
-                                    vehicleMock.passengers.push(p);
-                                    points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
-                                    arr[ind].isPas = true;
-                                    //p.isPas = true;
-                                    //$scope.selectedVehicle.passengers.push(p);
+                                vehicleMock.passengers.push(p);
+                                points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
+                                arr[ind].isPas = true;
+                                //p.isPas = true;
+                                //$scope.selectedVehicle.passengers.push(p);
+                            }
+                        });
+                    });
+
+                    directionsService.route({
+                        origin: {lat: 50.9591399, lng: 5.5050771},
+                        destination: {
+                            lat: $scope.selectedVehicle.owner.location.lat,
+                            lng: $scope.selectedVehicle.owner.location.lng
+                        },
+                        travelMode: google.maps.TravelMode.DRIVING,
+                        waypoints: points,
+                        optimizeWaypoints:true
+                    }, function (response, status) {
+                        console.log(status);
+                        if (status === google.maps.DirectionsStatus.OK) {
+
+                            var distance = 0;
+                            var seconds = 0;
+                            response.routes[0].legs.forEach(function(l){
+                                distance += l.distance.value;
+                                seconds += l.duration.value;
+                            });
+
+                            var newPassengers = [];
+                            response.routes[0].waypoint_order.forEach(function(w){
+                                newPassengers.push(vehicleMock.passengers[w]);
+                            });
+                            vehicleMock.passengers = newPassengers;
+
+                            var passengerIds = [];
+                            vehicleMock.passengers.forEach(function(p){
+                                passengerIds.push(p._id);
+                            });
+                            var mock = {};
+                            mock.vehicleId = v._id;
+                            mock.passengers = passengerIds;
+                            mock.duration = seconds;
+                            mock.distance = distance;
+
+                            var JourneyUpdate = $resource('/journeys/updatePassengers');
+                            JourneyUpdate.save(mock, function(res){
+                                if (calcIndex === $scope.vehicles.length){
+                                    var Journey = $resource('/journeys/:id', { id:'@_id' }, {
+                                        update: { method: 'PUT' }
+                                    });
+                                    Journey.get({id: $routeParams.id} ,function(obj) {
+                                        journey = obj;
+                                        prepareLoad();
+                                    });
                                 }
                             });
-                        });
+                        }
+                    });
 
-                        directionsService.route({
-                            origin: {lat: 50.9591399, lng: 5.5050771},
-                            destination: {
-                                lat: $scope.selectedVehicle.owner.location.lat,
-                                lng: $scope.selectedVehicle.owner.location.lng
-                            },
-                            travelMode: google.maps.TravelMode.DRIVING,
-                            waypoints: points,
-                            optimizeWaypoints:true
-                        }, function (response, status) {
-                            console.log(status);
-                            if (status === google.maps.DirectionsStatus.OK) {
+                    //$scope.$apply($scope.selectedVehicle.passengers);
+                    //updateDirections();
 
-                                var distance = 0;
-                                var seconds = 0;
-                                response.routes[0].legs.forEach(function(l){
-                                    distance += l.distance.value;
-                                    seconds += l.duration.value;
-                                });
-
-                                var newPassengers = [];
-                                response.routes[0].waypoint_order.forEach(function(w){
-                                    newPassengers.push(vehicleMock.passengers[w]);
-                                });
-                                vehicleMock.passengers = newPassengers;
-
-                                var passengerIds = [];
-                                vehicleMock.passengers.forEach(function(p){
-                                    passengerIds.push(p._id);
-                                });
-                                var mock = {};
-                                mock.vehicleId = v._id;
-                                mock.passengers = passengerIds;
-                                mock.duration = seconds;
-                                mock.distance = distance;
-
-                                var JourneyUpdate = $resource('/journeys/updatePassengers');
-                                JourneyUpdate.save(mock, function(res){
-                                    if (index === array.length - 1){
-                                        var Journey = $resource('/journeys/:id', { id:'@_id' }, {
-                                            update: { method: 'PUT' }
-                                        });
-                                        Journey.get({id: $routeParams.id} ,function(obj) {
-                                            journey = obj;
-                                            prepareLoad();
-                                        });
-                                    }
-                                });
-                            }
-                        });
-
-                        //$scope.$apply($scope.selectedVehicle.passengers);
-                        //updateDirections();
-
-                    }
-                });
-
+                }
             });
+            calcIndex++;
+        }
+
+        $scope.autoRoute = function(){
+            calcIndex = 0;
+            console.log($scope.vehicles.length);
+            $interval(autoCalcRoute , 200, $scope.vehicles.length);
 
         };
 
