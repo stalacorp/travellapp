@@ -84,15 +84,17 @@ router.put('/:id', function(req, res){
         p.telephone = req.body.telephone;
         p.province = req.body.province;
         p.canDrive = req.body.canDrive;
-        if (p.postalcode !== req.body.postalcode || p.street !== req.body.street || p.streetnumber !== req.body.streetnumber){
+        if (true){
             
             var geocodeParams = {
                 "address": p.address,
                 "language": "en"
             };
+            console.log('faq');
 
             gmAPI.geocode(geocodeParams, function (err, result) {
                 if (result.status === 'OK') {
+                    console.log('test');
                     var location = result.results[0].geometry.location;
                     p.location.lat = location.lat;
                     p.location.lng = location.lng;
