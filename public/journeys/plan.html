@@ -1,3 +1,9 @@
+<style>
+    .angucomplete-dropdown {
+        overflow-y: auto;
+        max-height: 200px;
+    }
+</style>
 <div class="container">
 
     <div class="tht-header">
@@ -84,7 +90,7 @@
 
                     <p ng-show="selectedPerson.canDrive">Prawo jazdy</p>
                     <button class="btn btn-primary"
-                            ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow"
+                            ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow && !selectedPerson.isPas"
                             ng-click="addToVehicle()">Dodać do samochodu
                     </button>
                     <button class="btn btn-danger" ng-show="selectedPerson && deleteShow"
@@ -97,8 +103,23 @@
             </div>
         </div>
         <div class="col-lg-8">
+            <div angucomplete-alt
+                 id="autoPerson"
+                 placeholder="Zoek personen"
+                 pause="100"
+                 selected-object="personMatch"
+                 local-data="persons"
+                 search-fields="firstname,lastname"
+                 title-field="firstname, ,lastname"
+                 minlength="1"
+                 input-class="form-control form-control-small"
+                 match-class="highlight"
+                 auto-match="true">
+            </div>
+            <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
             <ng-map zoom="6" style="height:600px">
                 <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]"
+                        zIndex="{{marker.zIndex}}"
                         on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}">
                 </marker>
             </ng-map>

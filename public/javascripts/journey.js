@@ -45,6 +45,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         var personIds = [];
         var oldvehicle;
         var calcIndex;
+        var oldPerson;
         $scope.remarkPerson;
         $scope.wayPoints = [];
         $scope.deleteShow = false;
@@ -85,10 +86,13 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                             ret.icon.url = '../images/fadedbluemarker.png';
                         }else {
                             ret.icon.url = '../images/bluemarker.png';
+
                         }
+                        ret.zIndex = 2;
 
                     }else {
                         ret.icon.url = '../images/greenmarker.png';
+                        ret.zIndex = 5;
                     }
                 }else {
                     if (person.isPas){
@@ -96,6 +100,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                     }else {
                         ret.icon.url = '../images/redmarker.png';
                     }
+                    ret.zIndex = 1;
                 }
 
                 markers.push(ret);
@@ -146,7 +151,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                     waypoints: points,
                     optimizeWaypoints:true
                 }, function (response, status) {
-                    console.log(response);
+
                     if (status === google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                         var distance = 0;
@@ -197,6 +202,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
             vehicles = journey.vehicles.filter(function(v){
                 return v.owner;
             });
+            $scope.persons = journey.persons;
 
             $scope.emptyVehicles = journey.vehicles.filter(function(v){
                 return !v.owner;
@@ -391,6 +397,43 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
             //$interval(autoCalcRoute , 2000, $scope.vehicles.length);
 
         };
+
+        $scope.personMatch = function(selected){
+
+            if (selected) {
+                oldPerson = selected.originalObject;
+                var ind = journey.persons.map(function (e) {
+                    return e._id
+                }).indexOf(oldPerson._id);
+
+                $scope.markers[ind].icon.url = "../images/yellowmarker.png";
+                $scope.markers[ind].zIndex = 10;
+                map.setZoom(9);
+                map.setCenter({"lat":oldPerson.location.lat , "lng": oldPerson.location.lng});
+                $scope.onMarkerClick({}, ind);
+            }else {
+                if (oldPerson !== undefined) {
+                    var ind = journey.persons.map(function (e) {
+                        return e._id
+                    }).indexOf(oldPerson._id);
+                    if (oldPerson.canDrive) {
+                        if (oldPerson.vehicle) {
+                            $scope.markers[ind].icon.url = "../images/greenmarker.png";
+                        } else {
+                            $scope.markers[ind].icon.url = "../images/bluemarker.png";
+                        }
+
+                    } else {
+                        $scope.markers[ind].icon.url = "../images/redmarker.png";
+                    }
+                }
+            }
+        };
+
+        $scope.clearInput = function () {
+            $scope.$broadcast('angucomplete-alt:clearInput');
+        }
+
 
         $scope.giveVehicle = function(){
             var v = $scope.selectedEmptyVehicle;

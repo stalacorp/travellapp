@@ -1,4 +1,4 @@
-var app = angular.module("travellapp", ['ngResource', 'ngRoute','personsapp','routesapp']);
+var app = angular.module("travellapp", ['ngResource', 'ngRoute','personsapp','routesapp', 'angucomplete-alt']);
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/', {
