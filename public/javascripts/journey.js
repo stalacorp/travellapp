@@ -234,6 +234,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 
         function autoCalcRoute(){
 
+
+
             var v = $scope.vehicles[calcIndex];
             console.log(calcIndex);
 
@@ -378,9 +380,15 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         }
 
         $scope.autoRoute = function(){
-            calcIndex = 0;
-            console.log($scope.vehicles.length);
-            $interval(autoCalcRoute , 2000, $scope.vehicles.length);
+            var JourneyCalc = $resource('/journeys/autoCalc/:id', { id:'@_id' }, {
+                update: { method: 'PUT' }
+            });
+            JourneyCalc.get({id: $routeParams.id} ,function(obj) {
+
+            });
+            //calcIndex = 0;
+            //console.log($scope.vehicles.length);
+            //$interval(autoCalcRoute , 2000, $scope.vehicles.length);
 
         };
 
@@ -497,6 +505,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 
                 $scope.deleteShow = true;
                 $scope.addShow = false;
+                $scope.giveCarShow = false;
 
                 updateDirections();
             }
@@ -690,21 +699,6 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
 
                 });
 
-                //file.upload.then(function (response) {
-                //    $timeout(function () {
-                //        file.result = response.data;
-                //    });
-                //}, function (response) {
-                //    if (response.status != -1) {
-                //        $scope.errorMsg = 'Er is iets misgegaan';
-                //    }else {
-                //        console.log(response);
-                //        refreshPersons();
-                //    }
-                //}, function (evt) {
-                //    file.progress = Math.min(100, parseInt(100.0 *
-                //    evt.loaded / evt.total));
-                //});
             }
         };
 
@@ -743,6 +737,18 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
                 });
 
             }
+
+        };
+
+        $scope.delete = function(){
+            journey.persons.forEach(function (p, index, array){
+                if (p._id == backupPerson._id){
+                    array.splice(index, 1);
+                    var Persons = $resource('/persons/:id');
+                    Persons.delete({id: p._id });
+                }
+            });
+            refreshPersons();
 
         };
 
@@ -841,7 +847,7 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
                     }
                 });
             }
-
+            $scope.searchPersonText = '';
             $('#ownerModal').modal('hide');
             refreshPersons();
         };
@@ -870,6 +876,10 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         $scope.vehicleClick = function(id, p){
             vehicleClicked = id;
             previousOwner = p;
+            $scope.hasOwner = false;
+            if (p){
+                $scope.hasOwner = true;
+            }
         };
 
 
@@ -945,6 +955,17 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
 
             }
 
+        };
+        // remove owner
+        $scope.removeOwner = function(){
+            previousOwner.vehicle = null;
+            journey.persons.push(previousOwner);
+            $scope.vehicles[vehicleClicked].owner = null;
+
+            var Vehicles = $resource('/vehicles/removeOwner');
+            Vehicles.save({id: $scope.vehicles[vehicleClicked]._id});
+
+            refreshPersons();
         };
 
         // vehicle delete

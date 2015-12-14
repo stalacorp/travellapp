@@ -75,26 +75,26 @@ router.get('/all', function(req, res) {
 
 router.put('/:id', function(req, res){
     Person.findOne({_id:req.params.id},function(err, p){
-        p.firstname = req.body.firstname;
-        p.lastname = req.body.lastname;
-        p.postalcode = req.body.postalcode;
-        p.city = req.body.city;
-        p.street = req.body.street;
-        p.streetnumber = req.body.streetnumber;
-        p.telephone = req.body.telephone;
-        p.province = req.body.province;
-        p.canDrive = req.body.canDrive;
-        if (true){
+
+        if (p.postalcode !== req.body.postalcode || p.street !== req.body.street || p.streetnumber !== req.body.streetnumber){
+
+            p.firstname = req.body.firstname;
+            p.lastname = req.body.lastname;
+            p.postalcode = req.body.postalcode;
+            p.city = req.body.city;
+            p.street = req.body.street;
+            p.streetnumber = req.body.streetnumber;
+            p.telephone = req.body.telephone;
+            p.province = req.body.province;
+            p.canDrive = req.body.canDrive;
             
             var geocodeParams = {
                 "address": p.address,
                 "language": "en"
             };
-            console.log('faq');
 
             gmAPI.geocode(geocodeParams, function (err, result) {
                 if (result.status === 'OK') {
-                    console.log('test');
                     var location = result.results[0].geometry.location;
                     p.location.lat = location.lat;
                     p.location.lng = location.lng;
@@ -103,9 +103,21 @@ router.put('/:id', function(req, res){
                     console.log(p.fullname);
                 }
             });
+        }else {
+
+            p.firstname = req.body.firstname;
+            p.lastname = req.body.lastname;
+            p.postalcode = req.body.postalcode;
+            p.city = req.body.city;
+            p.street = req.body.street;
+            p.streetnumber = req.body.streetnumber;
+            p.telephone = req.body.telephone;
+            p.province = req.body.province;
+            p.canDrive = req.body.canDrive;
+            p.save();
         }
 
-        p.save();
+
 
     });
 
@@ -136,7 +148,6 @@ router.post('/', function(req, res){
             person.location.lat = location.lat;
             person.location.lng = location.lng;
             person.save();
-            console.log('test');
             
         }else {
             console.log(person.fullname);
@@ -153,6 +164,13 @@ router.post('/', function(req, res){
     });
     
 
+});
+
+router.delete('/:id', function(req, res){
+    Person.findOneAndRemove({_id:req.params.id}).exec();
+
+    res.status(201);
+    res.send('success');
 });
 
 router.put('/remark/:id', function(req, res){

@@ -188,6 +188,9 @@
                                     ng-change="pagePersonChanged()"></uib-pagination>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-danger pull-left" data-dismiss="modal" ng-show="hasOwner"
+                            ng-click="removeOwner()">Usunąć
+                    </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Zamknąć</button>
                 </div>
             </div>

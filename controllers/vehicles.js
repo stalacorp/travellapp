@@ -21,6 +21,22 @@ router.put('/:id', function(req, res){
     res.send('success');
 });
 
+router.post('/removeOwner', function(req, res){
+    Vehicle.findOne({_id: req.body.id}).deepPopulate('passengers').exec(function(err, v){
+        if (err) return console.error(err);
+        Person.findOneAndUpdate({_id: v.owner}, {$set: {vehicle:null}}).exec();
+        v.owner = null;
+        v.passengers.forEach(function(p){
+            p.isPas = false;
+            p.save();
+        });
+        v.passengers = [];
+        v.save();
+    });
+    res.status(201);
+    res.send('success');
+});
+
 router.delete('/:id', function(req, res){
     Vehicle.findOne({_id:req.params.id}).populate('passengers').exec(function(err, v){
         if (err) return console.error(err);

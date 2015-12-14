@@ -431,7 +431,7 @@ router.get('/autoCalc/:id', function(req, res){
             console.log(calcIndex);
 
             var directionsParams = {
-                origin: {lat: 50.9591399, lng: 5.5050771},
+                origin: {"lat": 50.9591399, "lng": 5.5050771},
                 destination: {
                     lat: v.owner.location.lat,
                     lng: v.owner.location.lng
@@ -439,6 +439,7 @@ router.get('/autoCalc/:id', function(req, res){
                 travelMode: "DRIVING"
             };
             gmAPI.directions(directionsParams, function (err, result) {
+                console.log(err);
                 console.log(result);
                 if (result.status === "OK") {
                     var mocks = [];
@@ -497,8 +498,8 @@ router.get('/autoCalc/:id', function(req, res){
                                 vehicleMock.passengers.push(p);
                                 points.push({location: {lat: p.location.lat, lng: p.location.lng}, stopover: true});
                                 arr[ind].isPas = true;
-                                //p.isPas = true;
-                                //$scope.selectedVehicle.passengers.push(p);
+                                p.isPas = true;
+                                p.save();
                             }
                         });
                     });
@@ -544,6 +545,7 @@ router.get('/autoCalc/:id', function(req, res){
 
                             v.save(function(err, v){
                                 if (calcIndex === journey.vehicles.length) {
+                                    res.json('fak');
                                     clearInterval(interval);
                                 }
                             });
