@@ -132,14 +132,16 @@ router.post('/', function(req, res){
         if (result.status === 'OK') {
             var location = result.results[0].geometry.location;
             person.location.lat = location.lat;
-            person.location.lng = location.lng;            
+            person.location.lng = location.lng;
+            person.save();
+            console.log('test');
             
         }else {
             console.log(person.fullname);
         }
     });
 
-    person.save();
+
     res.json(person);
 
     Journey.findOne({_id:req.body.journeyId}).exec(function(err, obj){
