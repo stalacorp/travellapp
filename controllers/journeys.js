@@ -104,7 +104,7 @@ router.get('/toPdf/:id', function(req, res) {
             docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
 
-            docDefinition.content.push({ text: 'Każdy kierowca nr 1 ponosi osobiście odpowiedzialność za pojazd który został mu przekazany przez pracodawcę na zjazd do Polski i powrót do Belgii w dniach 30-10-2015 do 08-11-2015. Przekazanie pojazdu osobom trzecim odbywa się na własne ryzyko i tylko i wyłącznie na podstawie własnej decyzji. W razie poniesienia jakichkolwiek szkód, odpowiedzialność materialna będzie leżała po stronie kierowcy nr. 1.', style: 'text' });
+            docDefinition.content.push({ text: 'Każdy kierowca nr 1 ponosi osobiście odpowiedzialność za pojazd który został mu przekazany przez pracodawcę na zjazd do Polski i powrót do Belgii w dniach 17-12-2015 do 02-01-2016. Przekazanie pojazdu osobom trzecim odbywa się na własne ryzyko i tylko i wyłącznie na podstawie własnej decyzji. W razie poniesienia jakichkolwiek szkód, odpowiedzialność materialna będzie leżała po stronie kierowcy nr. 1.', style: 'text' });
 
             // table
             var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Telefon', style: 'tableHeader' } ,{ text: 'Komentarz', style: 'tableHeader' }]];
