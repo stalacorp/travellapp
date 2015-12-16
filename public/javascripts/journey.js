@@ -50,7 +50,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         $scope.wayPoints = [];
         $scope.deleteShow = false;
         $scope.addShow = true;
-        $scope.giveCarShow = false;
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
@@ -91,7 +90,16 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                         ret.zIndex = 2;
 
                     }else {
-                        ret.icon.url = '../images/greenmarker.png';
+                        var ind = vehicles.map(function (e) {
+                            return e.owner._id
+                        }).indexOf(person._id);
+
+                        if (ind !== -1 && vehicles[ind].passengers.length >= (vehicles[ind].passengersNr - 2)){
+                            ret.icon.url = '../images/fadedgreenmarker.png';
+                        }else {
+                            ret.icon.url = '../images/greenmarker.png';
+                        }
+
                         ret.zIndex = 5;
                     }
                 }else {
@@ -490,11 +498,6 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 
             $scope.deleteShow = false;
             $scope.addShow = true;
-            $scope.giveCarShow = false;
-
-            if (typeof($scope.selectedPerson) !== 'undefined' && !$scope.selectedPerson.isPas && $scope.selectedPerson.canDrive && !$scope.selectedPerson.vehicle){
-                $scope.giveCarShow = true;
-            }
 
             if (typeof ($scope.selectedVehicle) !== 'undefined' && typeof($scope.selectedPerson) !== 'undefined'){
                 if ($scope.selectedVehicle.passengers.map(function (e) {
@@ -527,9 +530,23 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
                     $scope.deleteShow = false;
                     $scope.addShow = true;
 
+                    $scope.markers[journey.persons.map(function (e) {
+                        return e._id
+                    }).indexOf($scope.selectedVehicle.owner._id)].icon.url = '../images/greenmarker.png';
+
                     updateDirections();
                 }
             });
+
+            if ($scope.selectedVehicle.passengers.length >= $scope.selectedVehicle.passengersNr - 2){
+                $scope.markers[journey.persons.map(function (e) {
+                    return e._id
+                }).indexOf($scope.selectedVehicle.owner._id)].icon.url = '../images/fadedgreenmarker.png';
+            }else {
+                $scope.markers[journey.persons.map(function (e) {
+                    return e._id
+                }).indexOf($scope.selectedVehicle.owner._id)].icon.url = '../images/greenmarker.png';
+            }
         };
 
         $scope.addToVehicle = function(){
@@ -538,7 +555,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
             if (!p.isPas && v.passengers.length < v.passengersNr - 1){
                 $scope.selectedPerson.isPas = true;
                 $scope.selectedVehicle.passengers.push(p);
-                p.vehicle = v._id;
+
                 if (p.canDrive){
                     $scope.markers[position].icon.url = "../images/selectedbluemarker.png";
                 }else {
@@ -548,7 +565,12 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 
                 $scope.deleteShow = true;
                 $scope.addShow = false;
-                $scope.giveCarShow = false;
+
+                if (v.passengers.length >= v.passengersNr - 2){
+                    $scope.markers[journey.persons.map(function (e) {
+                        return e._id
+                    }).indexOf(v.owner._id)].icon.url = '../images/fadedgreenmarker.png';
+                }
 
                 updateDirections();
             }

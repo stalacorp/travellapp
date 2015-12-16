@@ -56,7 +56,7 @@
                 <td>{{selectedVehicle.owner.street}} {{selectedVehicle.owner.streetnumber}},
                     {{selectedVehicle.owner.city}} {{selectedVehicle.owner.postalcode}}
                 </td>
-                <td></td>
+                <td>{{selectedVehicle.owner.remark}}</td>
             </tr>
             <tr ng-repeat="passenger in selectedVehicle.passengers">
                 <td><span ng-show="!passenger.canDrive">Passagier</span><span

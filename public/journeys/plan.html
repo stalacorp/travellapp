@@ -61,7 +61,7 @@
                     <p>Rodzaj: {{ selectedVehicle.type }}</p>
 
                     <p ng-show="selectedVehicle.owner">Kierowca: {{ selectedVehicle.owner.firstname + ' ' +
-                        selectedVehicle.owner.lastname}}</p>
+                        selectedVehicle.owner.lastname}} <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal" ng-click="remarkPerson = selectedVehicle.owner">Komentarz</button></p>
                     <table class="table">
                         <tr ng-repeat="passenger in selectedVehicle.passengers">
                             <td>{{$index + 1}}.</td>
@@ -96,7 +96,7 @@
                     <button class="btn btn-danger" ng-show="selectedPerson && deleteShow"
                             ng-click="removePassenger(selectedPerson._id)">Usuń z samochodu
                     </button>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && giveCarShow && emptyVehicles.length > 0">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && emptyVehicles.length > 0 && !selectedPerson.isPas && selectedPerson.canDrive && !selectedPerson.vehicle">
                         Geef een auto
                     </button>
                 </div>
@@ -119,7 +119,7 @@
             <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
             <ng-map zoom="6" style="height:600px">
                 <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]"
-                        zIndex="{{marker.zIndex}}"
+                        z-index="{{marker.zIndex}}"
                         on-click="onMarkerClick({{marker.pos}})" title="{{marker.title}}" icon="{{marker.icon}}">
                 </marker>
             </ng-map>

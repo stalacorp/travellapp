@@ -102,7 +102,7 @@ router.get('/toPdf/:id', function(req, res) {
             // table
             var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Telefon', style: 'tableHeader' } ,{ text: 'Komentarz', style: 'tableHeader' }]];
 
-            body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, v.owner.telephone ,'' ]);
+            body.push([{text: 'Kierowca 1', style: 'tableHeader'}, v.owner.fullname, v.owner.street + ' ' + v.owner.streetnumber + ', ' + v.owner.city + ' ' + v.owner.postalcode, v.owner.telephone , v.owner.remark ]);
 
             v.passengers.forEach(function(p){
                 if (p.canDrive){
