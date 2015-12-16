@@ -14,22 +14,22 @@
 
 
     <div class="row journey-navbar">
-        <div class="col-md-3 text-center">
+        <div class="col-md-3 col-xs-3 text-center">
             <a href="#/journeys/persons/{{journey._id}}"><span class="icon-Mens icon"></span></a>
 
             <p>Pracowników</p>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-3 col-xs-3 text-center">
             <a href="#/journeys/vehicles/{{journey._id}}"><span class="icon-Car-2 icon"></span></a>
 
             <p>Samochody</p>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-3 col-xs-3 text-center">
             <span class="icon-Map2 icon active-icon"></span>
 
             <p>Mapa</p>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-md-3 col-xs-3 text-center">
             <a href="#/journeys/lastoverview/{{journey._id}}"><span class="icon-Notepad-2 icon"></span></a>
 
             <p>Przegląd</p>
@@ -46,12 +46,12 @@
                     <!--<button class="btn btn-primary" ng-click="autoRoute()">Auto calculate</button>-->
                     <div class="row">
                         <div class="col-md-6">
-                    <div class="form-group">
-                    <select class="form-control" ng-model="selectedVehicle"
-                            ng-options="vehicle.licenceplate for vehicle in vehicles"
-                            ng-change="vehicleChange()"></select>
-                    </div>
-                    </div>
+                            <div class="form-group">
+                                <select class="form-control" ng-model="selectedVehicle"
+                                        ng-options="vehicle.licenceplate for vehicle in vehicles"
+                                        ng-change="vehicleChange()"></select>
+                            </div>
+                        </div>
                     </div>
 
                     <p>Miejsca siedzące: {{ selectedVehicle.passengersNr }}</p>
@@ -103,20 +103,30 @@
             </div>
         </div>
         <div class="col-lg-8">
-            <div angucomplete-alt
-                 id="autoPerson"
-                 placeholder="Zoek personen"
-                 pause="100"
-                 selected-object="personMatch"
-                 local-data="persons"
-                 search-fields="firstname,lastname"
-                 title-field="firstname, ,lastname"
-                 minlength="1"
-                 input-class="form-control form-control-small"
-                 match-class="highlight"
-                 auto-match="true">
+            <div class="row">
+                <div class="col-md-4">
+                    <form class="form-inline tht-header">
+                        <div class="form-group">
+                            <div angucomplete-alt
+                                 id="autoPerson"
+                                 placeholder="Szukanie"
+                                 pause="100"
+                                 selected-object="personMatch"
+                                 local-data="persons"
+                                 search-fields="firstname,lastname"
+                                 title-field="firstname, ,lastname"
+                                 minlength="1"
+                                 input-class="form-control form-control-small"
+                                 match-class="highlight"
+                                 auto-match="true">
+                            </div>
+                        </div>
+                        <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
+                    </form>
+
+                </div>
             </div>
-            <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
+
             <ng-map zoom="6" style="height:600px">
                 <marker ng-repeat="marker in markers" position="[{{marker.lat}},{{marker.lng}}]"
                         z-index="{{marker.zIndex}}"
@@ -124,8 +134,9 @@
                 </marker>
             </ng-map>
         </div>
-        </div>
     </div>
+</div>
+
 </div>
 <div class="container">
 
@@ -171,8 +182,11 @@
                 <div class="modal-body">
                     <select class="form-control" ng-model="selectedEmptyVehicle"
                             ng-options="vehicle.licenceplate for vehicle in emptyVehicles"></select>
+
                     <p>Passagiers: {{selectedEmptyVehicle.passengersNr}}</p>
+
                     <p>Merk: {{selectedEmptyVehicle.brand}}</p>
+
                     <p>Type: {{selectedEmptyVehicle.type}}</p>
                 </div>
                 <div class="modal-footer">
