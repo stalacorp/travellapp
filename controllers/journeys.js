@@ -62,16 +62,21 @@ router.get('/toPdf/:id', function(req, res) {
                 },
                 header: {
                     bold: true,
-                    fontSize: 19,
+                    fontSize: 18,
                     margin: [0, 0, 0, 10]
                 },
                 subHeader: {
-                    fontSize: 16,
+                    fontSize: 15,
                     bold: true,
                     margin: [0, 0, 0, 10]
                 },
                 subText: {
                     fontSize: 14,
+                    bold: false,
+                    margin: [0, 0, 0, 10]
+                },
+                text: {
+                    fontSize: 11,
                     bold: false,
                     margin: [0, 0, 0, 10]
                 }
@@ -98,6 +103,8 @@ router.get('/toPdf/:id', function(req, res) {
             docDefinition.content.push({ text: 'Marka: ' + v.brand, style: 'subText' });
             docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
+
+            docDefinition.content.push({ text: 'Każdy kierowca nr 1 ponosi osobiście odpowiedzialność za pojazd który został mu przekazany przez pracodawcę na zjazd do Polski i powrót do Belgii w dniach 30-10-2015 do 08-11-2015. Przekazanie pojazdu osobom trzecim odbywa się na własne ryzyko i tylko i wyłącznie na podstawie własnej decyzji. W razie poniesienia jakichkolwiek szkód, odpowiedzialność materialna będzie leżała po stronie kierowcy nr. 1.', style: 'text' });
 
             // table
             var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Telefon', style: 'tableHeader' } ,{ text: 'Komentarz', style: 'tableHeader' }]];
