@@ -72,9 +72,36 @@
     <div class="col-md-2">
         <a class="btn btn-default pull-left" href="#/journeys/plan/{{journey._id}}">Z powrotem</a>
     </div>
-    <div class="col-md-offset-9 col-md-1">
+    <div class="col-md-offset-8 col-md-1">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#pdfTextModal">Pdf Header</button>
+    </div>
+    <div class="col-md-1">
         <a class="btn btn-primary" href="/journeys/toPdf/{{journey._id}}"><span class="icon-File-Download"></span> PDF</a>
     </div>
+    </div>
+
+    <div class="modal fade" id="pdfTextModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Change pdf text</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="pdfText">Text: </label>
+                            <textarea class="form-control" id="pdfText" ng-model="journey.pdfText"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                    <button class="btn btn-primary" data-dismiss="modal" ng-click="updatePdfText()">Wijzigen</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

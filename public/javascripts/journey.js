@@ -681,6 +681,14 @@ routesapp.controller('LastOverviewCtrl', ['$scope', '$resource', '$location', '$
             $scope.duration = hh + ' uren en ' + mm + ' minuten';
         };
 
+        $scope.updatePdfText = function(){
+            var Journey = $resource('/journeys/pdfText/:id', { id:'@_id' }, {
+                update: { method: 'PUT' }
+            });
+
+            Journey.update($scope.journey);
+        };
+
 
     }]);
 

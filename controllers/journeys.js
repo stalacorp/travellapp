@@ -32,6 +32,12 @@ router.get('/allHistory', function(req, res) {
     });
 });
 
+router.put('/pdfText/:id', function(req, res){
+    Journey.findOneAndUpdate({_id:req.params.id}, {$set: {pdfText: req.body.pdfText}}).exec();
+    res.status(201);
+    res.send('success');
+});
+
 router.get('/toPdf/:id', function(req, res) {
 
     Journey.findOne({_id:req.params.id}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, journey){
@@ -104,7 +110,7 @@ router.get('/toPdf/:id', function(req, res) {
             docDefinition.content.push({ text: 'Dystans: ' + (v.distance / 1000) + ' km', style: 'subText' });
             docDefinition.content.push({ text: 'Trwanie: ' + hh + ' h and ' + mm + ' min', style: 'subText' });
 
-            docDefinition.content.push({ text: 'Każdy kierowca nr 1 ponosi osobiście odpowiedzialność za pojazd który został mu przekazany przez pracodawcę na zjazd do Polski i powrót do Belgii w dniach 17-12-2015 do 02-01-2016. Przekazanie pojazdu osobom trzecim odbywa się na własne ryzyko i tylko i wyłącznie na podstawie własnej decyzji. W razie poniesienia jakichkolwiek szkód, odpowiedzialność materialna będzie leżała po stronie kierowcy nr. 1.', style: 'text' });
+            docDefinition.content.push({ text: journey.pdfText, style: 'text' });
 
             // table
             var body = [[ '', { text: 'Nazwisko', style: 'tableHeader' }, { text: 'Adres', style: 'tableHeader' }, { text: 'Telefon', style: 'tableHeader' } ,{ text: 'Komentarz', style: 'tableHeader' }]];
@@ -113,7 +119,7 @@ router.get('/toPdf/:id', function(req, res) {
 
             v.passengers.forEach(function(p){
                 if (p.canDrive){
-                    body.push([{text: 'Kierowca 2', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone , p.remark ]);
+                    body.push([{text: 'Kierowca backup', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone , p.remark ]);
                 }else {
                     body.push([{text: 'Pasażer', style: 'tableHeader'}, p.fullname, p.street + ' ' + p.streetnumber + ', ' + p.city + ' ' + p.postalcode, p.telephone, p.remark ]);
                 }
