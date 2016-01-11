@@ -19,14 +19,14 @@ var gmAPI = new GoogleMapsAPI(publicConfig);
 
 router.get('/allActive', function(req, res) {
 
-    Journey.find({startDate: {$gt: new Date()}}, function(err, objs) {
+    Journey.find({startDate: {$gt: new Date()}, isVisible:true}, function(err, objs) {
         if (err) return console.error(err);
         res.json(objs);
     });
 });
 
 router.get('/allHistory', function(req, res) {
-    Journey.find({startDate: {$lt: new Date()}}, function(err, objs) {
+    Journey.find({startDate: {$lt: new Date()}, isVisible:true}, function(err, objs) {
         if (err) return console.error(err);
         res.json(objs);
     });
@@ -34,6 +34,19 @@ router.get('/allHistory', function(req, res) {
 
 router.put('/pdfText/:id', function(req, res){
     Journey.findOneAndUpdate({_id:req.params.id}, {$set: {pdfText: req.body.pdfText}}).exec();
+    res.status(201);
+    res.send('success');
+});
+
+router.put('/:id', function(req, res){
+    Journey.findOneAndUpdate({_id:req.params.id}, {$set: {name: req.body.name, startDate: req.body.startDate}}).exec();
+    res.status(201);
+    res.send('success');
+});
+
+router.delete('/:id', function(req, res){
+    Journey.findOneAndUpdate({_id:req.params.id}, {$set: {isVisible: false}}).exec();
+
     res.status(201);
     res.send('success');
 });

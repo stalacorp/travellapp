@@ -47,7 +47,7 @@
                         ng-options="journey.name for journey in journeys"></select>
 
             </div>
-            <button class="btn btn-primary" ng-click="import()">Import</button>
+            <button class="btn btn-primary canDisable" ng-click="import()">Import</button>
 
 
         </div>
@@ -61,7 +61,7 @@
                            ng-change="search()" placeholder="Szukanie"/>
                 </div>
                 <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
-                <button class="btn btn-primary" data-toggle="modal"
+                <button class="btn btn-primary canDisable" data-toggle="modal"
                         ng-click="vehicle = null; vehicleText = 'Toevoegen'; isUpdate=false"
                         data-target="#vehicleModal">Dodaj samochód</button>
             </form>
@@ -139,13 +139,13 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger pull-left" data-dismiss="modal" ng-show="isUpdate"
+                    <button class="btn btn-danger pull-left canDisable" data-dismiss="modal" ng-show="isUpdate"
                             ng-click="delete()">Usunąć
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">
                         Zamknąć
                     </button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()">Dodaj <!--{{
+                    <button type="button" class="btn btn-primary canDisable" data-dismiss="modal" ng-click="add()">Dodaj <!--{{
                         vehicleText }}-->
                     </button>
                 </div>
@@ -180,7 +180,7 @@
                             <td>{{ person.firstname }}</td>
                             <td>{{ person.lastname }}</td>
                             <td>
-                                <button ng-click="pick($index)" class="btn btn-primary">Wybierać</button>
+                                <button ng-click="pick($index)" class="btn btn-primary" ng-disabled="canDisable">Wybierać</button>
                             </td>
                         </tr>
                     </table>
@@ -188,7 +188,7 @@
                                     ng-change="pagePersonChanged()"></uib-pagination>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger pull-left" data-dismiss="modal" ng-show="hasOwner"
+                    <button class="btn btn-danger pull-left canDisable" data-dismiss="modal" ng-show="hasOwner"
                             ng-click="removeOwner()">Usunąć
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Zamknąć</button>

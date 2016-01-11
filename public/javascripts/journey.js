@@ -51,6 +51,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         $scope.deleteShow = false;
         $scope.addShow = true;
 
+        $scope.canDisable = false;
+
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, preserveViewport: true});
         directionsDisplay.suppressMarkers ='true';
@@ -235,6 +237,11 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         });
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
+
+            if (new Date(journey.startDate) < new Date()){
+                $('.canDisable').prop('disabled', true);
+                $scope.canDisable = true;
+            }
             handleComplete();
         });
 
@@ -582,6 +589,8 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
     function($scope, $resource, $location){
         var inProgress = 2;
+        var backupJourney;
+        var index;
         // date
         $scope.today = function() {
             $scope.dt = new Date();
@@ -595,12 +604,20 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             $scope.status.opened = true;
         };
 
+        $scope.open2 = function($event) {
+            $scope.status2.opened = true;
+        };
+
 
         $scope.setDate = function(year, month, day) {
             $scope.dt = new Date(year, month, day);
         };
 
         $scope.status = {
+            opened: false
+        };
+
+        $scope.status2 = {
             opened: false
         };
 
@@ -630,13 +647,68 @@ routesapp.controller('OverviewCtrl', ['$scope', '$resource', '$location',
             handleComplete();
         });
 
+        $scope.setJourney = function(j, ind){
+            backupJourney = angular.copy(j);
+            $scope.eJourney = j;
+            index = ind;
+
+
+            $('#eName').closest('.form-group').removeClass('has-error');
+            $('#eStartDate').closest('.form-group').removeClass('has-error');
+        };
+
+        $scope.delete = function(){
+            var Journey = $resource('/journeys/:id');
+            Journey.delete({id: $scope.eJourney._id });
+
+            $scope.journeysActive.splice(index, 1);
+        };
+
+        $scope.editJourney = function(){
+            var ok = true;
+            var timestamp = Date.parse($scope.eJourney.startDate);
+
+            if (isNaN(timestamp)==true) {
+                $('#eStartDate').closest('.form-group').addClass('has-error');
+                ok = false;
+            }
+
+            if ($scope.eJourney.name.length === 0){
+                $('#eName').closest('.form-group').addClass('has-error');
+                ok = false;
+            }
+
+            if (ok) {
+                var Journey = $resource('/journeys/:id', {id: '@_id'}, {
+                    update: {method: 'PUT'}
+                });
+
+                Journey.update($scope.eJourney);
+                $('#journeyModal').modal('hide');
+            }
+        };
+
+        $scope.cancel = function(){
+            $scope.journeysActive[index] = backupJourney;
+        };
+
         $scope.save = function(){
             var Journeys = $resource('/journeys');
             var journey = $scope.journey;
-            journey.copyId = $scope.selectedJourney._id;
-            Journeys.save(journey, function(response){
+            var timestamp = Date.parse(journey.startDate);
+            var ok = true;
+
+            if (isNaN(timestamp)==true) {
+                $('#startDate').closest('.form-group').addClass('has-error');
+                ok = false;
+            }
+
+            if (journey && ok)
+                journey.copyId = $scope.selectedJourney._id;
+                Journeys.save(journey, function (response) {
                 $location.path('/journeys/persons/' + response._id);
             });
+
         };
 
         $scope.edit = function(id){
@@ -713,6 +785,9 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
 
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
+            if (new Date(journey.startDate) < new Date()){
+                $('.canDisable').prop('disabled', true);
+            }
             refreshPersons();
         });
 
@@ -848,6 +923,8 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         var vehicles;
         var vehicleClicked = 0;
         var previousOwner = null;
+        $scope.canDisable = false;
+
         $scope.vehicleText = 'Toevoegen';
 
         function refreshPersons(){
@@ -960,6 +1037,10 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
             Journey.get({id: $routeParams.id} ,function(obj) {
                 journey = obj;
                 $scope.journey = obj;
+                if (new Date(journey.startDate) < new Date()){
+                    $('.canDisable').prop('disabled', true);
+                    $scope.canDisable = true;
+                }
                 refreshVehicles();
                 refreshPersons();
 

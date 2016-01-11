@@ -67,7 +67,7 @@
                             <td>{{$index + 1}}.</td>
                             <td>{{ passenger.firstname + ' ' + passenger.lastname }}</td>
                             <td>
-                                <button class="btn btn-danger" ng-click="removePassenger(passenger._id)">X</button>
+                                <button class="btn btn-danger" ng-disabled="canDisable" ng-click="removePassenger(passenger._id)">X</button>
                             </td>
                             <td>
                                 <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal"
@@ -89,14 +89,14 @@
                     <p>{{ selectedPerson.street }} {{ selectedPerson.streetnumber }}</p>
 
                     <p ng-show="selectedPerson.canDrive">Prawo jazdy</p>
-                    <button class="btn btn-primary"
+                    <button class="btn btn-primary canDisable"
                             ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow && !selectedPerson.isPas"
                             ng-click="addToVehicle()">Dodać do samochodu
                     </button>
-                    <button class="btn btn-danger" ng-show="selectedPerson && deleteShow"
+                    <button class="btn btn-danger canDisable" ng-show="selectedPerson && deleteShow"
                             ng-click="removePassenger(selectedPerson._id)">Usuń z samochodu
                     </button>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && emptyVehicles.length > 0 && !selectedPerson.isPas && selectedPerson.canDrive && !selectedPerson.vehicle">
+                    <button class="btn btn-success canDisable" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && emptyVehicles.length > 0 && !selectedPerson.isPas && selectedPerson.canDrive && !selectedPerson.vehicle">
                         Geef een auto
                     </button>
                 </div>
@@ -165,7 +165,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                    <button class="btn btn-primary" data-dismiss="modal" ng-click="updateRemark()">Wijzigen</button>
+                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="updateRemark()">Wijzigen</button>
                 </div>
             </div>
         </div>
@@ -191,7 +191,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                    <button class="btn btn-primary" data-dismiss="modal" ng-click="giveVehicle()">Opslaan</button>
+                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="giveVehicle()">Opslaan</button>
                 </div>
             </div>
         </div>

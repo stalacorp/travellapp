@@ -33,7 +33,7 @@
 
 
                     <h2 class="tht-header">Upload Excel</h2>
-                    <button type="file" class="btn btn-primary" ngf-select="uploadFiles($file, $invalidFiles)"
+                    <button type="file" class="btn btn-primary canDisable" ngf-select="uploadFiles($file, $invalidFiles)"
                             accept=".xls,.csv,.xlsx" ngf-max-size="10MB">
                         Select File
                     </button>
@@ -65,7 +65,7 @@
                                            ng-change="search()" placeholder="Szukanie"/>
                                 </div>
                                 <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
-                                <button class="btn btn-primary" data-toggle="modal"
+                                <button class="btn btn-primary canDisable" data-toggle="modal"
                                         ng-click="person = null; personText = 'Toevoegen'; isUpdate=false"
                                         data-target="#personModal">Dodaj samochód</button>
                             </form>
@@ -166,13 +166,13 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger pull-left" data-dismiss="modal" ng-show="isUpdate"
+                    <button class="btn btn-danger pull-left canDisable" data-dismiss="modal" ng-show="isUpdate"
                             ng-click="delete()">Usunąć
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">
                         Zamknąć
                     </button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="add()">Dodaj <!--{{
+                    <button type="button" class="btn btn-primary canDisable" data-dismiss="modal" ng-click="add()">Dodaj <!--{{
                         vehicleText }}-->
                     </button>
                 </div>
