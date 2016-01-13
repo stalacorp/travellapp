@@ -83,7 +83,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="person in persons">
+                        <tr ng-class="{danger: !person.isValid}" ng-repeat="person in persons">
                             <td>{{ person.firstname }}</td>
                             <td>{{ person.lastname }}</td>
                             <td><button class="btn btn-primary" data-toggle="modal"

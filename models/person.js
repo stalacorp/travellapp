@@ -13,7 +13,8 @@ var personSchema = Schema({
     canDrive: {type: Boolean, default:false},
     vehicle: { type: Schema.Types.ObjectId, ref: 'Vehicle', default:null },
     remark: {type: String, default:''},
-    isPas: {type: Boolean, default:false}
+    isPas: {type: Boolean, default:false},
+    isValid: {type: Boolean, default:true}
 });
 
 var virtual = personSchema.virtual('fullname');

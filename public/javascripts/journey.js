@@ -61,6 +61,10 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
             var lats = [];
             var lngs = [];
 
+            journey.persons = journey.persons.filter(function(p){
+               return p.isValid;
+            });
+
             $scope.markers = [];
             var markers = [];
             var teller = 0;
@@ -773,14 +777,14 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
         var persons;
 
         function refreshPersons(){
-
-                $scope.journey = journey;
-                $scope.persons = journey.persons.slice(0,15);
-                $scope.currentPage = 1;
-                $scope.totalItems = journey.persons.length;
-                $scope.pageChanged();
-
-
+            $scope.journey = journey;
+            journey.persons.sort(function(a, b){
+                return a.isValid-b.isValid;
+            });
+            $scope.persons = journey.persons.slice(0,15);
+            $scope.currentPage = 1;
+            $scope.totalItems = journey.persons.length;
+            $scope.pageChanged();
         };
 
         Journey.get({id: $routeParams.id} ,function(obj) {
@@ -874,7 +878,9 @@ routesapp.controller('PersonsCtrl', ['$scope', '$resource', '$location', 'Upload
                 var Persons = $resource('/persons/:id', { id: '@_id' }, {
                     update: { method: 'PUT' }
                 });
-                Persons.update($scope.person);
+                Persons.update($scope.person, function(response){
+                    $scope.person.isValid = response.isValid;
+                });
 
             }else {
                 var Persons = $resource('/persons');
@@ -930,7 +936,10 @@ routesapp.controller('VehiclesCtrl', ['$scope', '$resource', '$routeParams',
         function refreshPersons(){
             persons = journey.persons.filter(function(person){
                 if (person.canDrive && !person.vehicle){
-                    return true;
+                    if (person.isValid){
+                        return true;
+                    }
+                    return false;
                 }
             });
             searchPersons = persons;

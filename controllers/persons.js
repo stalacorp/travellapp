@@ -94,14 +94,17 @@ router.put('/:id', function(req, res){
             };
 
             gmAPI.geocode(geocodeParams, function (err, result) {
-                if (result.status === 'OK') {
+                if (result !== undefined && result.status === 'OK') {
                     var location = result.results[0].geometry.location;
                     p.location.lat = location.lat;
                     p.location.lng = location.lng;
-                    p.save();                    
+                    p.isValid = true;
                 }else {
-                    console.log(p.fullname);
+                    p.isValid = false;
+                    Vehicle.findOneAndUpdate({owner: p._id}, {$set: {passengers: [], owner: null}}).exec();
                 }
+                p.save();
+                res.json(p);
             });
         }else {
 
@@ -115,14 +118,13 @@ router.put('/:id', function(req, res){
             p.province = req.body.province;
             p.canDrive = req.body.canDrive;
             p.save();
+
+            res.json(p);
+
         }
-
-
 
     });
 
-    res.status(201);
-    res.send('success');
 });
 
 router.post('/', function(req, res){
@@ -147,11 +149,13 @@ router.post('/', function(req, res){
             var location = result.results[0].geometry.location;
             person.location.lat = location.lat;
             person.location.lng = location.lng;
-            person.save();
+
             
         }else {
-            console.log(person.fullname);
+            person.isValid = false;
         }
+
+        person.save();
     });
 
 
@@ -206,12 +210,14 @@ router.post('/excel/upload', multipartyMiddleware, function(req, res){
                     var location = result.results[0].geometry.location;
                     person.location.lat = location.lat;
                     person.location.lng = location.lng;
-                    person.save();
-                    journey.persons.push(person);
+
                     console.log(teller);
                 }else {
-                    console.log(person.fullname);
+                    person.isValid = false;
                 }
+
+                person.save();
+                journey.persons.push(person);
                 teller++;
                 if (teller == (max - minMax)){
                     updateJourney();
