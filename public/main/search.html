@@ -1,0 +1,60 @@
+<div class="container">
+    <h1>Travel Application</h1>
+    <h3 ng-show="!active">Geen opkomende reis</h3>
+    <div ng-show="active" class="row">
+        <div class="col-md-4">
+            <form class="form-inline tht-header">
+                <div class="form-group">
+                    <div angucomplete-alt
+                         id="autoPerson"
+                         placeholder="Szukanie"
+                         pause="100"
+                         selected-object="personMatch"
+                         local-data="persons"
+                         search-fields="firstname,lastname"
+                         title-field="firstname, ,lastname"
+                         minlength="4"
+                         input-class="form-control form-control-small"
+                         match-class="highlight"
+                         auto-match="true">
+                    </div>
+                </div>
+                <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
+            </form>
+
+        </div>
+    </div>
+
+    <div ng-show="found" class="col-md-12">
+        <h2 class="tht-header">{{ vehicle.licenceplate }}</h2>
+        <h4>Dystans: {{vehicle.distance / 1000}} km</h4>
+        <h4>Trwanie: &plusmn;{{ duration }}</h4>
+        <table class="table table-bordered">
+            <tr>
+                <th></th>
+                <th>Nazwisko</th>
+                <th>Adres</th>
+                <th>Telefon</th>
+            </tr>
+            <tr ng-class="{success: vehicle.owner._id == person}">
+                <td>Chauffeur</td>
+                <td>{{vehicle.owner.firstname + ' ' + vehicle.owner.lastname}}</td>
+
+                <td>{{vehicle.owner.street}} {{vehicle.owner.streetnumber}},
+                    {{vehicle.owner.city}} {{vehicle.owner.postalcode}}
+                </td>
+                <td>{{ vehicle.owner.telephone }}</td>
+            </tr>
+            <tr  ng-repeat="passenger in vehicle.passengers" ng-class="{success: passenger._id == person}">
+                <td><span ng-show="!passenger.canDrive">Passagier</span><span
+                        ng-show="passenger.canDrive">2de chauffeur</span></td>
+                <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
+                <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
+                <td>{{ passenger.telephone }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <p ng-show="active && !found">Persoon zit nog niet in een auto</p>
+    
+</div>

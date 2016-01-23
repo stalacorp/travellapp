@@ -451,7 +451,7 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
 
         $scope.clearInput = function () {
             $scope.$broadcast('angucomplete-alt:clearInput');
-        }
+        };
 
 
         $scope.giveVehicle = function(){

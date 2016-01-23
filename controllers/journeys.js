@@ -25,6 +25,22 @@ router.get('/allActive', function(req, res) {
     });
 });
 
+router.get('/upcoming', function(req, res) {
+
+    Journey.find({startDate: {$gt: new Date()}, isVisible:true}).deepPopulate('vehicles.owner vehicles.passengers persons').exec(function(err, objs) {
+        if (err) return console.error(err);
+        var journey = null;
+        objs.sort(function(a ,b){
+            return a.startDate < b.startDate;
+        });
+        if (objs.length > 0){
+            journey = objs[0];
+        }
+        res.json(journey);
+    });
+
+});
+
 router.get('/allHistory', function(req, res) {
     Journey.find({startDate: {$lt: new Date()}, isVisible:true}, function(err, objs) {
         if (err) return console.error(err);

@@ -10,7 +10,8 @@ angular.module('travellapp').factory('AuthService',
                 isLoggedIn: isLoggedIn,
                 getUserStatus: getUserStatus,
                 login: login,
-                logout: logout
+                logout: logout,
+                register: register
             });
 
             function isLoggedIn() {
@@ -23,6 +24,31 @@ angular.module('travellapp').factory('AuthService',
 
             function getUserStatus() {
                 return user;
+            }
+
+            function register(username, password) {
+
+                // create a new instance of deferred
+                var deferred = $q.defer();
+
+                // send a post request to the server
+                $http.post('/user/register', {username: username, password: password})
+                    // handle success
+                    .success(function (data, status) {
+                        if(status === 200 && data.status){
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    })
+                    // handle error
+                    .error(function (data) {
+                        deferred.reject();
+                    });
+
+                // return promise object
+                return deferred.promise;
+
             }
 
             function login(username, password) {

@@ -2,10 +2,14 @@ var app = angular.module("travellapp", ['ngResource', 'ngRoute','personsapp','ro
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl: 'main/home.html'
+            templateUrl: 'main/search.html',
+            controller: 'SearchCtrl',
+            title:'Zoeken in welke auto',
+            access: {restricted: false}
         })
-        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login'})
+        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login', access: {restricted: false}})
         .when('/logout', {controller: 'LogoutCtrl'})
+        .when('/fixture', {templateUrl: 'main/empty.html',controller: 'FixtureCtrl', access: {restricted: false}})
         .otherwise({
             redirectTo: '/'
         });
@@ -16,9 +20,10 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function($location,
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        //if (AuthService.isLoggedIn() === false) {
-        //    $location.path('/login');
-        //}
+        if (AuthService.isLoggedIn() === false && next.access === undefined) {
+            $location.path('/login');
+            $route.reload();
+        }
     });
 }]);
 
@@ -45,7 +50,7 @@ app.controller('LoginCtrl',
                 AuthService.login($scope.loginForm.username, $scope.loginForm.password)
                     // handle success
                     .then(function () {
-                        $location.path('/');
+                        $location.path('/journeys/overview');
                         $scope.disabled = false;
                         $scope.loginForm = {};
                     })
@@ -74,5 +79,70 @@ app.controller('LogoutCtrl',
             };
 
         }]);
+
+app.controller('FixtureCtrl',
+    ['$scope', '$location', 'AuthService',
+        function ($scope, $location, AuthService) {
+                AuthService.register("krys", "mijnlama")
+                    // handle success
+                    .then(function () {
+                        $location.path('/login');
+                    })
+        }]);
+
+app.controller('SearchCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location){
+
+        $scope.active = false;
+        $scope.found = false;
+        var journey;
+        var JourneysActive = $resource('/journeys/upcoming');
+
+
+        JourneysActive.get(function(obj){
+            if (obj){
+                journey = obj;
+                $scope.active = true;
+                $scope.persons = journey.persons;
+            }
+
+        });
+
+        $scope.personMatch = function(selected) {
+            $scope.found = false;
+            if (selected) {
+                var person = selected.originalObject;
+                $scope.person = person._id;
+
+                journey.vehicles.forEach(function(v){
+                    if (v.owner._id == person._id){
+                        $scope.vehicle = v;
+                        $scope.found = true;
+                    }
+
+                    v.passengers.forEach(function(p){
+                        if (p._id == person._id){
+                            $scope.vehicle = v;
+                            $scope.found = true;
+                        }
+                    });
+                });
+
+                if ($scope.vehicle) {
+                    var date = new Date($scope.vehicle.duration * 1000);
+                    var hh = date.getUTCHours();
+                    var mm = date.getUTCMinutes();
+
+                    $scope.duration = hh + ' uren en ' + mm + ' minuten';
+                }
+            }
+        };
+
+        $scope.clearInput = function () {
+            $scope.$broadcast('angucomplete-alt:clearInput');
+        };
+
+
+    }]);
 
 
