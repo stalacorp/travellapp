@@ -14,6 +14,7 @@
                 <li ng-class="{ active: isActive('/journeys/overview')}"><a href="#/journeys/overview">Zjazd</a></li>
                 <li ng-class="{ active: isActive('/persons/excel')}"><a href="#/persons/excel">Pomoc</a></li>
                 <li ng-class="{ active: isActive('/')}"><a href="#/">Wymazać</a></li>
+                <li ng-show="isAdmin"  ng-class="{ active: isActive('/users')}"><a href="#/users">Gebruikers</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" ng-controller="LogoutCtrl" ng-switch>
                 <li ng-show="!isLoggedIn"><a href="#/login">Zaloguj się</a></li>

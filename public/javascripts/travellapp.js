@@ -19,8 +19,10 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function($location,
         $rootScope.title = current.$$route.title;
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        $rootScope.isLoggedIn = AuthService.isLoggedIn();
         var isAdmin = AuthService.getUserStatus();
+        $rootScope.isLoggedIn = AuthService.isLoggedIn();
+        $rootScope.isAdmin = isAdmin;
+
         if (next.access !== 'open') {
             if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
                 $location.path('/login');
