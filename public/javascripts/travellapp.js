@@ -5,11 +5,11 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'main/search.html',
             controller: 'SearchCtrl',
             title:'Zoeken in welke auto',
-            access: {restricted: false}
+            access: 'open'
         })
-        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login', access: {restricted: false}})
+        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login', access: 'open'})
         .when('/logout', {controller: 'LogoutCtrl'})
-        .when('/fixture', {templateUrl: 'main/empty.html',controller: 'FixtureCtrl', access: {restricted: false}})
+        .when('/users', {templateUrl: 'users/overview.html',controller: 'UsersCtrl', access: 'admin'})
         .otherwise({
             redirectTo: '/'
         });
@@ -20,9 +20,12 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function($location,
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        if (AuthService.isLoggedIn() === false && next.access === undefined) {
-            $location.path('/login');
-            $route.reload();
+        var isAdmin = AuthService.getUserStatus();
+        if (next.access !== 'open') {
+            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
+                $location.path('/login');
+                $route.reload();
+            }
         }
     });
 }]);
@@ -80,14 +83,12 @@ app.controller('LogoutCtrl',
 
         }]);
 
-app.controller('FixtureCtrl',
-    ['$scope', '$location', 'AuthService',
-        function ($scope, $location, AuthService) {
-                AuthService.register("krys", "mijnlama")
-                    // handle success
-                    .then(function () {
-                        $location.path('/login');
-                    })
+app.controller('UsersCtrl',
+    ['$scope', '$location', '$resource',
+        function ($scope, $location, $resource) {
+
+
+
         }]);
 
 app.controller('SearchCtrl', ['$scope', '$resource', '$location',

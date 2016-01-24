@@ -8,9 +8,19 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.post('/register', function(req, res) {
-  console.log("test");
+router.post('/', function(req, res) {
   User.register(new User({ username: req.body.username }), req.body.password, function(err, account) {
+    if (err) {
+      return res.status(500).json({err: err});
+    }
+    res.json(account);
+  });
+
+});
+
+router.get('/fixture', function(req, res){
+
+  User.register(new User({ username: 'krys', isAdmin:true }), 'mijnlama', function(err, account) {
     if (err) {
       return res.status(500).json({err: err});
     }
@@ -33,7 +43,7 @@ router.post('/login', function(req, res, next) {
       if (err) {
         return res.status(500).json({err: 'Could not log in user'});
       }
-      res.status(200).json({status: 'Login successful!'});
+      res.status(200).json(user.isAdmin);
     });
   })(req, res, next);
 });

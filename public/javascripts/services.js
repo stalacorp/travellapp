@@ -15,7 +15,7 @@ angular.module('travellapp').factory('AuthService',
             });
 
             function isLoggedIn() {
-                if(user) {
+                if(user !== null) {
                     return true;
                 } else {
                     return false;
@@ -35,9 +35,11 @@ angular.module('travellapp').factory('AuthService',
                 $http.post('/user/register', {username: username, password: password})
                     // handle success
                     .success(function (data, status) {
-                        if(status === 200 && data.status){
+                        if(status === 200){
+                            user = data;
                             deferred.resolve();
                         } else {
+                            user = null;
                             deferred.reject();
                         }
                     })
@@ -60,17 +62,17 @@ angular.module('travellapp').factory('AuthService',
                 $http.post('/user/login', {username: username, password: password})
                     // handle success
                     .success(function (data, status) {
-                        if(status === 200 && data.status){
+                        if(status === 200){
                             user = true;
                             deferred.resolve();
                         } else {
-                            user = false;
+                            user = null;
                             deferred.reject();
                         }
                     })
                     // handle error
                     .error(function (data) {
-                        user = false;
+                        user = null;
                         deferred.reject();
                     });
 
@@ -88,12 +90,12 @@ angular.module('travellapp').factory('AuthService',
                 $http.get('/user/logout')
                     // handle success
                     .success(function (data) {
-                        user = false;
+                        user = null;
                         deferred.resolve();
                     })
                     // handle error
                     .error(function (data) {
-                        user = false;
+                        user = null;
                         deferred.reject();
                     });
 
