@@ -106,6 +106,10 @@ app.controller('SearchCtrl', ['$scope', '$resource', '$location',
             if (obj){
                 journey = obj;
                 $scope.active = true;
+                journey.persons.forEach(function(p){
+                    p.fullname = p.firstname + " " + p.lastname;
+                });
+
                 $scope.persons = journey.persons;
             }
 

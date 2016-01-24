@@ -241,6 +241,9 @@ app.controller('PlanCtrl', ['$scope', '$resource', '$routeParams','NgMap','$inte
         });
         Journey.get({id: $routeParams.id} ,function(obj) {
             journey = obj;
+            journey.persons.forEach(function(p){
+                p.fullname = p.firstname + " " + p.lastname;
+            });
 
             if (new Date(journey.startDate) < new Date()){
                 $('.canDisable').prop('disabled', true);
