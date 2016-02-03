@@ -106,15 +106,10 @@ app.controller('UsersCtrl',
                 }else {
                     var Users = $resource('/user/');
                     Users.save($scope.user, function(response){
-                        scope.users.push(response);
+                        $scope.users.push(response);
                     });
-
                 }
-
             };
-
-
-
 
         }]);
 
