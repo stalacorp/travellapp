@@ -5,7 +5,13 @@ var passport = require('passport');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  User.find({}, function(err, users){
+    if(err){
+      return res.status(500).json({err: err});
+    }
+
+    res.json(users);
+  })
 });
 
 router.post('/', function(req, res) {
@@ -51,6 +57,12 @@ router.post('/login', function(req, res, next) {
 router.get('/logout', function(req, res) {
   req.logout();
   res.status(200).json({status: 'Bye!'})
+});
+
+router.put('/:id', function(req, res){
+  Person.findOneAndUpdate({_id:req.params.id},{$set: {username: req.body.username, isAdmin: req.body.isAdmin}}).exec();
+  res.status(201);
+  res.send('success');
 });
 
 module.exports = router;

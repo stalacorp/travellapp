@@ -1,20 +1,20 @@
-var app = angular.module("travellapp", ['ngResource', 'ngRoute','personsapp','routesapp', 'angucomplete-alt']);
-app.config(['$routeProvider', function($routeProvider){
+var app = angular.module("travellapp", ['ngResource', 'ngRoute', 'personsapp', 'routesapp', 'angucomplete-alt']);
+app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'main/search.html',
             controller: 'SearchCtrl',
-            title:'Zoeken in welke auto',
+            title: 'Zoeken in welke auto',
             access: 'open'
         })
-        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title:'Login', access: 'open'})
+        .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title: 'Login', access: 'open'})
         .when('/logout', {controller: 'LogoutCtrl'})
-        .when('/users', {templateUrl: 'users/overview.html',controller: 'UsersCtrl', access: 'admin'})
+        .when('/users', {templateUrl: 'users/overview.html', controller: 'UsersCtrl', access: 'admin'})
         .otherwise({
             redirectTo: '/'
         });
 }]);
-app.run(['$location', '$rootScope', '$route', 'AuthService', function($location, $rootScope, $route, AuthService) {
+app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location, $rootScope, $route, AuthService) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
     });
@@ -33,7 +33,7 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function($location,
 }]);
 
 app.controller('NavCtrl', ['$scope', '$location', 'AuthService',
-    function($scope, $location, AuthService){
+    function ($scope, $location, AuthService) {
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
@@ -89,12 +89,32 @@ app.controller('UsersCtrl',
     ['$scope', '$location', '$resource',
         function ($scope, $location, $resource) {
 
+            var Users = $resource('/user/')
+            var users = [];
+            Users.query(function (userobjs) {
+                persons = userobjs;
+                $scope.users = userobjs;
+            });
 
+            $scope.add = function(){
+                if ($scope.user_id != null){
+                    var Users = $resource('/user/:id', { id: '@_id' }, {
+                        update: { method: 'PUT' }
+                    });
+                    Users.update($scope.person);
+
+                }else {
+                    var Users = $resource('/user/');
+                    Users.save($scope.user, function(response){
+                        $scope.users.push(response);
+                    });
+                }
+            };
 
         }]);
 
 app.controller('SearchCtrl', ['$scope', '$resource', '$location',
-    function($scope, $resource, $location){
+    function ($scope, $resource, $location) {
 
         $scope.active = false;
         $scope.found = false;
@@ -102,11 +122,11 @@ app.controller('SearchCtrl', ['$scope', '$resource', '$location',
         var JourneysActive = $resource('/journeys/upcoming');
 
 
-        JourneysActive.get(function(obj){
-            if (obj){
+        JourneysActive.get(function (obj) {
+            if (obj) {
                 journey = obj;
                 $scope.active = true;
-                journey.persons.forEach(function(p){
+                journey.persons.forEach(function (p) {
                     p.fullname = p.firstname + " " + p.lastname;
                 });
 
@@ -115,20 +135,20 @@ app.controller('SearchCtrl', ['$scope', '$resource', '$location',
 
         });
 
-        $scope.personMatch = function(selected) {
+        $scope.personMatch = function (selected) {
             $scope.found = false;
             if (selected) {
                 var person = selected.originalObject;
                 $scope.person = person._id;
 
-                journey.vehicles.forEach(function(v){
-                    if (v.owner._id == person._id){
+                journey.vehicles.forEach(function (v) {
+                    if (v.owner._id == person._id) {
                         $scope.vehicle = v;
                         $scope.found = true;
                     }
 
-                    v.passengers.forEach(function(p){
-                        if (p._id == person._id){
+                    v.passengers.forEach(function (p) {
+                        if (p._id == person._id) {
                             $scope.vehicle = v;
                             $scope.found = true;
                         }
