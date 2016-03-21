@@ -126,6 +126,7 @@ router.get('/toPdf/:id', function(req, res) {
         vehicles.forEach(function(v, index){
             // header information
 
+            //var startDate = journey.startDate;
             var startDate = journey.startDate.getDate() + '-' + (journey.startDate.getMonth() + 1) + '-' + journey.startDate.getFullYear();
             //var endDate = journey.endDate.getDate() + '-' + (journey.endDate.getMonth() + 1) + '-' + journey.endDate.getFullYear();
 

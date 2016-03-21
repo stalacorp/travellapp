@@ -24,9 +24,16 @@ router.post('/', function(req, res) {
 
 });
 
+router.delete('/:id', function(req, res){
+  Journey.findOneAndUpdate({_id:req.params.id}, {$set: {isVisible: false}}).exec();
+
+  res.status(201);
+  res.send('success');
+});
+
 router.get('/fixture', function(req, res){
 
-  User.register(new User({ username: 'krys', isAdmin:true }), 'mijnlama', function(err, account) {
+  User.register(new User({ username: 'admin', isAdmin:true }), 'admin', function(err, account) {
     if (err) {
       return res.status(500).json({err: err});
     }
