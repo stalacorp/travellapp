@@ -16,6 +16,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title: 'Login', access: 'open'})
         .when('/logout', {controller: 'LogoutCtrl'})
         .when('/users', {templateUrl: 'users/overview.html', controller: 'UsersCtrl', access: 'admin'})
+        .when('/profile', {templateUrl: 'users/profile.html', controller: 'ProfileCtrl'})
         .otherwise({
             redirectTo: '/'
         });
@@ -84,6 +85,34 @@ app.controller('LogoutCtrl',
                     .then(function () {
                         $location.path('/login');
                     });
+
+            };
+
+        }]);
+
+app.controller('ProfileCtrl',
+    ['$scope', '$location', '$resource',
+        function ($scope, $location, $resource) {
+
+            $scope.change = function() {
+
+                var password = $scope.newPassword1;
+
+                if($scope.newPassword1 == $scope.newpassword2) {
+                    var user = AuthService.getUser();
+
+                    user.password = password;
+
+                    user = $resource('/user/:id', { id: '@_id' }, {
+                        update: {method: 'PUT'}
+                    });
+
+                    user.update($scope.user);
+
+                    $location.path('/journeys/overview');
+                } else {
+
+                }
 
             };
 
