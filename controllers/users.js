@@ -57,7 +57,7 @@ router.post('/login', function(req, res, next) {
       if (err) {
         return res.status(500).json({err: 'Could not log in user'});
       }
-      res.status(200).json(user.isAdmin);
+      res.status(200).json(user);
     });
   })(req, res, next);
 });

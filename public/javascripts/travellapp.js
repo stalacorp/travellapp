@@ -25,12 +25,11 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
         $rootScope.title = current.$$route.title;
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        var isAdmin = AuthService.getUserStatus();
+        var user = AuthService.getUser();
         $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        $rootScope.isAdmin = isAdmin;
 
         if (next.access !== 'open') {
-            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
+            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && user.isAdmin !== true)) {
                 $location.path('/login');
                 $route.reload();
             }
@@ -49,7 +48,6 @@ app.controller('LoginCtrl',
     ['$scope', '$location', 'AuthService',
         function ($scope, $location, AuthService) {
 
-            console.log(AuthService.getUserStatus());
 
             $scope.login = function () {
 

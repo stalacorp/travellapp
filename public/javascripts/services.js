@@ -8,7 +8,7 @@ angular.module('travellapp').factory('AuthService',
             // return available functions for use in controllers
             return ({
                 isLoggedIn: isLoggedIn,
-                getUserStatus: getUserStatus,
+                getUser: getUser,
                 login: login,
                 logout: logout,
                 register: register
@@ -22,7 +22,7 @@ angular.module('travellapp').factory('AuthService',
                 }
             }
 
-            function getUserStatus() {
+            function getUser() {
                 return user;
             }
 
@@ -63,7 +63,7 @@ angular.module('travellapp').factory('AuthService',
                     // handle success
                     .success(function (data, status) {
                         if(status === 200){
-                            user = true;
+                            user = data;
                             deferred.resolve();
                         } else {
                             user = null;
