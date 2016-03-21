@@ -7,7 +7,7 @@
 <div class="container">
 
     <div class="tht-header">
-        <h1>Zjazd {{ journey.name }} </h1>
+        <h1>Podróż {{ journey.name }} </h1>
 
         <p>{{ journey.startDate | date:'dd/MM/yyyy' }}</p>
     </div>
@@ -17,7 +17,7 @@
         <div class="col-md-3 col-xs-3 text-center">
             <a href="#/journeys/persons/{{journey._id}}"><span class="icon-Mens icon"></span></a>
 
-            <p>Pracowników</p>
+            <p>Pracownicy</p>
         </div>
         <div class="col-md-3 col-xs-3 text-center">
             <a href="#/journeys/vehicles/{{journey._id}}"><span class="icon-Car-2 icon"></span></a>
@@ -58,7 +58,7 @@
 
                     <p>Marka: {{ selectedVehicle.brand }}</p>
 
-                    <p>Rodzaj: {{ selectedVehicle.type }}</p>
+                    <p>Paliwo: {{ selectedVehicle.type }}</p>
 
                     <p ng-show="selectedVehicle.owner">Kierowca: {{ selectedVehicle.owner.firstname + ' ' +
                         selectedVehicle.owner.lastname}} <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal" ng-click="remarkPerson = selectedVehicle.owner">Informacja</button></p>
@@ -109,7 +109,7 @@
                         <div class="form-group">
                             <div angucomplete-alt
                                  id="autoPerson"
-                                 placeholder="Szukanie"
+                                 placeholder="Szukaj"
                                  pause="100"
                                  selected-object="personMatch"
                                  local-data="persons"
@@ -142,7 +142,7 @@
 
     <div class="row tht-footer">
         <div class="col-lg-12">
-            <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}">Z powrotem</a>
+            <a class="btn btn-default pull-left" href="#/journeys/vehicles/{{journey._id}}">Poprzedni</a>
             <a href="#/journeys/lastoverview/{{journey._id}}" class="btn btn-default pull-right">Następny</a>
         </div>
     </div>
@@ -164,8 +164,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="updateRemark()">Wijzigen</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zamknąć</button>
+                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="updateRemark()">Edytuj</button>
                 </div>
             </div>
         </div>
@@ -177,7 +177,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myVehicleModalLabel">Opmerking wijzigen</h4>
+                    <h4 class="modal-title" id="myVehicleModalLabel">Edytuj Informacja</h4>
                 </div>
                 <div class="modal-body">
                     <select class="form-control" ng-model="selectedEmptyVehicle"
@@ -190,8 +190,8 @@
                     <p>Type: {{selectedEmptyVehicle.type}}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="giveVehicle()">Opslaan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zamknąć</button>
+                    <button class="btn btn-primary canDisable" data-dismiss="modal" ng-click="giveVehicle()">Zapisać</button>
                 </div>
             </div>
         </div>

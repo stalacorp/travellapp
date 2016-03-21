@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <div angucomplete-alt
                          id="autoPerson"
-                         placeholder="Szukanie"
+                         placeholder="Szukaj"
                          pause="100"
                          selected-object="personMatch"
                          local-data="persons"
@@ -29,7 +29,7 @@
     <div ng-show="found" class="col-md-12">
         <h2 class="tht-header">{{ vehicle.licenceplate }}</h2>
         <h4>Dystans: {{vehicle.distance / 1000}} km</h4>
-        <h4>Trwanie: &plusmn;{{ duration }}</h4>
+        <h4>Czas podróży: &plusmn;{{ duration }}</h4>
         <table class="table table-bordered">
             <tr>
                 <th></th>
@@ -38,7 +38,7 @@
                 <th>Telefon</th>
             </tr>
             <tr ng-class="{success: vehicle.owner._id == person}">
-                <td>Chauffeur</td>
+                <td>Kierowca</td>
                 <td>{{vehicle.owner.firstname + ' ' + vehicle.owner.lastname}}</td>
 
                 <td>{{vehicle.owner.street}} {{vehicle.owner.streetnumber}},
@@ -47,8 +47,8 @@
                 <td>{{ vehicle.owner.telephone }}</td>
             </tr>
             <tr  ng-repeat="passenger in vehicle.passengers" ng-class="{success: passenger._id == person}">
-                <td><span ng-show="!passenger.canDrive">Passagier</span><span
-                        ng-show="passenger.canDrive">2de chauffeur</span></td>
+                <td><span ng-show="!passenger.canDrive">Pasażer</span><span
+                        ng-show="passenger.canDrive">2-gi kierowca</span></td>
                 <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
                 <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
                 <td>{{ passenger.telephone }}</td>
