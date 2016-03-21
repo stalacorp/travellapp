@@ -757,7 +757,7 @@ routesapp.controller('LastOverviewCtrl', ['$scope', '$resource', '$location', '$
             var date = new Date($scope.selectedVehicle.duration * 1000);
             var hh = date.getUTCHours();
             var mm = date.getUTCMinutes();
-            $scope.duration = hh + ' uren en ' + mm + ' minuten';
+            $scope.duration = hh + ' godz. i ' + mm + ' min.';
         };
 
         $scope.updatePdfText = function(){

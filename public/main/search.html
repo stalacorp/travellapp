@@ -1,6 +1,7 @@
 <div class="container">
-    <h1>Travel Application</h1>
-    <h3 ng-show="!active">Geen opkomende reis</h3>
+    <h1>Znajdz mnie</h1>
+    <p>Wpisz swoje nazwisko.</p>
+    <h3 ng-show="!active">Nie ma podróży</h3>
     <div ng-show="active" class="row">
         <div class="col-md-4">
             <form class="form-inline tht-header">
@@ -19,7 +20,7 @@
                          auto-match="true">
                     </div>
                 </div>
-                <button ng-click="clearInput()" class="btn btn-primary">Wymazać</button>
+                <button ng-click="clearInput()" class="btn btn-primary">Wyczyść</button>
             </form>
 
         </div>
@@ -55,6 +56,6 @@
         </table>
     </div>
 
-    <p ng-show="active && !found">Persoon zit nog niet in een auto</p>
+    <p ng-show="active && !found">Pracownik nie przydzielony.</p>
     
 </div>

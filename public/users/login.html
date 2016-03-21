@@ -1,20 +1,20 @@
 <div class="container">
     <div class="col-md-4">
-        <h1>Inloggen</h1>
+        <h1>Zaloguj</h1>
         <div ng-show="error" class="alert alert-danger">{{ errorMessage }}</div>
         <form class="form" ng-submit="login()">
             <div class="form-group">
-                <label for="username">Email:</label>
+                <label for="username">Login:</label>
                 <input type="text" class="form-control" id="username" name="username" ng-model="loginForm.username"
                        required>
             </div>
             <div class="form-group">
-                <label for="wachtwoord">Wachtwoord:</label>
+                <label for="wachtwoord">Hasło:</label>
                 <input type="password" id="wachtwoord" class="form-control" name="password"
                        ng-model="loginForm.password" required>
             </div>
             <div>
-                <button type="submit" class="btn btn-default" ng-disabled="disabled">Inloggen</button>
+                <button type="submit" class="btn btn-default" ng-disabled="disabled">Zaloguj</button>
             </div>
         </form>
     </div>

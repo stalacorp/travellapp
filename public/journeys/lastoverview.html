@@ -41,7 +41,7 @@
     <div class="col-md-offset-1 col-md-9">
         <h2 class="tht-header">{{ selectedVehicle.licenceplate }}</h2>
         <h4>Dystans: {{selectedVehicle.distance / 1000}} km</h4>
-        <h4>Trwanie: &plusmn;{{ duration }}</h4>
+        <h4>Czas podróży: &plusmn;{{ duration }}</h4>
         <table class="table table-bordered">
             <tr>
                 <th></th>
@@ -50,7 +50,7 @@
                 <th>Komentarz</th>
             </tr>
             <tr>
-                <td>Chauffeur</td>
+                <td>Kierowca</td>
                 <td>{{selectedVehicle.owner.firstname + ' ' + selectedVehicle.owner.lastname}}</td>
 
                 <td>{{selectedVehicle.owner.street}} {{selectedVehicle.owner.streetnumber}},
@@ -59,8 +59,8 @@
                 <td>{{selectedVehicle.owner.remark}}</td>
             </tr>
             <tr ng-repeat="passenger in selectedVehicle.passengers">
-                <td><span ng-show="!passenger.canDrive">Passagier</span><span
-                        ng-show="passenger.canDrive">2de chauffeur</span></td>
+                <td><span ng-show="!passenger.canDrive">Pasażer</span><span
+                        ng-show="passenger.canDrive">2-gi kierowca</span></td>
                 <td>{{passenger.firstname + ' ' + passenger.lastname}}</td>
                 <td>{{passenger.street}} {{passenger.streetnumber}}, {{passenger.city}} {{passenger.postalcode}}</td>
                 <td>{{passenger.remark}}</td>

@@ -42,7 +42,7 @@
             <h2 class="tht-header">Import</h2>
 
             <div class="form-group">
-                <label for="import">Import z poprzedniego zjazdu</label>
+                <label for="import">Import poprzedniej podróży</label>
                 <select class="form-control" ng-model="selectedJourney" id="import"
                         ng-options="journey.name for journey in journeys"></select>
 
@@ -60,7 +60,7 @@
                     <input id="search" class="form-control" ng-model="searchText" type="text"
                            ng-change="search()" placeholder="Szukanie"/>
                 </div>
-                <button class="btn btn-primary" ng-click="searchText = '';search()">Wymazać</button>
+                <button class="btn btn-primary" ng-click="searchText = '';search()">Wyczyść</button>
                 <button class="btn btn-primary canDisable" data-toggle="modal"
                         ng-click="vehicle = null; vehicleText = 'Toevoegen'; isUpdate=false"
                         data-target="#vehicleModal">Dodaj samochód</button>
@@ -73,7 +73,7 @@
                     <th>Kierowca</th>
                     <th>Miejsca siedzące</th>
                     <th>Marka</th>
-                    <th>Rodzaj</th>
+                    <th>Paliwo</th>
                 </tr>
                 </thead>
 
@@ -83,7 +83,7 @@
                         vehicle.licenceplate }}</a></td>
                     <td><a href="" data-toggle="modal" data-target="#ownerModal"
                            ng-click="vehicleClick($index, vehicle.owner)"><span ng-show="vehicle.owner">{{ vehicle.owner.firstname }} {{ vehicle.owner.lastname}}</span><span
-                            ng-show="!vehicle.owner">Wybierz Kierowca</span></a></td>
+                            ng-show="!vehicle.owner">Wybierz kierowcę</span></a></td>
                     <td>{{ vehicle.passengersNr }}</td>
                     <td>{{ vehicle.brand }}</td>
                     <td>{{ vehicle.type }}</td>
@@ -159,7 +159,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Verantwoordelijke kiezen</h4>
+                    <h4 class="modal-title">Wybierz kierowcę</h4>
                 </div>
                 <div class="modal-body">
                     <!--<p>Tablica rejestracyjna: </p>-->
@@ -168,7 +168,7 @@
                         <div class="form-group">
                             <input id="searchPersons" class="form-control" ng-model="searchPersonText" type="text" ng-change="searchPerson()" placeholder="Szukanie"/>
                         </div>
-                        <button class="btn btn-primary" ng-click="searchPersonText = '';searchPerson()">Wymazać</button>
+                        <button class="btn btn-primary" ng-click="searchPersonText = '';searchPerson()">Wyczyść</button>
                     </form>
 
                     <table class="table table-bordered">
@@ -189,7 +189,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger pull-left canDisable" data-dismiss="modal" ng-show="hasOwner"
-                            ng-click="removeOwner()">Usunąć
+                            ng-click="removeOwner()">Usuń
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Zamknąć</button>
                 </div>

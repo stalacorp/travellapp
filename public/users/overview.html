@@ -2,25 +2,25 @@
     <div class="row">
         <div class="col-md-12">
 
-            <h1>Users</h1>
+            <h1>Użytkownicy</h1>
 
             <table class="table">
                 <tr>
-                    <th>Username</th>
+                    <th>Login</th>
                     <th></th>
                 </tr>
                 <tr ng-repeat="user in users">
                     <td>{{user.username}}</td>
                     <td><button class="btn btn-primary" data-toggle="modal"
                                 ng-click="add(user.id); personText = 'Wijzigen'; isUpdate=false"
-                                data-target="#userModal">Edytować</button>
+                                data-target="#userModal">Edytuj</button>
                     </td>
                 </tr>
             </table>
 
             <button class="btn btn-primary canDisable" data-toggle="modal"
                     ng-click="user = null; userText = 'Toevoegen'; isUpdate=false"
-                    data-target="#userModal">Dodaj User
+                    data-target="#userModal">Dodaj użytkownika
             </button>
         </div>
     </div>

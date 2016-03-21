@@ -13,7 +13,7 @@
 </style>
 <div class="container">
     <div class="tht-header">
-        <h1>Zjazd</h1>
+        <h1>Podróż</h1>
     </div>
     <div class="row">
         <div class="col-lg-6">
@@ -23,21 +23,23 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
 
-                            <h2>Nowy zjazd</h2>
+                            <h2>Nowa Podróż</h2>
 
                             <form ng-submit="save()">
                                 <div class="form-group">
-                                    <label for="copy">Copy from</label>
+                                    <label for="copy">Kopiuj poprzednią podróż:</label>
+                                    <p>(Opcjonalnie)</p>
                                     <select class="form-control" id="copy" ng-model="selectedJourney"
                                             ng-options="journey.name for journey in journeys" ></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">Imię</label>
+                                    <label for="name">Nazwa podróży:</label>
+                                    <p>np. Wielkanoc 2016</p>
                                     <input type="text" class="form-control" ng-model="journey.name" id="name"
                                            ng-required="true"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="startDate">Wyjazd</label>
+                                    <label for="startDate">Data wyjazdu</label>
 
                                     <p class="input-group">
                                         <input type="text" class="form-control" id="startDate"
@@ -51,7 +53,7 @@
               </span>
                                     </p>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Kontynułuj</button>
+                                <button type="submit" class="btn btn-primary">Stwórz</button>
                             </form>
 
                         </div>
@@ -63,13 +65,13 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
 
-                            <h2>Edytować Zjazd</h2>
+                            <h2>Edytuj podróż</h2>
                             <table class="table">
                                 <tr ng-repeat="journey in journeysActive">
                                     <td><a data-toggle="modal" href="" data-target="#journeyModal" ng-click="setJourney(journey, $index)">{{ journey.name }}</a></td>
                                     <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
                                     <td><a href="#/journeys/persons/{{journey._id}}"
-                                           class="btn btn-default">Edytować</a></td>
+                                           class="btn btn-default">Edytuj</a></td>
                                 </tr>
                             </table>
 
@@ -86,16 +88,16 @@
                     <h2>Historia</h2>
                     <table class="table">
                         <tr>
-                            <th>Imię</th>
-                            <th>Wylot</th>
-                            <th>Otwarte</th>
+                            <th>Nazwa podróży</th>
+                            <th>Data wyjazdu</th>
+                            <th></th>
                         </tr>
                         <tr ng-repeat="journey in journeysHistory">
                             <td>{{ journey.name }}</td>
                             <td>{{ journey.startDate | date:'dd/MM/yyyy'}}</td>
                             <td>
                                 <a href="#/journeys/persons/{{journey._id}}"
-                                   class="btn btn-default">Bekijken</a>
+                                   class="btn btn-default">Zobacz</a>
                             </td>
                         </tr>
                     </table>
@@ -114,17 +116,17 @@
                     <button type="button" class="close" ng-click="cancel()" data-dismiss="modal"
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Samochód </h4>
+                    <h4 class="modal-title" id="myModalLabel">Podróż</h4>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="eName">Imię</label>
+                            <label for="eName">Nazwa podróży</label>
                             <input class="form-control" type="text" id="eName"
                                    ng-model="eJourney.name"/>
                         </div>
                         <div class="form-group">
-                            <label for="eStartDate">Wyjazd</label>
+                            <label for="eStartDate">Data wyjazdu</label>
 
                             <p class="input-group">
                                 <input type="text" class="form-control" id="eStartDate"
@@ -145,9 +147,9 @@
                             ng-click="delete()">Usunąć
                     </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">
-                        Zamknąć
+                        Zamknij
                     </button>
-                    <button type="button" class="btn btn-primary canDisable" ng-click="editJourney()">Dodaj
+                    <button type="button" class="btn btn-primary canDisable" ng-click="editJourney()">Zapisać
                     </button>
                 </div>
             </div>

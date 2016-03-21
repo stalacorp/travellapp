@@ -61,7 +61,7 @@
                     <p>Rodzaj: {{ selectedVehicle.type }}</p>
 
                     <p ng-show="selectedVehicle.owner">Kierowca: {{ selectedVehicle.owner.firstname + ' ' +
-                        selectedVehicle.owner.lastname}} <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal" ng-click="remarkPerson = selectedVehicle.owner">Komentarz</button></p>
+                        selectedVehicle.owner.lastname}} <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal" ng-click="remarkPerson = selectedVehicle.owner">Informacja</button></p>
                     <table class="table">
                         <tr ng-repeat="passenger in selectedVehicle.passengers">
                             <td>{{$index + 1}}.</td>
@@ -71,7 +71,7 @@
                             </td>
                             <td>
                                 <button class="btn btn-default" data-toggle="modal" data-target="#remarkModal"
-                                        ng-click="giveRemark($index)">Komentarz
+                                        ng-click="giveRemark($index)">Informacja
                                 </button>
                             </td>
                         </tr>
@@ -80,7 +80,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Wybrany</h2>
+                    <h2>Wybrani</h2>
 
                     <p>{{ selectedPerson.firstname }} {{ selectedPerson.lastname }}</p>
 
@@ -91,13 +91,13 @@
                     <p ng-show="selectedPerson.canDrive">Prawo jazdy</p>
                     <button class="btn btn-primary canDisable"
                             ng-show="selectedPerson && selectedPerson._id != selectedVehicle.owner._id && addShow && !selectedPerson.isPas"
-                            ng-click="addToVehicle()">Dodać do samochodu
+                            ng-click="addToVehicle()">Dodaj do samochodu
                     </button>
                     <button class="btn btn-danger canDisable" ng-show="selectedPerson && deleteShow"
                             ng-click="removePassenger(selectedPerson._id)">Usuń z samochodu
                     </button>
                     <button class="btn btn-success canDisable" data-toggle="modal" data-target="#vehicleModal" ng-show="selectedPerson && emptyVehicles.length > 0 && !selectedPerson.isPas && selectedPerson.canDrive && !selectedPerson.vehicle">
-                        Geef een auto
+                        Przydziel samochód
                     </button>
                 </div>
             </div>
@@ -153,12 +153,12 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Edytuj komentarz</h4>
+                    <h4 class="modal-title" id="myModalLabel">Edytuj Informacja</h4>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="remark">Komentarz: </label>
+                            <label for="remark">Informacja: </label>
                             <textarea class="form-control" id="remark" ng-model="remarkPerson.remark"></textarea>
                         </div>
                     </form>
