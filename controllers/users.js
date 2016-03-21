@@ -68,9 +68,15 @@ router.get('/logout', function(req, res) {
 });
 
 router.put('/:id', function(req, res){
-  Person.findOneAndUpdate({_id:req.params.id},{$set: {username: req.body.username, isAdmin: req.body.isAdmin}}).exec();
-  res.status(201);
-  res.send('success');
+  User.findOne({_id:req.body._id}).exec(function(err, obj){
+    if (err) return console.error(err);
+    obj.username = req.body.username;
+    obj.setPassword(req.body.password, function(){
+      obj.save();
+      res.status(201);
+      res.send('success');
+    });
+  });
 });
 
 module.exports = router;

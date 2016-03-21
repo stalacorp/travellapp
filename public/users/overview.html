@@ -12,14 +12,14 @@
                 <tr ng-repeat="user in users">
                     <td>{{user.username}}</td>
                     <td><button class="btn btn-primary" data-toggle="modal"
-                                ng-click="add(user.id); personText = 'Wijzigen'; isUpdate=false"
+                                ng-click="update(user)"
                                 data-target="#userModal">Edytuj</button>
                     </td>
                 </tr>
             </table>
 
             <button class="btn btn-primary canDisable" data-toggle="modal"
-                    ng-click="user = null; userText = 'Toevoegen'; isUpdate=false"
+                    ng-click="user = null"
                     data-target="#userModal">Dodaj użytkownika
             </button>
         </div>

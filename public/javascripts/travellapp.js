@@ -102,8 +102,12 @@ app.controller('UsersCtrl',
                 $scope.users = userobjs;
             });
 
+            $scope.update = function(theuser){
+                $scope.user = theuser;
+            };
+
             $scope.add = function(){
-                if ($scope.user_id != null){
+                if ($scope.user != null){
                     var Users = $resource('/user/:id', { id: '@_id' }, {
                         update: { method: 'PUT' }
                     });
