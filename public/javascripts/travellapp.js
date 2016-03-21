@@ -7,6 +7,12 @@ app.config(['$routeProvider', function ($routeProvider) {
             title: 'Zoeken in welke auto',
             access: 'open'
         })
+        .when('/fixture', {
+            templateUrl: 'main/fixture.html',
+            controller: 'FixtureCtrl',
+            title: 'Laden van main user',
+            access: 'open'
+        })
         .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title: 'Login', access: 'open'})
         .when('/logout', {controller: 'LogoutCtrl'})
         .when('/users', {templateUrl: 'users/overview.html', controller: 'UsersCtrl', access: 'admin'})
@@ -141,6 +147,22 @@ app.controller('UsersCtrl',
                 Users.update($scope.person);
 
             };
+
+        }]);
+
+app.controller('FixtureCtrl',
+    ['$scope', '$location', '$resource',
+        function ($scope, $location, $resource) {
+            $scope.success = false;
+            $scope.addFixture = function(){
+                var User = $resource('/user/fixture');
+                User.save({keyword:$scope.keyword}, function(response){
+                    if (response.success){
+                        $scope.success = true;
+                    }
+                });
+            };
+
 
         }]);
 

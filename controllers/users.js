@@ -31,16 +31,17 @@ router.delete('/:id', function(req, res){
   res.send('success');
 });
 
-router.get('/fixture', function(req, res){
-
-  User.register(new User({ username: 'admin', isAdmin:true }), 'admin', function(err, account) {
-    if (err) {
-      return res.status(500).json({err: err});
-    }
-    passport.authenticate('local')(req, res, function () {
-      return res.status(200).json({status: 'Registration successful!'});
+router.post('/fixture', function(req, res){
+  if (req.body.keyword='robin') {
+    User.register(new User({username: 'admin', isAdmin: true}), 'admin', function (err, account) {
+      if (err) {
+        return res.status(500).json({err: err});
+      }
+      return res.status(200).json({success:true});
     });
-  });
+  }else {
+    return res.status(500).json({err: 'failed'});
+  }
 
 });
 
