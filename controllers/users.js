@@ -25,7 +25,7 @@ router.post('/', function(req, res) {
 });
 
 router.delete('/:id', function(req, res){
-  Journey.findOneAndUpdate({_id:req.params.id}, {$set: {isVisible: false}}).exec();
+  User.findOneAndRemove({_id:req.params.id}).exec();
 
   res.status(201);
   res.send('success');

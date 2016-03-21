@@ -25,16 +25,16 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
         $rootScope.title = current.$$route.title;
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        var isAdmin = AuthService.getUserStatus();
-        $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        $rootScope.isAdmin = isAdmin;
-
-        if (next.access !== 'open') {
-            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
-                $location.path('/login');
-                $route.reload();
-            }
-        }
+        //var isAdmin = AuthService.getUserStatus();
+        //$rootScope.isLoggedIn = AuthService.isLoggedIn();
+        //$rootScope.isAdmin = isAdmin;
+        //
+        //if (next.access !== 'open') {
+        //    if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
+        //        $location.path('/login');
+        //        $route.reload();
+        //    }
+        //}
     });
 }]);
 
@@ -95,38 +95,19 @@ app.controller('UsersCtrl',
     ['$scope', '$location', '$resource',
         function ($scope, $location, $resource) {
 
-            var backupUser;
             var Users = $resource('/user/')
             var users = [];
             Users.query(function (userobjs) {
-                persons = userobjs;
+                users = userobjs;
                 $scope.users = userobjs;
             });
-
-            $scope.update = function(p){
-                backupUser = angular.copy(p);
-                $scope.user = p;
-                $scope.userText = 'Wijzigen';
-                $scope.isUpdate = true;
-            };
-
-            $scope.cancel = function(){
-                if ($scope.isUpdate){
-                    users.forEach(function (p, index, array){
-                        if (p._id == backupUser._id){
-                            array[index] = backupUser;
-                        }
-                    });
-                    Users.update($scope.person);
-                }
-            };
 
             $scope.add = function(){
                 if ($scope.user_id != null){
                     var Users = $resource('/user/:id', { id: '@_id' }, {
                         update: { method: 'PUT' }
                     });
-                    Users.update($scope.person);
+                    Users.update($scope.user);
 
                 }else {
                     var Users = $resource('/user/');
@@ -137,16 +118,12 @@ app.controller('UsersCtrl',
             };
 
             $scope.delete = function(){
-                users.forEach(function (p, index, array){
-                    if (p._id == backupUser._id){
-                        array.splice(index, 1);
-                        var Persons = $resource('/persons/:id');
-                        Persons.delete({id: p._id });
-                    }
-                });
-                Users.update($scope.person);
+                var User = $resource('/users/:id');
+                User.delete({id: $scope.user_id });
 
+                $scope.users.splice(index, 1);
             };
+
 
         }]);
 
