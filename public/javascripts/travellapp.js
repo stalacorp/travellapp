@@ -139,7 +139,7 @@ app.controller('UsersCtrl',
             };
 
             $scope.add = function(){
-                if ($scope.user != null){
+                if ($scope.update){
                     var Users = $resource('/user/:id', { id: '@_id' }, {
                         update: { method: 'PUT' }
                     });
