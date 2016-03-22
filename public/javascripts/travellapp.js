@@ -159,10 +159,14 @@ app.controller('UsersCtrl',
             };
 
             $scope.delete = function(){
-                var User = $resource('/users/:id');
-                User.delete({id: $scope.user_id });
 
-                $scope.users.splice(index, 1);
+                    var Users = $resource('/users/:id', { id: '@_id' });
+                    Users.delete({id: $scope.user._id});
+
+                    //$scope.users.splice(index, 1);
+
+                Users.update($scope.user);
+
             };
 
 
