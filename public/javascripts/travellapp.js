@@ -92,8 +92,8 @@ app.controller('LogoutCtrl',
         }]);
 
 app.controller('ProfileCtrl',
-    ['$scope', '$location', '$resource',
-        function ($scope, $location, $resource) {
+    ['$scope', '$location', '$resource', 'AuthService',
+        function ($scope, $location, $resource, AuthService) {
 
             $scope.change = function() {
 
@@ -104,11 +104,11 @@ app.controller('ProfileCtrl',
 
                     user.password = password;
 
-                    user = $resource('/user/:id', { id: '@_id' }, {
+                    var User = $resource('/user/:id', { id: '@_id' }, {
                         update: {method: 'PUT'}
                     });
 
-                    user.update($scope.user);
+                    User.update(user);
 
                     $location.path('/journeys/overview');
                 } else {
