@@ -27,8 +27,12 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var user = AuthService.getUser();
-        $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        $rootScope.isAdmin = user.isAdmin;
+        console.log(user);
+        if (user != null){
+            $rootScope.isLoggedIn = true;
+            $rootScope.isAdmin = user.isAdmin;
+        }
+
 
         if (next.access !== 'open') {
             if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && user.isAdmin !== true)) {
@@ -94,12 +98,12 @@ app.controller('LogoutCtrl',
 app.controller('ProfileCtrl',
     ['$scope', '$location', '$resource', 'AuthService',
         function ($scope, $location, $resource, AuthService) {
-
+            $scope.error = false;
             $scope.change = function() {
-
+                $scope.error = false;
                 var password = $scope.newPassword1;
 
-                if($scope.newPassword1 == $scope.newpassword2) {
+                if($scope.newPassword1 == $scope.newPassword2) {
                     var user = AuthService.getUser();
 
                     user.password = password;
@@ -112,7 +116,7 @@ app.controller('ProfileCtrl',
 
                     $location.path('/journeys/overview');
                 } else {
-
+                    $scope.error = true;
                 }
 
             };
