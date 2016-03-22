@@ -76,7 +76,7 @@ app.controller('LoginCtrl',
                     // handle error
                     .catch(function () {
                         $scope.error = true;
-                        $scope.errorMessage = "Onjuiste gebruikersnaam en/of wachtwoord";
+                        $scope.errorMessage = "Błąd";
                         $scope.disabled = false;
                         $scope.loginForm = {};
                     });
@@ -121,6 +121,7 @@ app.controller('ProfileCtrl',
                     $location.path('/journeys/overview');
                 } else {
                     $scope.error = true;
+                    $scope.errorMessage = "Błąd";
                 }
 
             };
