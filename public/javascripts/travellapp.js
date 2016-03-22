@@ -164,9 +164,6 @@ app.controller('UsersCtrl',
                     Users.delete({id: $scope.user._id});
 
                     //$scope.users.splice(index, 1);
-
-                Users.update($scope.user);
-
             };
 
 
