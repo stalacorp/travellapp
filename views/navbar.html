@@ -17,7 +17,7 @@
                 <li ng-show="isAdmin"  ng-class="{ active: isActive('/users')}"><a href="#/users">Użytkownicy</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" ng-controller="LogoutCtrl" ng-switch>
-                <li ng-class="{ active: isActive('/profile')}"><a href="#/profile">Profila</a></li>
+                <li ng-class="{ active: isActive('/profile')}"><a href="#/profile">Profil</a></li>
                 <li ng-show="!isLoggedIn"><a href="#/login">Zaloguj się</a></li>
                 <li ng-show="isLoggedIn"><a ng-click='logout()' href="">Wyloguj</a></li>
             </ul>

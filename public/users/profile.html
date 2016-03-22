@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Moj Profila</h1>
+            <h1>Mój Profil</h1>
         </div>
     </div>
 
@@ -11,14 +11,16 @@
 
             <div ng-show="error" class="alert alert-danger">{{ errorMessage }}</div>
 
+            <p>Wpisz nowe hasło ( 8 znaków ):</p>
+
             <form class="form" ng-submit="change()">
                 <div class="form-group">
-                    <label for="oldPassword">Stary hasło</label>
+                    <label for="oldPassword">Nowe hasło</label>
                     <input class="form-control" type="password" id="oldPassword" ng-model="newPassword1" required
                     />
                 </div>
                 <div class="form-group">
-                    <label for="newPassword">Nowy hasło</label>
+                    <label for="newPassword">Potwierdź nowe hasło</label>
                     <input class="form-control" type="password" id="newPassword" ng-model="newPassword2" required
                     />
                 </div>
