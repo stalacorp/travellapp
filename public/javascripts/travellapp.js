@@ -15,7 +15,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/login', {templateUrl: 'users/login.html', controller: 'LoginCtrl', title: 'Login', access: 'open'})
         .when('/logout', {controller: 'LogoutCtrl'})
-        .when('/users', {templateUrl: 'users/overview.html', controller: 'UsersCtrl'})
+        .when('/users', {templateUrl: 'users/overview.html', controller: 'UsersCtrl', access: 'admin'})
         .when('/profile', {templateUrl: 'users/profile.html', controller: 'ProfileCtrl'})
         .otherwise({
             redirectTo: '/'
@@ -28,14 +28,18 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var user = AuthService.getUser();
         console.log(user);
-        if (user != null) {
+        var isAdmin;
+        if (user != null){
             $rootScope.isLoggedIn = true;
             $rootScope.isAdmin = user.isAdmin;
+            isAdmin = user.isAdmin;
+        }else {
+            isAdmin = false;
         }
 
 
         if (next.access !== 'open') {
-            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && user.isAdmin !== true)) {
+            if ((user === null && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
                 $location.path('/login');
                 $route.reload();
             }
@@ -99,16 +103,16 @@ app.controller('ProfileCtrl',
     ['$scope', '$location', '$resource', 'AuthService',
         function ($scope, $location, $resource, AuthService) {
             $scope.error = false;
-            $scope.change = function () {
+            $scope.change = function() {
                 $scope.error = false;
                 var password = $scope.newPassword1;
 
-                if (($scope.newPassword1 == $scope.newPassword2) && password.length == 8) {
+                if($scope.newPassword1 == $scope.newPassword2) {
                     var user = AuthService.getUser();
 
                     user.password = password;
 
-                    var User = $resource('/user/:id', {id: '@_id'}, {
+                    var User = $resource('/user/:id', { id: '@_id' }, {
                         update: {method: 'PUT'}
                     });
 
@@ -117,7 +121,6 @@ app.controller('ProfileCtrl',
                     $location.path('/journeys/overview');
                 } else {
                     $scope.error = true;
-                    $scope.errorMessage = "Błąd!";
                 }
 
             };
@@ -135,33 +138,30 @@ app.controller('UsersCtrl',
                 $scope.users = userobjs;
             });
 
-            $scope.update = function (theuser) {
+            $scope.update = function(theuser){
                 $scope.user = theuser;
             };
 
-            $scope.add = function () {
-                if ($scope.update) {
-                    var Users = $resource('/user/:id', {id: '@_id'}, {
-                        update: {method: 'PUT'}
+            $scope.add = function(){
+                if ($scope.update){
+                    var Users = $resource('/user/:id', { id: '@_id' }, {
+                        update: { method: 'PUT' }
                     });
                     Users.update($scope.user);
 
-                } else {
+                }else {
                     var Users = $resource('/user/');
-                    Users.save($scope.user, function (response) {
+                    Users.save($scope.user, function(response){
                         $scope.users.push(response);
                     });
                 }
             };
 
-            $scope.delete = function () {
-                if($scope.update) {
-                    var User = $resource('/user/:id');
-                    User.delete({id: $scope.user_id});
+            $scope.delete = function(){
+                var User = $resource('/users/:id');
+                User.delete({id: $scope.user_id });
 
-                    //User.update($scope.user);
-                    $scope.users.splice(index, 1);
-                }
+                $scope.users.splice(index, 1);
             };
 
 
@@ -171,10 +171,10 @@ app.controller('FixtureCtrl',
     ['$scope', '$location', '$resource',
         function ($scope, $location, $resource) {
             $scope.success = false;
-            $scope.addFixture = function () {
+            $scope.addFixture = function(){
                 var User = $resource('/user/fixture');
-                User.save({keyword: $scope.keyword}, function (response) {
-                    if (response.success) {
+                User.save({keyword:$scope.keyword}, function(response){
+                    if (response.success){
                         $scope.success = true;
                     }
                 });
