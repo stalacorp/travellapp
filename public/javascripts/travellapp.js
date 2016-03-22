@@ -28,14 +28,18 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var user = AuthService.getUser();
         console.log(user);
+        var isAdmin;
         if (user != null){
             $rootScope.isLoggedIn = true;
             $rootScope.isAdmin = user.isAdmin;
+            isAdmin = user.isAdmin;
+        }else {
+            isAdmin = false;
         }
 
 
         if (next.access !== 'open') {
-            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && user.isAdmin !== true)) {
+            if ((user === null && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
                 $location.path('/login');
                 $route.reload();
             }
