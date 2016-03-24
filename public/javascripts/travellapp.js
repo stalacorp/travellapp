@@ -27,11 +27,19 @@ app.run(['$location', '$rootScope', '$route', 'AuthService', function ($location
     });
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
         var user = AuthService.getUser();
-        $rootScope.isLoggedIn = AuthService.isLoggedIn();
-        $rootScope.isAdmin = user.isAdmin;
+        console.log(user);
+        var isAdmin;
+        if (user != null){
+            $rootScope.isLoggedIn = true;
+            $rootScope.isAdmin = user.isAdmin;
+            isAdmin = user.isAdmin;
+        }else {
+            isAdmin = false;
+        }
+
 
         if (next.access !== 'open') {
-            if ((AuthService.isLoggedIn() === false && next.access === undefined) || (next.access === 'admin' && user.isAdmin !== true)) {
+            if ((user === null && next.access === undefined) || (next.access === 'admin' && isAdmin !== true)) {
                 $location.path('/login');
                 $route.reload();
             }
@@ -68,7 +76,7 @@ app.controller('LoginCtrl',
                     // handle error
                     .catch(function () {
                         $scope.error = true;
-                        $scope.errorMessage = "Onjuiste gebruikersnaam en/of wachtwoord";
+                        $scope.errorMessage = "Błąd";
                         $scope.disabled = false;
                         $scope.loginForm = {};
                     });
@@ -92,27 +100,28 @@ app.controller('LogoutCtrl',
         }]);
 
 app.controller('ProfileCtrl',
-    ['$scope', '$location', '$resource',
-        function ($scope, $location, $resource) {
-
+    ['$scope', '$location', '$resource', 'AuthService',
+        function ($scope, $location, $resource, AuthService) {
+            $scope.error = false;
             $scope.change = function() {
-
+                $scope.error = false;
                 var password = $scope.newPassword1;
 
-                if($scope.newPassword1 == $scope.newpassword2) {
+                if($scope.newPassword1 == $scope.newPassword2) {
                     var user = AuthService.getUser();
 
                     user.password = password;
 
-                    user = $resource('/user/:id', { id: '@_id' }, {
+                    var User = $resource('/user/:id', { id: '@_id' }, {
                         update: {method: 'PUT'}
                     });
 
-                    user.update($scope.user);
+                    User.update(user);
 
                     $location.path('/journeys/overview');
                 } else {
-
+                    $scope.error = true;
+                    $scope.errorMessage = "Błąd";
                 }
 
             };
@@ -135,7 +144,7 @@ app.controller('UsersCtrl',
             };
 
             $scope.add = function(){
-                if ($scope.user != null){
+                if ($scope.update){
                     var Users = $resource('/user/:id', { id: '@_id' }, {
                         update: { method: 'PUT' }
                     });
@@ -150,10 +159,11 @@ app.controller('UsersCtrl',
             };
 
             $scope.delete = function(){
-                var User = $resource('/users/:id');
-                User.delete({id: $scope.user_id });
 
-                $scope.users.splice(index, 1);
+                    var User = $resource('/user/:id', { id: '@_id' });
+                    User.delete({id: $scope.user._id});
+
+                    $scope.users.splice($scope.activeIndex, 1);
             };
 
 
